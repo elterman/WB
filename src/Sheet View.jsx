@@ -6,7 +6,7 @@ import Collapsible, { LEVEL_INDENT } from './Collapsible';
 import { APP_BACKGROUND, PALETTES, GOLD, PINK, OFF_BACKGROUND, OFF_WHITE } from './const';
 import { useForceUpdate } from './hooks';
 import { useTooltip } from './Tooltip';
-import { cellBox, cellId, getBox, hasScrollbar, splitKey, nodeVisible, split, syncScroll, windowSize } from './utils';
+import { cellBox, cellId, getBox, hasScrollbar, splitKey, nodeVisible, split, syncScroll, windowSize, formatNumeric } from './utils';
 
 const CELL_SIZE = 70;
 const TOP_LEFT = 'top-left';
@@ -317,6 +317,8 @@ const SheetView = (props) => {
         const cellStyle = getCellStyle ? getCellStyle(node, col) : {};
         const style = { gridArea, width, justifyContent, borderLeftWidth, borderRightWidth, borderLeftColor, ...cellStyle };
         const id = cellId(node.key, col);
+
+        value = formatNumeric(value);
 
         return <Fragment key={col}>
             <div id={id} className='sheet-cell' style={style} onClick={onClick}>
