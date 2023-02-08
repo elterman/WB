@@ -3,7 +3,7 @@ import _ from 'lodash';
 import { Fragment, useCallback, useEffect, useRef, useState } from 'react';
 import { a_lite, a_palette, a_selected_cell } from './atoms';
 import Collapsible, { LEVEL_INDENT } from './Collapsible';
-import { APP_BACKGROUND, PALETTES, GOLD, WHITE, PINK } from './const';
+import { APP_BACKGROUND, PALETTES, GOLD, WHITE, PINK, OFF_BACKGROUND, OFF_WHITE } from './const';
 import { useForceUpdate } from './hooks';
 import { useTooltip } from './Tooltip';
 import { cellBox, cellId, getBox, hasScrollbar, splitKey, nodeVisible, split, syncScroll, windowSize } from './utils';
@@ -256,6 +256,9 @@ const SheetView = (props) => {
 
     const renderCell = (node, col, value) => {
         const cell = { key: node.key, col };
+        const gridArea = `1/${col + 1}`;
+        const indent = node.key.length * LEVEL_INDENT;
+        const cx = col ? CELL_SIZE : (300 - indent);
 
         const onClick = () => {
             cell.col > 0 && scrollIntoView(cell);
@@ -263,34 +266,35 @@ const SheetView = (props) => {
             onEdit(null);
         };
 
-        const indent = node.key.length * LEVEL_INDENT;
+        const renderInput = () => {
+            const background = lite ? '#ECEBEB' : '#0008';
+            const color = lite ? APP_BACKGROUND : OFF_WHITE;
+
+            return <input className='cell-input' ref={e => (l.inputBox = e)}
+                style={{ gridArea, width: `${cx - 1}px`, background, color }} />;
+        };
+
         const editable = cellEditable && cellEditable(cell);
 
         const justifyContent = col ? 'end' : 'start';
-        const cx = col ? CELL_SIZE : (300 - indent);
         const width = `${cx}px`;
         const hasSectionBorder = (col % columnHeaders.length === 1);
         const borderLeftWidth = hasSectionBorder ? '3px' : !!col ? '1px' : 0;
         const borderRightWidth = !col && tr?.scrollLeft ? '3px' : 0;
-        const borderColor = APP_BACKGROUND;
-        const gridArea = `1/${col + 1}`;
+        const borderLeftColor = hasSectionBorder ? APP_BACKGROUND : OFF_BACKGROUND;
         const selected = _.isEqual(node.key, selectedCell.key) && col === selectedCell.col;
-        const selectedBorderColor = lite ? (editable ? (editCell ? PINK : '#800000') : WHITE) : (editable ? PINK : GOLD);
-        const selectedBorder = selected ? `2px solid ${selectedBorderColor}` : '';
+        const selectedBorderColor = lite ? (editable ? '#D21F22' : '#2A2AC7') : (editable ? PINK : GOLD);
+        const border = selected ? `2px solid ${selectedBorderColor}` : '';
         const cellStyle = getCellStyle ? getCellStyle(node, col) : {};
-
-        const style = { gridArea, width, justifyContent, borderLeftWidth, borderRightWidth, borderColor, ...cellStyle };
+        const style = { gridArea, width, justifyContent, borderLeftWidth, borderRightWidth, borderLeftColor, ...cellStyle };
         const id = cellId(node.key, col);
 
         return <Fragment key={col}>
             <div id={id} className='sheet-cell' style={style} onClick={onClick}>
                 <div className='ellipsis'>{value}</div>
             </div>
-            {_.isEqual(cell, editCell) &&
-                <input className='cell-input' ref={e => (l.inputBox = e)}
-                    style={{ gridArea, width: `${cx - 1}px` }}></input>}
-            {selectedBorder && <div style={{ gridArea, width: `${cx - 1}px`, marginLeft: '1px', border: selectedBorder }}
-                onClick={onSelectCell}></div>}
+            {_.isEqual(cell, editCell) && renderInput()}
+            {border && <div style={{ gridArea, width: `${cx - 1}px`, marginLeft: '1px', border }} onClick={onSelectCell} />}
         </Fragment>;
 
     };

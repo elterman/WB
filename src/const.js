@@ -7,6 +7,7 @@ export const NA = 'N/A';
 export const X = '✖';
 
 export const APP_BACKGROUND = '#2F2929';
+export const OFF_BACKGROUND = '#2F292980';
 export const WHITE = '#FFF';
 export const OFF_WHITE = '#FFFA';
 export const BLUE = '#24ADF4';
