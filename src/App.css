@@ -680,4 +680,6 @@ input::-webkit-inner-spin-button {
   outline: none;
   padding: 0px 8px;
   box-sizing: border-box;
+  margin-left: 1px;
+  text-align: end;
 }

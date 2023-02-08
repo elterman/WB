@@ -1,9 +1,9 @@
 import { useAtom, useAtomValue } from 'jotai';
 import _ from 'lodash';
-import { Fragment, useCallback, useEffect, useRef } from 'react';
+import { Fragment, useCallback, useEffect, useRef, useState } from 'react';
 import { a_lite, a_palette, a_selected_cell } from './atoms';
 import Collapsible, { LEVEL_INDENT } from './Collapsible';
-import { APP_BACKGROUND, PALETTES, GOLD, WHITE } from './const';
+import { APP_BACKGROUND, PALETTES, GOLD, WHITE, PINK } from './const';
 import { useForceUpdate } from './hooks';
 import { useTooltip } from './Tooltip';
 import { cellBox, cellId, getBox, hasScrollbar, splitKey, nodeVisible, split, syncScroll, windowSize } from './utils';
@@ -136,7 +136,7 @@ const SheetView = (props) => {
             onNavigate({ key: 'ArrowUp' });
             onEdit(null);
         }
-    }, [meta, onNavigate, selectedCell.key]);
+    }, [meta, onEdit, onNavigate, selectedCell.key]);
 
     if (_.isEmpty(meta)) {
         return null;
@@ -160,9 +160,19 @@ const SheetView = (props) => {
         }
     };
 
+    const onSelectCell = () => {
+        onEdit && onEdit(selectedCell);
+
+        _.delay(() => {
+            l.inputBox.value = '123.4';
+            l.inputBox.focus();
+        });
+
+    };
+
     const onKeyDown = e => {
         if (e.key === 'F2' || e.code === 'Space') {
-            onEdit && onEdit(selectedCell);
+            onSelectCell();
             return;
         }
 
@@ -244,15 +254,49 @@ const SheetView = (props) => {
         </>;
     };
 
-    const renderNode = ({ node, part }) => {
-        const onClick = (cell) => {
+    const renderCell = (node, col, value) => {
+        const cell = { key: node.key, col };
+
+        const onClick = () => {
             cell.col > 0 && scrollIntoView(cell);
             setSelectedCell(cell);
             onEdit(null);
         };
 
-        const values = node.item;
         const indent = node.key.length * LEVEL_INDENT;
+        const editable = cellEditable && cellEditable(cell);
+
+        const justifyContent = col ? 'end' : 'start';
+        const cx = col ? CELL_SIZE : (300 - indent);
+        const width = `${cx}px`;
+        const hasSectionBorder = (col % columnHeaders.length === 1);
+        const borderLeftWidth = hasSectionBorder ? '3px' : !!col ? '1px' : 0;
+        const borderRightWidth = !col && tr?.scrollLeft ? '3px' : 0;
+        const borderColor = APP_BACKGROUND;
+        const gridArea = `1/${col + 1}`;
+        const selected = _.isEqual(node.key, selectedCell.key) && col === selectedCell.col;
+        const selectedBorderColor = lite ? (editable ? (editCell ? PINK : '#800000') : WHITE) : (editable ? PINK : GOLD);
+        const selectedBorder = selected ? `2px solid ${selectedBorderColor}` : '';
+        const cellStyle = getCellStyle ? getCellStyle(node, col) : {};
+
+        const style = { gridArea, width, justifyContent, borderLeftWidth, borderRightWidth, borderColor, ...cellStyle };
+        const id = cellId(node.key, col);
+
+        return <Fragment key={col}>
+            <div id={id} className='sheet-cell' style={style} onClick={onClick}>
+                <div className='ellipsis'>{value}</div>
+            </div>
+            {_.isEqual(cell, editCell) &&
+                <input className='cell-input' ref={e => (l.inputBox = e)}
+                    style={{ gridArea, width: `${cx - 1}px` }}></input>}
+            {selectedBorder && <div style={{ gridArea, width: `${cx - 1}px`, marginLeft: '1px', border: selectedBorder }}
+                onClick={onSelectCell}></div>}
+        </Fragment>;
+
+    };
+
+    const renderNode = ({ node, part }) => {
+        const values = node.item;
         let min = 0;
         let max = values.length - 1;
 
@@ -274,40 +318,7 @@ const SheetView = (props) => {
         }
 
         return <div className='sheet-row'>
-            {_.map(values, (value, col) => {
-                if (col < min || col > max) {
-                    return null;
-                }
-
-                const cell = { key: node.key, col };
-                const editable = cellEditable && cellEditable(cell);
-
-                const justifyContent = col ? 'end' : 'start';
-                const cx = col ? CELL_SIZE : (300 - indent);
-                const width = `${cx}px`;
-                const hasSectionBorder = (col % columnHeaders.length === 1);
-                const borderLeftWidth = hasSectionBorder ? '3px' : !!col ? '1px' : 0;
-                const borderRightWidth = !col && tr?.scrollLeft ? '3px' : 0;
-                const borderColor = APP_BACKGROUND;
-                const gridArea = `1/${col + 1}`;
-                const selected = _.isEqual(node.key, selectedCell.key) && col === selectedCell.col;
-                const selectedBorderColor = lite ? (editable ? '#863C3C' : WHITE) : (editable ? '#F88F9E' : GOLD);
-                const border = selected ? `${lite ? (editable ? 2 : 3) : 2}px solid ${selectedBorderColor}` : '';
-                const cellStyle = getCellStyle ? getCellStyle(node, col) : {};
-
-                const style = { gridArea, width, justifyContent, borderLeftWidth, borderRightWidth, borderColor, ...cellStyle };
-                const id = cellId(node.key, col);
-
-                return <Fragment key={col}>
-                    <div id={id} className='sheet-cell' style={style} onClick={() => onClick(cell)}>
-                        <div className='ellipsis'>{value}</div>
-                    </div>
-                    {_.isEqual(cell, editCell) &&
-                        <input className='cell-input' onChange={() => { }}
-                            style={{ gridArea, width, textAlign: 'end' }}></input>}
-                    {border && <div style={{ gridArea, width: `${cx - 1}px`, marginLeft: '1px', border }}></div>}
-                </Fragment>;
-            })}
+            {_.map(values, (value, col) => col >= min && col <= max && renderCell(node, col, value))}
         </div>;
     };
 
