@@ -3,13 +3,15 @@ import { a_lite, a_selected_family, a_targets } from './atoms';
 import SheetView from './Sheet View';
 import { useComingSoon } from './hooks';
 import _ from 'lodash';
+import { useState } from 'react';
 
-const TargetPage = () => {
+const TargetsPage = () => {
     const renderComingSoon = useComingSoon();
     const fob = useAtomValue(a_selected_family);
     const atom = a_targets;
     const { meta } = useAtomValue(atom);
     const lite = useAtomValue(a_lite);
+    const [editCell, setEditCell] = useState(null);
 
     if (fob.fname && fob.fname !== 'BFAF') {
         return renderComingSoon();
@@ -35,7 +37,12 @@ const TargetPage = () => {
         return { background };
     };
 
-    const onEdit = ({ cell }) => {
+    const onEdit = (cell) => {
+        if (!cell) {
+            setEditCell(null);
+            return;
+        }
+
         const col = cell.col;
         const section = getSection(col);
 
@@ -43,17 +50,17 @@ const TargetPage = () => {
             return;
         }
 
-        const leaf = !meta[cell.nodeKey].hasChildren;
+        const leaf = !meta[cell.key].hasChildren;
 
         if (leaf) {
-            // TODO
+            setEditCell(cell);
         }
 
     };
 
     return <SheetView atom={atom} columnHeaders={columnHeaders}
         sectionHeaders={['Current Targets (%)', 'Trades (%)', 'Final Weights (%)']}
-        onEdit={onEdit} getCellStyle={getCellStyle} />;
+        editCell={editCell} onEdit={onEdit} getCellStyle={getCellStyle} />;
 };
 
-export default TargetPage;
+export default TargetsPage;

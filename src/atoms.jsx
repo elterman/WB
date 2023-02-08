@@ -207,7 +207,7 @@ export const a_selected_family = atom(
     }
 );
 
-const firstCell = { nodeKey: [1, 1, 1, 2], col: 2 };
+const firstCell = { key: [1, 1, 1, 2], col: 2 };
 const a_targets_selected_cell = _fatom(firstCell);
 const a_compare_selected_cell = _fatom(firstCell);
 const a_benchmarks_selected_cell = _fatom(firstCell);

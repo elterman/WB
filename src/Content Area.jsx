@@ -4,7 +4,7 @@ import BenchmarksPage from './Benchmarks Page';
 import ComparePage from './Compare Page';
 import { BENCHMARKS, COMPARE, METRICS, TARGETS } from './const';
 import MetricsPage from './Metrics Page';
-import TargetPage from './Target Page';
+import TargetPage from './Targets Page';
 import Spinner from './Spinner';
 import TabPanel from './Tab Panel';
 

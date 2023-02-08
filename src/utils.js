@@ -140,10 +140,10 @@ export const getBox = id => {
 
 export const split = key => _.map(key.split(','), d => +d);
 
-export const nodeKey = key => _.isString(key) ? split(key) : key;
+export const splitKey = key => _.isString(key) ? split(key) : key;
 
 export const parentKey = key => {
-    key = nodeKey(key);
+    key = splitKey(key);
 
     if (key.length < 2) {
         return null;
@@ -154,7 +154,7 @@ export const parentKey = key => {
 };
 
 export const nodeVisible = (key, meta) => {
-    key = nodeKey(key);
+    key = splitKey(key);
 
     if (key.length < 2) {
         return true;
@@ -169,6 +169,6 @@ export const nodeVisible = (key, meta) => {
     return nodeVisible(pkey, meta);
 };
 
-export const cellId = (nodeKey, col) => `${nodeKey}${BULLET}${col}`;
+export const cellId = (key, col) => `${key}${BULLET}${col}`;
 
-export const cellBox = cell => getBox(cellId(cell.nodeKey, cell.col));
+export const cellBox = cell => getBox(cellId(cell.key, cell.col));

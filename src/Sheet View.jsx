@@ -1,12 +1,12 @@
 import { useAtom, useAtomValue } from 'jotai';
 import _ from 'lodash';
-import { Fragment, useCallback, useEffect, useRef, useState } from 'react';
+import { Fragment, useCallback, useEffect, useRef } from 'react';
 import { a_lite, a_palette, a_selected_cell } from './atoms';
 import Collapsible, { LEVEL_INDENT } from './Collapsible';
 import { APP_BACKGROUND, PALETTES, GOLD, WHITE } from './const';
 import { useForceUpdate } from './hooks';
 import { useTooltip } from './Tooltip';
-import { cellBox, cellId, getBox, hasScrollbar, nodeKey, nodeVisible, split, syncScroll, windowSize } from './utils';
+import { cellBox, cellId, getBox, hasScrollbar, splitKey, nodeVisible, split, syncScroll, windowSize } from './utils';
 
 const CELL_SIZE = 70;
 const TOP_LEFT = 'top-left';
@@ -15,7 +15,7 @@ const BOTTOM_LEFT = 'bottom-left';
 const BOTTOM_RIGHT = 'bottom-right';
 
 const SheetView = (props) => {
-    const { atom, columnHeaders, sectionHeaders, onEdit, getCellStyle } = props;
+    const { atom, columnHeaders, sectionHeaders, editCell, onEdit, getCellStyle } = props;
     const [{ nodes, metaAtom }] = useAtom(atom);
     const [meta, setMeta] = useAtom(metaAtom);
     const lite = useAtomValue(a_lite);
@@ -35,7 +35,6 @@ const SheetView = (props) => {
     const ncols = 1 + nsections * (columnHeaders?.length || 0);
     const palette = PALETTES[paletteKey];
     const l = useRef({}).current;
-    const [edit, SetEdit] = useState(false);
 
     useEffect(() => {
         window.addEventListener('resize', forceUpdate);
@@ -100,7 +99,7 @@ const SheetView = (props) => {
         } else if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
             const up = e.key === 'ArrowUp';
             const keys = _.keys(meta);
-            let key = selectedCell.nodeKey;
+            let key = selectedCell.key;
 
             do {
                 key = `${key}`;
@@ -113,9 +112,9 @@ const SheetView = (props) => {
                 key = keys[i + (up ? -1 : 1)];
             } while (!nodeVisible(key, meta));
 
-            cell = { ...selectedCell, nodeKey: nodeKey(key) };
+            cell = { ...selectedCell, key: splitKey(key) };
 
-            if (!_.isEqual(cell.nodeKey, [1])) {
+            if (!_.isEqual(cell.key, [1])) {
                 scrollIntoView(cell);
             }
         }
@@ -131,12 +130,12 @@ const SheetView = (props) => {
             return;
         }
 
-        const key = selectedCell.nodeKey;
+        const key = selectedCell.key;
 
         if (!nodeVisible(key, meta)) {
             onNavigate({ key: 'ArrowUp' });
         }
-    }, [meta, onNavigate, selectedCell.nodeKey]);
+    }, [meta, onNavigate, selectedCell.key]);
 
     if (_.isEmpty(meta)) {
         return null;
@@ -162,12 +161,16 @@ const SheetView = (props) => {
 
     const onKeyDown = e => {
         if (e.key === 'F2' || e.code === 'Space') {
-            onEdit && onEdit({ cell: selectedCell });
+            onEdit && onEdit(selectedCell);
             return;
         }
 
+        if (e.key === 'Escape') {
+            onEdit(null);
+        }
+
         if (e.key === 'ArrowLeft' || e.key === 'ArrowRight' || e.key === 'ArrowUp' || e.key === 'ArrowDown') {
-            onNavigate(e);
+            !editCell && onNavigate(e);
             return;
         }
 
@@ -242,10 +245,11 @@ const SheetView = (props) => {
 
     const renderNode = ({ node, part }) => {
         const onClick = (col) => {
-            const cell = { nodeKey: node.key, col };
+            const cell = { key: node.key, col };
 
             col > 0 && scrollIntoView(cell);
             setSelectedCell(cell);
+            onEdit(null);
         };
 
         const values = node.item;
@@ -284,7 +288,7 @@ const SheetView = (props) => {
                 const borderRightWidth = !col && tr?.scrollLeft ? '3px' : 0;
                 const borderColor = APP_BACKGROUND;
                 const gridArea = `1/${col + 1}`;
-                const selected = _.isEqual(node.key, selectedCell.nodeKey) && col === selectedCell.col;
+                const selected = _.isEqual(node.key, selectedCell.key) && col === selectedCell.col;
                 const border = selected ? `${lite ? 3 : 2}px solid ${lite ? WHITE : GOLD}` : '';
                 const cellStyle = getCellStyle ? getCellStyle(node, col) : {};
 
@@ -295,6 +299,7 @@ const SheetView = (props) => {
                     <div id={id} className='sheet-cell' style={style} onClick={() => onClick(col)}>
                         <div className='ellipsis'>{value}</div>
                     </div>
+                    {_.isEqual({ key: node.key, col }, editCell) && <div style={{ gridArea, background: 'black', width }}></div>}
                     {border && <div style={{ gridArea, width: `${cx - 1}px`, marginLeft: '1px', border }}></div>}
                 </Fragment>;
             })}
