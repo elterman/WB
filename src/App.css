@@ -672,3 +672,12 @@ input::-webkit-inner-spin-button {
   overflow: hidden;
   place-content: start;
 }
+
+.cell-input {
+  background: var(--background-color);
+  color: var(--off-white);
+  border: none;
+  outline: none;
+  padding: 0px 8px;
+  box-sizing: border-box;
+}

@@ -37,12 +37,7 @@ const TargetsPage = () => {
         return { background };
     };
 
-    const onEdit = (cell) => {
-        if (!cell) {
-            setEditCell(null);
-            return;
-        }
-
+    const cellEditable = cell => {
         const col = cell.col;
         const section = getSection(col);
 
@@ -50,17 +45,20 @@ const TargetsPage = () => {
             return;
         }
 
-        const leaf = !meta[cell.key].hasChildren;
+        return !meta[cell.key].hasChildren;
+    };
 
-        if (leaf) {
+    const onEdit = (cell) => {
+        if (!cell) {
+            setEditCell(null);
+        } else if (cellEditable(cell)) {
             setEditCell(cell);
-        }
-
+        };
     };
 
     return <SheetView atom={atom} columnHeaders={columnHeaders}
         sectionHeaders={['Current Targets (%)', 'Trades (%)', 'Final Weights (%)']}
-        editCell={editCell} onEdit={onEdit} getCellStyle={getCellStyle} />;
+        editCell={editCell} onEdit={onEdit} cellEditable={cellEditable} getCellStyle={getCellStyle} />;
 };
 
 export default TargetsPage;

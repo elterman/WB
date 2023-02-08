@@ -15,7 +15,7 @@ const BOTTOM_LEFT = 'bottom-left';
 const BOTTOM_RIGHT = 'bottom-right';
 
 const SheetView = (props) => {
-    const { atom, columnHeaders, sectionHeaders, editCell, onEdit, getCellStyle } = props;
+    const { atom, columnHeaders, sectionHeaders, editCell, onEdit, cellEditable, getCellStyle } = props;
     const [{ nodes, metaAtom }] = useAtom(atom);
     const [meta, setMeta] = useAtom(metaAtom);
     const lite = useAtomValue(a_lite);
@@ -134,6 +134,7 @@ const SheetView = (props) => {
 
         if (!nodeVisible(key, meta)) {
             onNavigate({ key: 'ArrowUp' });
+            onEdit(null);
         }
     }, [meta, onNavigate, selectedCell.key]);
 
@@ -244,10 +245,8 @@ const SheetView = (props) => {
     };
 
     const renderNode = ({ node, part }) => {
-        const onClick = (col) => {
-            const cell = { key: node.key, col };
-
-            col > 0 && scrollIntoView(cell);
+        const onClick = (cell) => {
+            cell.col > 0 && scrollIntoView(cell);
             setSelectedCell(cell);
             onEdit(null);
         };
@@ -280,6 +279,9 @@ const SheetView = (props) => {
                     return null;
                 }
 
+                const cell = { key: node.key, col };
+                const editable = cellEditable && cellEditable(cell);
+
                 const justifyContent = col ? 'end' : 'start';
                 const cx = col ? CELL_SIZE : (300 - indent);
                 const width = `${cx}px`;
@@ -289,17 +291,20 @@ const SheetView = (props) => {
                 const borderColor = APP_BACKGROUND;
                 const gridArea = `1/${col + 1}`;
                 const selected = _.isEqual(node.key, selectedCell.key) && col === selectedCell.col;
-                const border = selected ? `${lite ? 3 : 2}px solid ${lite ? WHITE : GOLD}` : '';
+                const selectedBorderColor = lite ? (editable ? '#863C3C' : WHITE) : (editable ? '#F88F9E' : GOLD);
+                const border = selected ? `${lite ? (editable ? 2 : 3) : 2}px solid ${selectedBorderColor}` : '';
                 const cellStyle = getCellStyle ? getCellStyle(node, col) : {};
 
                 const style = { gridArea, width, justifyContent, borderLeftWidth, borderRightWidth, borderColor, ...cellStyle };
                 const id = cellId(node.key, col);
 
                 return <Fragment key={col}>
-                    <div id={id} className='sheet-cell' style={style} onClick={() => onClick(col)}>
+                    <div id={id} className='sheet-cell' style={style} onClick={() => onClick(cell)}>
                         <div className='ellipsis'>{value}</div>
                     </div>
-                    {_.isEqual({ key: node.key, col }, editCell) && <div style={{ gridArea, background: 'black', width }}></div>}
+                    {_.isEqual(cell, editCell) &&
+                        <input className='cell-input' onChange={() => { }}
+                            style={{ gridArea, width, textAlign: 'end' }}></input>}
                     {border && <div style={{ gridArea, width: `${cx - 1}px`, marginLeft: '1px', border }}></div>}
                 </Fragment>;
             })}
