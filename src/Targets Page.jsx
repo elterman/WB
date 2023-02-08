@@ -4,6 +4,7 @@ import SheetView from './Sheet View';
 import { useComingSoon } from './hooks';
 import _ from 'lodash';
 import { useState } from 'react';
+import { DARK_EDIT, LITE_EDIT } from './const';
 
 const TargetsPage = () => {
     const renderComingSoon = useComingSoon();
@@ -30,7 +31,7 @@ const TargetsPage = () => {
             const value = values[col];
 
             if ((section === 2 && +value) || (section === 3 && +values[col - columnHeaders.length])) {
-                background = lite ? '#F88F9E' : '#863C3C';
+                background = lite ? LITE_EDIT : DARK_EDIT;
             }
         }
 

@@ -27,6 +27,8 @@ export const PINK = '#FFB0FF';
 export const DIMGRAY = '#676971';
 export const MAGENTA = '#AA1979';
 export const BUTTON_BACKGROUND = '#0009';
+export const LITE_EDIT = '#F88F9E';
+export const DARK_EDIT = '#863C3C';
 
 export const PALETTE = 'PALETTE';
 export const PALETTES = {
