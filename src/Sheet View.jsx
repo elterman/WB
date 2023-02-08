@@ -43,8 +43,8 @@ const SheetView = (props) => {
 
     useEffect(() => {
         forceUpdate();
-        document.getElementById('sheet-view')?.focus();
-    }, [br_ref, forceUpdate]);
+        l.sheet?.focus();
+    }, [forceUpdate, l.sheet]);
 
     const scrollIntoView = useCallback(cell => {
         const cbox = cellBox(cell);
@@ -160,24 +160,31 @@ const SheetView = (props) => {
         }
     };
 
-    const onSelectCell = () => {
+    const onEditCell = () => {
         onEdit && onEdit(selectedCell);
 
         _.delay(() => {
             l.inputBox.value = '123.4';
             l.inputBox.focus();
+            l.inputBox.select();
         });
 
     };
 
     const onKeyDown = e => {
         if (e.key === 'F2' || e.code === 'Space') {
-            onSelectCell();
+            onEditCell();
+            return;
+        }
+
+        if (e.key === 'Enter') {
+            l.inputBox?.blur();
             return;
         }
 
         if (e.key === 'Escape') {
-            onEdit(null);
+            l.inputBox?.blur();
+            return;
         }
 
         if (e.key === 'ArrowLeft' || e.key === 'ArrowRight' || e.key === 'ArrowUp' || e.key === 'ArrowDown') {
@@ -256,6 +263,7 @@ const SheetView = (props) => {
 
     const renderCell = (node, col, value) => {
         const cell = { key: node.key, col };
+        const editable = cellEditable && cellEditable(cell);
         const gridArea = `1/${col + 1}`;
         const indent = node.key.length * LEVEL_INDENT;
         const cx = col ? CELL_SIZE : (300 - indent);
@@ -267,14 +275,36 @@ const SheetView = (props) => {
         };
 
         const renderInput = () => {
-            const background = lite ? '#ECEBEB' : '#0008';
+            const onBlur = () => {
+                if (editCell) {
+                    onEdit(null);
+                } else {
+                    //
+                }
+
+                l.sheet.focus();
+            };
+
+            const background = lite ? '#ECEBEB' : APP_BACKGROUND;
             const color = lite ? APP_BACKGROUND : OFF_WHITE;
 
-            return <input className='cell-input' ref={e => (l.inputBox = e)}
+            return <input className='cell-input' ref={e => (l.inputBox = e)} onBlur={onBlur}
                 style={{ gridArea, width: `${cx - 1}px`, background, color }} />;
         };
 
-        const editable = cellEditable && cellEditable(cell);
+        const renderSelectedBorder = () => {
+            const selected = _.isEqual(node.key, selectedCell.key) && col === selectedCell.col;
+
+            if (!selected) {
+                return null;
+            }
+
+            const selectedBorderColor = lite ? (editable ? '#D21F22' : '#2A2AC7') : (editable ? PINK : GOLD);
+            const border = `2px solid ${selectedBorderColor}`;
+            const pointerEvents = editCell ? 'none' : 'auto';
+
+            return <div style={{ gridArea, width: `${cx - 1}px`, marginLeft: '1px', border, pointerEvents }} onClick={onEditCell} />;
+        };
 
         const justifyContent = col ? 'end' : 'start';
         const width = `${cx}px`;
@@ -282,9 +312,6 @@ const SheetView = (props) => {
         const borderLeftWidth = hasSectionBorder ? '3px' : !!col ? '1px' : 0;
         const borderRightWidth = !col && tr?.scrollLeft ? '3px' : 0;
         const borderLeftColor = hasSectionBorder ? APP_BACKGROUND : OFF_BACKGROUND;
-        const selected = _.isEqual(node.key, selectedCell.key) && col === selectedCell.col;
-        const selectedBorderColor = lite ? (editable ? '#D21F22' : '#2A2AC7') : (editable ? PINK : GOLD);
-        const border = selected ? `2px solid ${selectedBorderColor}` : '';
         const cellStyle = getCellStyle ? getCellStyle(node, col) : {};
         const style = { gridArea, width, justifyContent, borderLeftWidth, borderRightWidth, borderLeftColor, ...cellStyle };
         const id = cellId(node.key, col);
@@ -294,7 +321,7 @@ const SheetView = (props) => {
                 <div className='ellipsis'>{value}</div>
             </div>
             {_.isEqual(cell, editCell) && renderInput()}
-            {border && <div style={{ gridArea, width: `${cx - 1}px`, marginLeft: '1px', border }} onClick={onSelectCell} />}
+            {renderSelectedBorder()}
         </Fragment>;
 
     };
@@ -339,7 +366,7 @@ const SheetView = (props) => {
     const maxWidthHeaders = trw ? `${trw - 1}px` : `${tr?.clientWidth - 1}px`;
 
     return (
-        <div id='sheet-view' className='sheet-view' tabIndex={0} onKeyDown={onKeyDown}>
+        <div id='sheet-view' ref={e => l.sheet = e} className='sheet-view' tabIndex={0} onKeyDown={onKeyDown}>
             <div id='gh' ref={gh_ref} className='sheet-headers' style={{ gridArea: '1/2', grid: headerGrid, maxWidth: maxWidthHeaders }}>
                 {renderHeaders()}
             </div>
