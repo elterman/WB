@@ -1,9 +1,9 @@
 import { useAtom, useAtomValue } from 'jotai';
 import _ from 'lodash';
-import { Fragment, useCallback, useEffect, useRef, useState } from 'react';
+import { Fragment, useCallback, useEffect, useRef } from 'react';
 import { a_lite, a_palette, a_selected_cell } from './atoms';
 import Collapsible, { LEVEL_INDENT } from './Collapsible';
-import { APP_BACKGROUND, PALETTES, GOLD, WHITE, PINK, OFF_BACKGROUND, OFF_WHITE } from './const';
+import { APP_BACKGROUND, PALETTES, GOLD, PINK, OFF_BACKGROUND, OFF_WHITE } from './const';
 import { useForceUpdate } from './hooks';
 import { useTooltip } from './Tooltip';
 import { cellBox, cellId, getBox, hasScrollbar, splitKey, nodeVisible, split, syncScroll, windowSize } from './utils';
@@ -15,7 +15,7 @@ const BOTTOM_LEFT = 'bottom-left';
 const BOTTOM_RIGHT = 'bottom-right';
 
 const SheetView = (props) => {
-    const { atom, columnHeaders, sectionHeaders, editCell, onEdit, cellEditable, getCellStyle } = props;
+    const { atom, columnHeaders, sectionHeaders, editCell, onEdit, cellEditable, getEditValue, getCellStyle } = props;
     const [{ nodes, metaAtom }] = useAtom(atom);
     const [meta, setMeta] = useAtom(metaAtom);
     const lite = useAtomValue(a_lite);
@@ -130,13 +130,13 @@ const SheetView = (props) => {
             return;
         }
 
-        const key = selectedCell.key;
+        const { key } = selectedCell;
 
         if (!nodeVisible(key, meta)) {
             onNavigate({ key: 'ArrowUp' });
             onEdit(null);
         }
-    }, [meta, onEdit, onNavigate, selectedCell.key]);
+    }, [meta, onEdit, onNavigate, selectedCell]);
 
     if (_.isEmpty(meta)) {
         return null;
@@ -163,15 +163,16 @@ const SheetView = (props) => {
     const onEditCell = () => {
         onEdit && onEdit(selectedCell);
 
+        const value = getEditValue(selectedCell);
+
         _.delay(() => {
-            l.inputBox.value = '123.4';
+            l.inputBox.value = value;
             l.inputBox.focus();
             l.inputBox.select();
         });
-
     };
 
-    const onKeyDown = e => {
+    const onKeyDown = (e) => {
         if (e.key === 'F2' || e.code === 'Space') {
             onEditCell();
             return;
@@ -303,7 +304,8 @@ const SheetView = (props) => {
             const border = `2px solid ${selectedBorderColor}`;
             const pointerEvents = editCell ? 'none' : 'auto';
 
-            return <div style={{ gridArea, width: `${cx - 1}px`, marginLeft: '1px', border, pointerEvents }} onClick={onEditCell} />;
+            return <div style={{ gridArea, width: `${cx - 1}px`, marginLeft: '1px', border, pointerEvents }}
+                onClick={onEditCell} />;
         };
 
         const justifyContent = col ? 'end' : 'start';

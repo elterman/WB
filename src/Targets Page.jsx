@@ -46,7 +46,7 @@ const TargetsPage = () => {
             return;
         }
 
-        return !meta[cell.key].hasChildren;
+        return !meta[cell.key].node.children;
     };
 
     const onEdit = (cell) => {
@@ -57,9 +57,13 @@ const TargetsPage = () => {
         };
     };
 
-    return <SheetView atom={atom} columnHeaders={columnHeaders}
-        sectionHeaders={['Current Targets (%)', 'Trades (%)', 'Final Weights (%)']}
-        editCell={editCell} onEdit={onEdit} cellEditable={cellEditable} getCellStyle={getCellStyle} />;
+    const getEditValue = cell => {
+        const value = meta[cell.key].node.item[cell.col];
+        return value;
+    };
+
+    return <SheetView atom={atom} columnHeaders={columnHeaders} sectionHeaders={['Current Targets (%)', 'Trades (%)', 'Final Weights (%)']}
+        editCell={editCell} onEdit={onEdit} cellEditable={cellEditable} getEditValue={getEditValue} getCellStyle={getCellStyle} />;
 };
 
 export default TargetsPage;

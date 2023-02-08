@@ -134,45 +134,28 @@ const getSheetData = ({ atom, get }) => {
 
 const setSheetData = ({ atom, set, nodes }) => {
     const { natom, matom } = sheetAtoms(atom);
-
     const meta = {};
-    const flattened = [];
 
-    const makeMeta = () => {
-        const processNodes = (nodes, parentKey) => {
-            if (!parentKey) {
-                parentKey = [];
-            }
+    const processNodes = (nodes, parentKey) => {
+        if (!parentKey) {
+            parentKey = [];
+        }
 
-            _.each(nodes, (node, i) => {
-                node.key = [...parentKey, i + 1];
-
-                flattened.push(node);
-
-                meta[node.key] = { collapsed: false, hasChildren: _.get(node, 'children') };
-                processNodes(node.children, node.key);
-            });
-        };
-
-        processNodes(nodes);
-
-        ///
-        // const { fname } = get(a_targets_input);
-        // const families = get(a_families);
-        // const members = families[fname].members;
-
-        _.each(flattened, (node, i) => {
-            // _.each(_.range(0, members.length * 3), j => {
-            // const integer = _.random(100);
-            // const fraction = integer === 100 ? 0 : _.random(9);
-            // const value = `${integer}.${fraction}`;
-            // node.item.push(value);
-            node.item = [node.item[0], ...MOCK_NUMBERS[i]];
+        _.each(nodes, (node, i) => {
+            node.key = [...parentKey, i + 1];
+            meta[node.key] = { collapsed: false, node };
+            processNodes(node.children, node.key);
         });
-        ///
     };
 
-    makeMeta(nodes);  // keys assigned to data nodes
+    processNodes(nodes);
+
+    // MOCK ///////////////////////////////////////////////////
+    _.each(_.keys(meta), (key, i) => {
+        const mob = meta[key];
+        mob.node.item = [mob.node.item[0], ...MOCK_NUMBERS[i]];
+    });
+    ///////////////////////////////////////////////////////////
 
     set(natom, nodes);
     set(matom, meta);
