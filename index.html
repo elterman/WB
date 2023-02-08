@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <script src="config.js"></script>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/workbench.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Workbench</title>
+    <style>
+      .splash {
+        position: absolute;
+        left: 0;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        height: 100vh;
+        display: grid;
+        place-content: center;
+        font-family: Stencil;
+        font-size: 86px;
+        background: #2f2929;
+        color: #ffe4ad;
+        overflow: hidden;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="root" class="splash">
+      <span style="opacity: 0.35">WORKBENCH</span>
+    </div>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
+</html>

@@ -1,0 +1,20 @@
+{
+  "window.title": "${dirty}${rootName} • ${activeEditorShort}",
+  "workbench.colorCustomizations": {
+    "titleBar.activeBackground": "#2f2929",
+    "tab.inactiveBackground": "#2f2929",
+  },
+  "terminal.integrated.cursorBlinking": true,
+  "vscode_custom_css.imports": [
+    "file:///C:/git/Cloud-Drive/vs-code-custom.css"
+  ],
+  "vscode_custom_css.policy": true,
+  "editor.guides.bracketPairs": true,
+  "editor.guides.bracketPairsHorizontal": true,
+  "markdown.validate.enabled": true,
+  "files.exclude": {
+    "**/build": true,
+    "**/dist": true,
+    "**/node_modules": true
+  }
+}
