@@ -137,9 +137,8 @@ const SheetView = (props) => {
     useEffect(() => {
         if (!_.isEmpty(meta) && !nodeVisible(selectedCell.key, meta)) {
             onNavigate({ key: 'ArrowUp' });
-            onEdit(null);
         }
-    }, [meta, onEdit, onNavigate, selectedCell]);
+    }, [meta, onNavigate, selectedCell.key]);
 
     if (_.isEmpty(meta)) {
         return null;
@@ -175,10 +174,10 @@ const SheetView = (props) => {
         });
     };
 
-    const acceptChange = () => {
+    const acceptChange = (clear) => {
         l.inputBox?.blur();
 
-        let value = l.inputBox.value;
+        const value = clear ? 0 : l.inputBox.value;
 
         if (onAcceptChange) {
             onAcceptChange(selectedCell, value);
@@ -190,16 +189,17 @@ const SheetView = (props) => {
         onEdit(null);
     };
 
+    const rejectChange = () => {
+        onEdit(null);
+        _.delay(() => l.inputBox?.blur());
+    };
+
     const onKeyDown = (e) => {
         if (editCell) {
             if (e.key === 'Enter') {
                 acceptChange();
-                return;
-            }
-
-            if (e.key === 'Escape') {
-                l.inputBox?.blur();
-                return;
+            } else if (e.key === 'Escape') {
+                rejectChange();
             }
 
             return;
@@ -212,6 +212,13 @@ const SheetView = (props) => {
 
         if (e.key === 'ArrowLeft' || e.key === 'ArrowRight' || e.key === 'ArrowUp' || e.key === 'ArrowDown') {
             !editCell && onNavigate(e);
+            return;
+        }
+
+        if (e.key === 'Delete') {
+            acceptChange(true);
+            forceUpdate();
+
             return;
         }
 
