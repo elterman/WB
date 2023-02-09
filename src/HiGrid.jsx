@@ -14,7 +14,7 @@ const TOP_RIGHT = 'top-right';
 const BOTTOM_LEFT = 'bottom-left';
 const BOTTOM_RIGHT = 'bottom-right';
 
-const SheetView = (props) => {
+const HiGrid = (props) => {
     const { atom, columnHeaders, sectionHeaders, canEdit, isCellEditable, getCellStyle, onAcceptChange } = props;
     const [{ nodes, metaAtom }] = useAtom(atom);
     const [meta, setMeta] = useAtom(metaAtom);
@@ -44,8 +44,8 @@ const SheetView = (props) => {
 
     useEffect(() => {
         forceUpdate();
-        l.sheet?.focus();
-    }, [forceUpdate, l.sheet]);
+        l.this?.focus();
+    }, [forceUpdate, l.this]);
 
     const scrollIntoView = useCallback(cell => {
         const cbox = cellBox(cell);
@@ -269,7 +269,7 @@ const SheetView = (props) => {
         const renderHeaderCell = ({ sectionIndex, name, col }) => {
             const gridCol = sectionIndex * columnHeaders.length + col + 1;
 
-            return <div key={sectionIndex * 100 + col} className='sheet-cell sheet-header-cell'
+            return <div key={sectionIndex * 100 + col} className='higrid-cell higrid-header-cell'
                 style={{ gridArea: `2/${gridCol}`, width: `${CELL_SIZE}px` }}>
                 <div className='ellipsis'
                     onMouseEnter={(e) => tooltip.show({ e, text: name, dx: -5, dy: 25 })}
@@ -284,7 +284,7 @@ const SheetView = (props) => {
                 const span = columnHeaders.length;
 
                 return <Fragment key={i}>
-                    <div key={i} className='sheet-cell sheet-header-cell' style={{ gridArea: `1/${col}/auto/span ${span}` }}>
+                    <div key={i} className='higrid-cell higrid-header-cell' style={{ gridArea: `1/${col}/auto/span ${span}` }}>
                         {name}
                     </div>
                     {_.map(columnHeaders, (name, col) => renderHeaderCell({ sectionIndex: i, name, col }))}
@@ -309,7 +309,7 @@ const SheetView = (props) => {
         const renderInput = () => {
             const onBlur = () => {
                 editing && acceptChange();
-                l.sheet.focus();
+                l.this.focus();
             };
 
             const background = lite ? '#ECEBEB' : APP_BACKGROUND;
@@ -347,7 +347,7 @@ const SheetView = (props) => {
         value = formatNumeric(value);
 
         return <Fragment key={col}>
-            <div id={id} className='sheet-cell' style={style} onClick={onClick}>
+            <div id={id} className='higrid-cell' style={style} onClick={onClick}>
                 <div className='ellipsis'>{value}</div>
             </div>
             {editing && _.isEqual(cell, selectedCell) && renderInput()}
@@ -378,13 +378,13 @@ const SheetView = (props) => {
                 break;
         }
 
-        return <div className='sheet-row'>
+        return <div className='higrid-row'>
             {_.map(values, (value, col) => col >= min && col <= max && renderCell(node, col, value))}
         </div>;
     };
 
     const { x: wx } = windowSize();
-    const classes = `${lite ? 'sheet-view-lite' : ''}`;
+    const classes = `${lite ? 'higrid-view-lite' : ''}`;
     const color = lite ? APP_BACKGROUND : null;
     const overflow = `${br && !hasScrollbar(BOTTOM_RIGHT, true) ? 'auto' : 'hidden'}`;
     const headerGrid = `auto auto / repeat(${ncols - 1}, ${CELL_SIZE})`;
@@ -396,8 +396,8 @@ const SheetView = (props) => {
     const maxWidthHeaders = trw ? `${trw - 1}px` : `${tr?.clientWidth - 1}px`;
 
     return (
-        <div id='sheet-view' ref={e => l.sheet = e} className='sheet-view' tabIndex={0} onKeyDown={onKeyDown}>
-            <div id='gh' ref={gh_ref} className='sheet-headers' style={{ gridArea: '1/2', grid: headerGrid, maxWidth: maxWidthHeaders }}>
+        <div id='higrid-view' ref={e => l.this = e} className='higrid-view' tabIndex={0} onKeyDown={onKeyDown}>
+            <div id='gh' ref={gh_ref} className='higrid-headers' style={{ gridArea: '1/2', grid: headerGrid, maxWidth: maxWidthHeaders }}>
                 {renderHeaders()}
             </div>
             <div id={TOP_LEFT} className={classes} style={{ gridArea: '2/1' }}>
@@ -428,4 +428,4 @@ const SheetView = (props) => {
 
 };
 
-export default SheetView;
+export default HiGrid;

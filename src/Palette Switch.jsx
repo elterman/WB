@@ -22,7 +22,7 @@ const PaletteSwitch = () => {
 
         setPaletteKey(keys[i]);
 
-        const obs = document.getElementsByClassName('sheet-view');
+        const obs = document.getElementsByClassName('higrid-view');
         _.get(obs, 0)?.focus();
     };
 

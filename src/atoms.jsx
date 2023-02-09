@@ -104,7 +104,7 @@ export const a_targets_meta = _fatom(null);
 export const a_compare_meta = _fatom(null);
 export const a_benchmarks_meta = _fatom(null);
 
-const sheetAtoms = atom => {
+const gridAtoms = atom => {
     let natom, matom;
 
     switch (atom) {
@@ -126,14 +126,14 @@ const sheetAtoms = atom => {
     return { natom, matom };
 };
 
-const getSheetData = ({ atom, get }) => {
-    const { natom, matom } = sheetAtoms(atom);
+const getGridData = ({ atom, get }) => {
+    const { natom, matom } = gridAtoms(atom);
 
     return { nodes: get(natom), meta: get(matom), metaAtom: matom };
 };
 
-const setSheetData = ({ atom, set, nodes }) => {
-    const { natom, matom } = sheetAtoms(atom);
+const setGridData = ({ atom, set, nodes }) => {
+    const { natom, matom } = gridAtoms(atom);
     const meta = {};
 
     const processNodes = (nodes, parentKey) => {
@@ -162,18 +162,18 @@ const setSheetData = ({ atom, set, nodes }) => {
 };
 
 export const a_targets = atom(
-    get => getSheetData({ atom: a_targets, get }),
-    (get, set, nodes) => setSheetData({ atom: a_targets, set, nodes })
+    get => getGridData({ atom: a_targets, get }),
+    (get, set, nodes) => setGridData({ atom: a_targets, set, nodes })
 );
 
 export const a_compare = atom(
-    get => getSheetData({ atom: a_compare, get }),
-    (get, set, nodes) => setSheetData({ atom: a_compare, set, nodes })
+    get => getGridData({ atom: a_compare, get }),
+    (get, set, nodes) => setGridData({ atom: a_compare, set, nodes })
 );
 
 export const a_benchmarks = atom(
-    get => getSheetData({ atom: a_benchmarks, get }),
-    (get, set, nodes) => setSheetData({ atom: a_benchmarks, set, nodes })
+    get => getGridData({ atom: a_benchmarks, get }),
+    (get, set, nodes) => setGridData({ atom: a_benchmarks, set, nodes })
 );
 
 export const a_has_targets = atom(get => !_.isEmpty(get(a_targets_nodes)));

@@ -602,7 +602,7 @@ input::-webkit-inner-spin-button {
   filter: none;
 }
 
-.sheet-view {
+.higrid-view {
   justify-self: start;
   display: grid;
   grid: auto auto auto 1fr / auto 1fr;
@@ -610,7 +610,7 @@ input::-webkit-inner-spin-button {
   outline: none;
 }
 
-.sheet-view-lite {
+.higrid-view-lite {
   color: var(--background-color);
 }
 
@@ -618,20 +618,20 @@ input::-webkit-inner-spin-button {
   filter: invert();
 }
 
-.sheet-row {
+.higrid-row {
   display: grid;
   grid-auto-flow: column;
   align-self: stretch;
 }
 
-.sheet-cell {
+.higrid-cell {
   padding: 0 8px;
   display: grid;
   place-content: center;
   border: 0 solid var(--cell-border-color);
 }
 
-.sheet-header-cell {
+.higrid-header-cell {
   min-height: 30px;
   padding: 0px 5px;
   border: 0 solid dimgray;
@@ -656,7 +656,7 @@ input::-webkit-inner-spin-button {
   height: 100%;
 }
 
-.sheet-headers {
+.higrid-headers {
   display: grid;
   overflow: hidden;
   margin: 0 0 0 1px;

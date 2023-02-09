@@ -1,6 +1,6 @@
 import { useAtomValue } from 'jotai';
 import { a_lite, a_selected_family, a_targets } from './atoms';
-import SheetView from './Sheet View';
+import HiGrid from './HiGrid';
 import { useComingSoon } from './hooks';
 import _ from 'lodash';
 import { PINK } from './const';
@@ -83,7 +83,7 @@ const TargetsPage = () => {
         updateTotal(pkey, fwcol);
     };
 
-    return <SheetView atom={atom} columnHeaders={columnHeaders} sectionHeaders={['Current Targets (%)', 'Trades (%)', 'Final Weights (%)']}
+    return <HiGrid atom={atom} columnHeaders={columnHeaders} sectionHeaders={['Current Targets (%)', 'Trades (%)', 'Final Weights (%)']}
         canEdit isCellEditable={isCellEditable} getCellStyle={getCellStyle} onAcceptChange={onAcceptChange} />;
 };
 
