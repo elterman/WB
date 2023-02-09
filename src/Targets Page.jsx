@@ -4,6 +4,7 @@ import SheetView from './Sheet View';
 import { useComingSoon } from './hooks';
 import _ from 'lodash';
 import { DARK_EDIT, LITE_EDIT } from './const';
+import { parentKey } from './utils';
 
 const TargetsPage = () => {
     const renderComingSoon = useComingSoon();
@@ -48,10 +49,34 @@ const TargetsPage = () => {
     };
 
     const onAcceptChange = (cell, value) => {
-        if (value !== '') {
-            const node = meta[cell.key].node;
-            node.item[cell.col] = +value;
+        if (value === '') {
+            return;
         }
+
+        let node = meta[cell.key].node;
+        node.item[cell.col] = +value;
+
+        const target = node.item[cell.col - columnHeaders.length];
+        node.item[cell.col + columnHeaders.length] = +value - target;
+
+        const updateTotal = (key) => {
+            if (_.isEmpty(key)) {
+                return;
+            }
+
+            node = meta[key].node;
+            let total = 0;
+
+            _.each(node.children, n => {
+                total += n.item[cell.col];
+            });
+
+            node.item[cell.col] = total;
+
+            updateTotal(parentKey(key));
+        };
+
+        updateTotal(parentKey(cell.key));
     };
 
     return <SheetView atom={atom} columnHeaders={columnHeaders} sectionHeaders={['Current Targets (%)', 'Trades (%)', 'Final Weights (%)']}
