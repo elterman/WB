@@ -15,7 +15,7 @@ const BOTTOM_LEFT = 'bottom-left';
 const BOTTOM_RIGHT = 'bottom-right';
 
 const HiGrid = (props) => {
-    const { atom, columnHeaders, sectionHeaders, canEdit, isCellEditable, getCellStyle, onAcceptChange } = props;
+    const { atom, columnHeaders, sectionHeaders, readOnly, isCellEditable, getCellStyle, onAcceptChange } = props;
     const [{ nodes, metaAtom }] = useAtom(atom);
     const [meta, setMeta] = useAtom(metaAtom);
     const lite = useAtomValue(a_lite);
@@ -155,7 +155,7 @@ const HiGrid = (props) => {
     };
 
     const onEdit = () => {
-        if (!canEdit || editing) {
+        if (readOnly || editing) {
             return;
         }
 
@@ -173,7 +173,8 @@ const HiGrid = (props) => {
     };
 
     const acceptChange = (clear) => {
-        l.inputBox?.blur();
+        console.log(editing);
+        endEdit();
 
         const value = clear ? 0 : l.inputBox.value;
 
@@ -183,13 +184,11 @@ const HiGrid = (props) => {
             const node = meta[selectedCell.key].node;
             node.item[selectedCell.col] = +value;
         }
-
-        setEditing(false);
     };
 
-    const rejectChange = () => {
+    const endEdit = () => {
         setEditing(false);
-        _.delay(() => l.inputBox?.blur());
+        _.delay(() => l.this.focus());
     };
 
     const onKeyDown = (e) => {
@@ -197,7 +196,7 @@ const HiGrid = (props) => {
             if (e.key === 'Enter') {
                 acceptChange();
             } else if (e.key === 'Escape') {
-                rejectChange();
+                endEdit();
             }
 
             return;
@@ -307,10 +306,7 @@ const HiGrid = (props) => {
         };
 
         const renderInput = () => {
-            const onBlur = () => {
-                editing && acceptChange();
-                l.this.focus();
-            };
+            const onBlur = () => editing && acceptChange();
 
             const background = lite ? '#ECEBEB' : APP_BACKGROUND;
             const color = lite ? APP_BACKGROUND : OFF_WHITE;
