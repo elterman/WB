@@ -3,7 +3,6 @@ import { a_lite, a_selected_family, a_targets } from './atoms';
 import SheetView from './Sheet View';
 import { useComingSoon } from './hooks';
 import _ from 'lodash';
-import { useState } from 'react';
 import { DARK_EDIT, LITE_EDIT } from './const';
 
 const TargetsPage = () => {
@@ -12,7 +11,6 @@ const TargetsPage = () => {
     const atom = a_targets;
     const { meta } = useAtomValue(atom);
     const lite = useAtomValue(a_lite);
-    const [editCell, setEditCell] = useState(null);
 
     if (fob.fname && fob.fname !== 'BFAF') {
         return renderComingSoon();
@@ -49,21 +47,15 @@ const TargetsPage = () => {
         return !meta[cell.key].node.children;
     };
 
-    const onEdit = (cell) => {
-        if (!cell) {
-            setEditCell(null);
-        } else if (cellEditable(cell)) {
-            setEditCell(cell);
-        };
-    };
-
-    const getEditValue = cell => {
-        const value = meta[cell.key].node.item[cell.col];
-        return value;
+    const onAcceptChange = (cell, value) => {
+        if (value !== '') {
+            const node = meta[cell.key].node;
+            node.item[cell.col] = +value;
+        }
     };
 
     return <SheetView atom={atom} columnHeaders={columnHeaders} sectionHeaders={['Current Targets (%)', 'Trades (%)', 'Final Weights (%)']}
-        editCell={editCell} onEdit={onEdit} cellEditable={cellEditable} getEditValue={getEditValue} getCellStyle={getCellStyle} />;
+        canEdit cellEditable={cellEditable} getCellStyle={getCellStyle} onAcceptChange={onAcceptChange} />;
 };
 
 export default TargetsPage;

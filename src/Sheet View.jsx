@@ -1,6 +1,6 @@
 import { useAtom, useAtomValue } from 'jotai';
 import _ from 'lodash';
-import { Fragment, useCallback, useEffect, useRef } from 'react';
+import { Fragment, useCallback, useEffect, useRef, useState } from 'react';
 import { a_lite, a_palette, a_selected_cell } from './atoms';
 import Collapsible, { LEVEL_INDENT } from './Collapsible';
 import { APP_BACKGROUND, PALETTES, GOLD, PINK, OFF_BACKGROUND, OFF_WHITE } from './const';
@@ -15,11 +15,12 @@ const BOTTOM_LEFT = 'bottom-left';
 const BOTTOM_RIGHT = 'bottom-right';
 
 const SheetView = (props) => {
-    const { atom, columnHeaders, sectionHeaders, editCell, onEdit, cellEditable, getEditValue, getCellStyle } = props;
+    const { atom, columnHeaders, sectionHeaders, canEdit, cellEditable, getCellStyle, onAcceptChange } = props;
     const [{ nodes, metaAtom }] = useAtom(atom);
     const [meta, setMeta] = useAtom(metaAtom);
     const lite = useAtomValue(a_lite);
     const [selectedCell, setSelectedCell] = useAtom(a_selected_cell);
+    const [editCell, setEditCell] = useState(null);
     const forceUpdate = useForceUpdate(true);
     const tooltip = useTooltip();
     const paletteKey = useAtomValue(a_palette);
@@ -125,14 +126,16 @@ const SheetView = (props) => {
         }
     }, [l, meta, ncols, scrollIntoView, selectedCell, setSelectedCell]);
 
+    const onEdit = useCallback((cell) => {
+        if (!cell) {
+            setEditCell(null);
+        } else if (cellEditable && cellEditable(cell)) {
+            setEditCell(cell);
+        };
+    }, [cellEditable]);
+
     useEffect(() => {
-        if (_.isEmpty(meta)) {
-            return;
-        }
-
-        const { key } = selectedCell;
-
-        if (!nodeVisible(key, meta)) {
+        if (!_.isEmpty(meta) && !nodeVisible(selectedCell.key, meta)) {
             onNavigate({ key: 'ArrowUp' });
             onEdit(null);
         }
@@ -163,7 +166,7 @@ const SheetView = (props) => {
     const onEditCell = () => {
         onEdit && onEdit(selectedCell);
 
-        const value = getEditValue(selectedCell);
+        const value = meta[selectedCell.key].node.item[selectedCell.col];
 
         _.delay(() => {
             l.inputBox.value = value;
@@ -172,19 +175,38 @@ const SheetView = (props) => {
         });
     };
 
+    const acceptChange = () => {
+        l.inputBox?.blur();
+
+        let value = l.inputBox.value;
+
+        if (onAcceptChange) {
+            onAcceptChange(selectedCell, value);
+        } else if (value !== '') {
+            const node = meta[selectedCell.key].node;
+            node.item[selectedCell.col] = +value;
+        }
+
+        onEdit(null);
+    };
+
     const onKeyDown = (e) => {
+        if (editCell) {
+            if (e.key === 'Enter') {
+                acceptChange();
+                return;
+            }
+
+            if (e.key === 'Escape') {
+                l.inputBox?.blur();
+                return;
+            }
+
+            return;
+        }
+
         if (e.key === 'F2' || e.code === 'Space') {
-            onEditCell();
-            return;
-        }
-
-        if (e.key === 'Enter') {
-            l.inputBox?.blur();
-            return;
-        }
-
-        if (e.key === 'Escape') {
-            l.inputBox?.blur();
+            !editCell && onEditCell();
             return;
         }
 
@@ -194,6 +216,10 @@ const SheetView = (props) => {
         }
 
         if ('0123456789'.includes(e.key)) {
+            if (editCell) {
+                return;
+            }
+
             const level = +e.key;
 
             _.each(_.keys(meta), key => {
@@ -270,26 +296,21 @@ const SheetView = (props) => {
         const cx = col ? CELL_SIZE : (300 - indent);
 
         const onClick = () => {
+            editCell && acceptChange();
             cell.col > 0 && scrollIntoView(cell);
             setSelectedCell(cell);
-            onEdit(null);
         };
 
         const renderInput = () => {
             const onBlur = () => {
-                if (editCell) {
-                    onEdit(null);
-                } else {
-                    //
-                }
-
+                editCell && acceptChange();
                 l.sheet.focus();
             };
 
             const background = lite ? '#ECEBEB' : APP_BACKGROUND;
             const color = lite ? APP_BACKGROUND : OFF_WHITE;
 
-            return <input className='cell-input' ref={e => (l.inputBox = e)} onBlur={onBlur}
+            return <input className='cell-input' ref={e => (l.inputBox = e)} type="number" onBlur={onBlur}
                 style={{ gridArea, width: `${cx - 1}px`, background, color }} />;
         };
 
