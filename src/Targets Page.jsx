@@ -38,7 +38,7 @@ const TargetsPage = () => {
         return { background };
     };
 
-    const cellEditable = cell => {
+    const isCellEditable = cell => {
         const col = cell.col;
         const section = getSection(col);
 
@@ -84,7 +84,7 @@ const TargetsPage = () => {
     };
 
     return <SheetView atom={atom} columnHeaders={columnHeaders} sectionHeaders={['Current Targets (%)', 'Trades (%)', 'Final Weights (%)']}
-        canEdit cellEditable={cellEditable} getCellStyle={getCellStyle} onAcceptChange={onAcceptChange} />;
+        canEdit isCellEditable={isCellEditable} getCellStyle={getCellStyle} onAcceptChange={onAcceptChange} />;
 };
 
 export default TargetsPage;

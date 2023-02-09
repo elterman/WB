@@ -15,12 +15,12 @@ const BOTTOM_LEFT = 'bottom-left';
 const BOTTOM_RIGHT = 'bottom-right';
 
 const SheetView = (props) => {
-    const { atom, columnHeaders, sectionHeaders, canEdit, cellEditable, getCellStyle, onAcceptChange } = props;
+    const { atom, columnHeaders, sectionHeaders, canEdit, isCellEditable, getCellStyle, onAcceptChange } = props;
     const [{ nodes, metaAtom }] = useAtom(atom);
     const [meta, setMeta] = useAtom(metaAtom);
     const lite = useAtomValue(a_lite);
     const [selectedCell, setSelectedCell] = useAtom(a_selected_cell);
-    const [editCell, setEditCell] = useState(null);
+    const [editing, setEditing] = useState(null);
     const forceUpdate = useForceUpdate(true);
     const tooltip = useTooltip();
     const paletteKey = useAtomValue(a_palette);
@@ -126,14 +126,6 @@ const SheetView = (props) => {
         }
     }, [l, meta, ncols, scrollIntoView, selectedCell, setSelectedCell]);
 
-    const onEdit = useCallback((cell) => {
-        if (!cell) {
-            setEditCell(null);
-        } else if (cellEditable && cellEditable(cell)) {
-            setEditCell(cell);
-        };
-    }, [cellEditable]);
-
     useEffect(() => {
         if (!_.isEmpty(meta) && !nodeVisible(selectedCell.key, meta)) {
             onNavigate({ key: 'ArrowUp' });
@@ -162,16 +154,22 @@ const SheetView = (props) => {
         }
     };
 
-    const onEditCell = () => {
-        onEdit && onEdit(selectedCell);
+    const onEdit = () => {
+        if (!canEdit || editing) {
+            return;
+        }
 
-        const value = meta[selectedCell.key].node.item[selectedCell.col];
+        if (!isCellEditable || isCellEditable(selectedCell)) {
+            setEditing(true);
 
-        _.delay(() => {
-            l.inputBox.value = value;
-            l.inputBox.focus();
-            l.inputBox.select();
-        });
+            const value = meta[selectedCell.key].node.item[selectedCell.col];
+
+            _.delay(() => {
+                l.inputBox.value = value;
+                l.inputBox.focus();
+                l.inputBox.select();
+            });
+        };
     };
 
     const acceptChange = (clear) => {
@@ -186,16 +184,16 @@ const SheetView = (props) => {
             node.item[selectedCell.col] = +value;
         }
 
-        onEdit(null);
+        setEditing(false);
     };
 
     const rejectChange = () => {
-        onEdit(null);
+        setEditing(false);
         _.delay(() => l.inputBox?.blur());
     };
 
     const onKeyDown = (e) => {
-        if (editCell) {
+        if (editing) {
             if (e.key === 'Enter') {
                 acceptChange();
             } else if (e.key === 'Escape') {
@@ -206,12 +204,12 @@ const SheetView = (props) => {
         }
 
         if (e.key === 'F2' || e.code === 'Space') {
-            !editCell && onEditCell();
+            onEdit();
             return;
         }
 
         if (e.key === 'ArrowLeft' || e.key === 'ArrowRight' || e.key === 'ArrowUp' || e.key === 'ArrowDown') {
-            !editCell && onNavigate(e);
+            !editing && onNavigate(e);
             return;
         }
 
@@ -223,7 +221,7 @@ const SheetView = (props) => {
         }
 
         if ('0123456789'.includes(e.key)) {
-            if (editCell) {
+            if (editing) {
                 return;
             }
 
@@ -297,20 +295,20 @@ const SheetView = (props) => {
 
     const renderCell = (node, col, value) => {
         const cell = { key: node.key, col };
-        const editable = cellEditable && cellEditable(cell);
+        const editable = isCellEditable && isCellEditable(cell);
         const gridArea = `1/${col + 1}`;
         const indent = node.key.length * LEVEL_INDENT;
         const cx = col ? CELL_SIZE : (300 - indent);
 
         const onClick = () => {
-            editCell && acceptChange();
+            editing && acceptChange();
             cell.col > 0 && scrollIntoView(cell);
             setSelectedCell(cell);
         };
 
         const renderInput = () => {
             const onBlur = () => {
-                editCell && acceptChange();
+                editing && acceptChange();
                 l.sheet.focus();
             };
 
@@ -330,10 +328,10 @@ const SheetView = (props) => {
 
             const selectedBorderColor = lite ? (editable ? 'darkmagenta' : 'darkgreen') : (editable ? LAVENDER : GOLD);
             const border = `2px solid ${selectedBorderColor}`;
-            const pointerEvents = editCell ? 'none' : 'auto';
+            const pointerEvents = editing ? 'none' : 'auto';
 
             return <div style={{ gridArea, width: `${cx - 1}px`, marginLeft: '1px', border, pointerEvents }}
-                onClick={onEditCell} />;
+                onClick={onEdit} />;
         };
 
         const justifyContent = col ? 'end' : 'start';
@@ -352,7 +350,7 @@ const SheetView = (props) => {
             <div id={id} className='sheet-cell' style={style} onClick={onClick}>
                 <div className='ellipsis'>{value}</div>
             </div>
-            {_.isEqual(cell, editCell) && renderInput()}
+            {editing && _.isEqual(cell, selectedCell) && renderInput()}
             {renderSelectedBorder()}
         </Fragment>;
 
