@@ -23,20 +23,20 @@ export const RED = '#F4425A';
 export const DARK_RED = '#AA2E3E';
 export const TANGERINE = '#FC9C6C';
 export const DARK_TANGERINE = '#E28C61';
-export const PINK = '#FFB0FF';
+export const LAVENDER = '#FFB0FF';
 export const DIMGRAY = '#676971';
 export const MAGENTA = '#AA1979';
 export const BUTTON_BACKGROUND = '#0009';
-export const LITE_EDIT = '#F88F9E';
+export const PINK = '#F88F9E';
 export const DARK_EDIT = '#863C3C';
 
 export const PALETTE = 'PALETTE';
 export const PALETTES = {
-    'traffic': { levels: ['#6C282B', '#6C5530', '#3A5A44', '#5A5757', '#544E68', '#625C50'] },
-    'eggplant': { levels: ['#89682C', '#544E68', '#4E6268', '#565151', '#706C6C', '#625C50'] },
-    'mono-gold': { levels: ['#000', '#FFE4AD28', '#FFE4AD10', '#FFE4AD40', '#FFE4AD70', '#FFE4AD58'] },
+    // 'eggplant': { levels: ['#544E68', '#6C5530', '#3A5A44', '#5A5757', '#4E6268', '#625C50'] },
+    'traffic': { levels: ['#6C282B', '#6C5530', '#3A5A44', '#5A5757', '#4E6268', '#625C50'] },
+    'mono-gold': { levels: ['#FFFFFF18', '#FFE4AD28', '#FFE4AD10', '#FFE4AD40', '#FFE4AD70', '#FFE4AD58'] },
     'mono-gray': { levels: ['#FFFFFF10', '#FFFFFF30', '#FFFFFF20', '#FFFFFF40', '#FFFFFF60', '#FFFFFF50'] },
-    'traffic-lite': { levels: ['#F7ACB9', '#FAF3BB', '#B7E1AB', '#FFFFFFB8', '#F5C8FB', '#E1DDD3'] },
+    'traffic-lite': { levels: ['#FFFFFFE0', '#FAF3BB', '#B7E1AB', '#FFFFFFB8', '#F5C8FB', '#E1DDD3'] },
     'mono-lite': { levels: ['#FFFFFF80', '#FFFFFFA0', '#FFFFFF90', '#FFFFFFB0', '#FFFFFFD0', '#FFFFFFC0'] },
 };
 

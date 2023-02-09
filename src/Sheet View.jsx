@@ -3,7 +3,7 @@ import _ from 'lodash';
 import { Fragment, useCallback, useEffect, useRef, useState } from 'react';
 import { a_lite, a_palette, a_selected_cell } from './atoms';
 import Collapsible, { LEVEL_INDENT } from './Collapsible';
-import { APP_BACKGROUND, PALETTES, GOLD, PINK, OFF_BACKGROUND, OFF_WHITE } from './const';
+import { APP_BACKGROUND, PALETTES, GOLD, LAVENDER, OFF_BACKGROUND, OFF_WHITE } from './const';
 import { useForceUpdate } from './hooks';
 import { useTooltip } from './Tooltip';
 import { cellBox, cellId, getBox, hasScrollbar, splitKey, nodeVisible, split, syncScroll, windowSize, formatNumeric } from './utils';
@@ -328,7 +328,7 @@ const SheetView = (props) => {
                 return null;
             }
 
-            const selectedBorderColor = lite ? (editable ? '#D21F22' : '#2A2AC7') : (editable ? PINK : GOLD);
+            const selectedBorderColor = lite ? (editable ? 'darkmagenta' : 'darkgreen') : (editable ? LAVENDER : GOLD);
             const border = `2px solid ${selectedBorderColor}`;
             const pointerEvents = editCell ? 'none' : 'auto';
 

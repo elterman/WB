@@ -3,7 +3,7 @@ import { a_lite, a_selected_family, a_targets } from './atoms';
 import SheetView from './Sheet View';
 import { useComingSoon } from './hooks';
 import _ from 'lodash';
-import { DARK_EDIT, LITE_EDIT } from './const';
+import { DARK_EDIT, PINK } from './const';
 import { parentKey } from './utils';
 
 const TargetsPage = () => {
@@ -18,20 +18,21 @@ const TargetsPage = () => {
     }
 
     const columnHeaders = fob.members;
+    const sectionSize = columnHeaders?.length;
 
-    const getSection = (col) => col ? _.floor((col - 1) / columnHeaders.length) + 1 : 0;
+    const getSection = (col) => col ? _.floor((col - 1) / sectionSize) + 1 : 0;
 
     const getCellStyle = (node, col) => {
         let background = 'none';
 
-        if (!node.children) {
-            const section = getSection(col);
-            const values = node.item;
-            const value = values[col];
+        const section = getSection(col);
+        const values = node.item;
+        const value = values[col];
 
-            if ((section === 2 && +value) || (section === 3 && +values[col - columnHeaders.length])) {
-                background = lite ? LITE_EDIT : DARK_EDIT;
-            }
+        if (section === 3 && node.key.length === 1 && value !== 100) {
+            background = lite ? PINK : 'brown';
+        } else if ((section === 2 && !node.children && +value) || (section === 3 && +values[col - sectionSize])) {
+            background = lite ? '#A2C0D9' : '#506C85';
         }
 
         return { background };
@@ -56,10 +57,11 @@ const TargetsPage = () => {
         let node = meta[cell.key].node;
         node.item[cell.col] = +value;
 
-        const target = node.item[cell.col - columnHeaders.length];
-        node.item[cell.col + columnHeaders.length] = +value - target;
+        // update final weight = trade - target
+        const fwcol = cell.col + sectionSize;
+        node.item[fwcol] = +value - node.item[cell.col - sectionSize];
 
-        const updateTotal = (key) => {
+        const updateTotal = (key, col) => {
             if (_.isEmpty(key)) {
                 return;
             }
@@ -68,15 +70,17 @@ const TargetsPage = () => {
             let total = 0;
 
             _.each(node.children, n => {
-                total += n.item[cell.col];
+                total += n.item[col];
             });
 
-            node.item[cell.col] = total;
+            node.item[col] = total;
 
-            updateTotal(parentKey(key));
+            updateTotal(parentKey(key), col);
         };
 
-        updateTotal(parentKey(cell.key));
+        let pkey = parentKey(cell.key);
+        updateTotal(pkey, cell.col);
+        updateTotal(pkey, fwcol);
     };
 
     return <SheetView atom={atom} columnHeaders={columnHeaders} sectionHeaders={['Current Targets (%)', 'Trades (%)', 'Final Weights (%)']}
