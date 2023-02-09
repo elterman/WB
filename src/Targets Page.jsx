@@ -3,7 +3,7 @@ import { a_lite, a_selected_family, a_targets } from './atoms';
 import SheetView from './Sheet View';
 import { useComingSoon } from './hooks';
 import _ from 'lodash';
-import { DARK_EDIT, PINK } from './const';
+import { PINK } from './const';
 import { parentKey } from './utils';
 
 const TargetsPage = () => {
