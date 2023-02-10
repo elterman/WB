@@ -15,6 +15,11 @@ body {
 }
 
 @font-face {
+  font-family: 'Roboto Bold';
+  src: url(./Fonts/Roboto-Bold.ttf);
+}
+
+@font-face {
   font-family: 'Roboto Mono';
   src: url(./Fonts/RobotoMono-Regular.ttf);
 }

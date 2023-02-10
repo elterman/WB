@@ -9,6 +9,7 @@ import { useForceUpdate } from './hooks';
 import { useTooltip } from './Tooltip';
 import { getBox, hasScrollbar, syncScroll, windowSize, formatNumeric } from './utils';
 
+const ROW_SIZE = 29;
 const CELL_SIZE = 70;
 const TOP_LEFT = 'top-left';
 const TOP_RIGHT = 'top-right';
@@ -56,7 +57,7 @@ const HiGrid = (props) => {
 
         if (sbox.height) {
             if (cbox.top < sbox.top) {
-                part.scrollBy(0, cbox.top - sbox.top, 0);
+                part.scrollBy(0, cbox.top - sbox.top);
             } else if (cbox.bottom > sbox.bottom - 12) {
                 part.scrollBy(0, cbox.bottom - sbox.bottom + 12);
             }
@@ -103,21 +104,32 @@ const HiGrid = (props) => {
             const keys = _.keys(meta);
             let key = selectedCell.key;
 
-            do {
-                key = `${key}`;
+            if (e.altKey) {
+                // move to sibling
+                const i = _.last(key) + (e.key === 'ArrowUp' ? -1 : 1);
+                key = [...parentKey(key), i];
 
-                if (key === (up ? _.first(keys) : _.last(keys))) {
-                    return;
+                if (_.get(meta, `${key}`)) {
+                    cell = { ...selectedCell, key };
+                    scrollIntoView(cell);
                 }
+            } else {
+                do {
+                    key = `${key}`;
 
-                let i = _.indexOf(keys, key);
-                key = keys[i + (up ? -1 : 1)];
-            } while (!nodeVisible(key, meta));
+                    if (key === (up ? _.first(keys) : _.last(keys))) {
+                        return;
+                    }
 
-            cell = { ...selectedCell, key: splitKey(key) };
+                    let i = _.indexOf(keys, key);
+                    key = keys[i + (up ? -1 : 1)];
+                } while (!nodeVisible(key, meta));
 
-            if (!_.isEqual(cell.key, [1])) {
-                scrollIntoView(cell);
+                cell = { ...selectedCell, key: splitKey(key) };
+
+                if (!_.isEqual(cell.key, [1])) {
+                    scrollIntoView(cell);
+                }
             }
         }
 
@@ -239,24 +251,20 @@ const HiGrid = (props) => {
                 return;
             }
 
+            if (e.altKey && (e.key === 'ArrowLeft' || e.key === 'ArrowRight')) {
+                // (un)fold node
+                meta[selectedCell.key].folded = e.key === 'ArrowLeft';
+                setMeta({ ...meta });
+                forceUpdate();
+
+                return;
+            }
+
             if (e.ctrlKey) {
-                if ((e.key === 'ArrowLeft' || e.key === 'ArrowRight')) {
-                    // (un)fold node
-                    meta[selectedCell.key].folded = e.key === 'ArrowLeft';
-                    setMeta({ ...meta });
-                    forceUpdate();
-                } else {
-                    // move to sibling
-                    const i = _.last(selectedCell.key) + (e.key === 'ArrowUp' ? -1 : 1);
-                    const key = [...parentKey(selectedCell.key), i];
-
-                    if (_.get(meta, `${key}`)) {
-                        const cell = { ...selectedCell, key };
-
-                        scrollIntoView(cell);
-                        setSelectedCell(cell);
-                    }
-                }
+                // scroll
+                const dx = e.key === 'ArrowLeft' ? -CELL_SIZE : e.key === 'ArrowRight' ? CELL_SIZE : 0;
+                const dy = e.key === 'ArrowUp' ? -ROW_SIZE : e.key === 'ArrowDown' ? ROW_SIZE : 0;
+                br.scrollBy(dx, dy);
 
                 return;
             }
@@ -465,13 +473,11 @@ const HiGrid = (props) => {
                 <div id={BOTTOM_RIGHT} ref={br_ref} className={`${classes} root-scroll`} onScroll={onScroll}
                     style={{ gridArea: '3/2', maxWidth: maxWidthBr }} >
                     <Foldable node={{ children: nodes[0].children }} atom={metaAtom} shades={shades} flat color={color}
-                        render={node => renderNode({ node, part: BOTTOM_RIGHT })}
-                    />
+                        render={node => renderNode({ node, part: BOTTOM_RIGHT })} />
                 </div>
             </div>
-        </div >
+        </div>
     );
-
 };
 
 export default HiGrid;
