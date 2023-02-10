@@ -2,8 +2,8 @@ import { useAtom, useAtomValue } from 'jotai';
 import _ from 'lodash';
 import { Fragment, useCallback, useEffect, useRef, useState } from 'react';
 import { a_lite, a_palette, a_selected_cell } from './atoms';
-import Collapsible, { LEVEL_INDENT } from './Collapsible';
-import { cellBox, cellId, nodeVisible, parentKey, split, splitKey } from './Collapsible Utils';
+import Foldable, { LEVEL_INDENT } from './Foldable';
+import { cellBox, cellId, nodeVisible, parentKey, split, splitKey } from './Foldable Utils';
 import { APP_BACKGROUND, PALETTES, GOLD, LAVENDER, OFF_BACKGROUND, OFF_WHITE } from './const';
 import { useForceUpdate } from './hooks';
 import { useTooltip } from './Tooltip';
@@ -242,12 +242,22 @@ const HiGrid = (props) => {
             if (e.ctrlKey) {
                 if ((e.key === 'ArrowLeft' || e.key === 'ArrowRight')) {
                     // (un)fold node
-                    meta[selectedCell.key].collapsed = e.key === 'ArrowLeft';
+                    meta[selectedCell.key].folded = e.key === 'ArrowLeft';
                     setMeta({ ...meta });
                     forceUpdate();
-                } else{
+                } else {
+                    // move to sibling
+                    const i = _.last(selectedCell.key) + (e.key === 'ArrowUp' ? -1 : 1);
+                    const key = [...parentKey(selectedCell.key), i];
 
+                    if (_.get(meta, `${key}`)) {
+                        const cell = { ...selectedCell, key };
+
+                        scrollIntoView(cell);
+                        setSelectedCell(cell);
+                    }
                 }
+
                 return;
             }
 
@@ -262,22 +272,22 @@ const HiGrid = (props) => {
 
             let level = +e.key;
 
-            if (level === 1 && meta['1'].collapsed) {
+            if (level === 1 && meta['1'].folded) {
                 level = 0;
             }
 
             _.each(_.keys(meta), key => {
                 const mob = meta[key];
-                mob.collapsed = level && split(key).length >= level;
+                mob.folded = level && split(key).length >= level;
             });
 
             setMeta({ ...meta });
 
-            const brCollapsed = !getBox(br).height;
+            const folded = !getBox(br).height;
             const pos = br.scrollLeft;
 
             _.delay(() => {
-                if (brCollapsed) {
+                if (folded) {
                     level !== 1 && syncScroll(BOTTOM_RIGHT, tr.scrollLeft);
                 } else {
                     level === 1 && syncScroll(TOP_RIGHT, pos);
@@ -288,12 +298,12 @@ const HiGrid = (props) => {
         };
     };
 
-    const onToggleCollapsed = (level, collapsed) => {
+    const onToggleFold = (level, folded) => {
         if (level === 1) {
             const pos = br.scrollLeft;
 
             _.delay(() => {
-                if (collapsed) {
+                if (folded) {
                     tr.scrollTo(pos, 0);
                 } else {
                     syncScroll(BOTTOM_RIGHT, tr.scrollLeft);
@@ -342,7 +352,7 @@ const HiGrid = (props) => {
         const renderInput = () => {
             const onBlur = () => editing && acceptChange();
 
-            const background = lite ? '#ECEBEB' : APP_BACKGROUND;
+            const background = lite ? '#F0EAD6' : APP_BACKGROUND;
             const color = lite ? APP_BACKGROUND : OFF_WHITE;
 
             return <input className='cell-input' ref={e => (l.inputBox = e)} type="number" onBlur={onBlur}
@@ -436,25 +446,25 @@ const HiGrid = (props) => {
                     {renderHeaders()}
                 </div>
                 <div id={TOP_LEFT} className={classes} style={{ gridArea: '2/1' }}>
-                    <Collapsible node={{ children: [nodes[0]], maxLevel: 1 }} atom={metaAtom} shades={shades} color={color}
-                        onToggleCollapsed={onToggleCollapsed} render={node => renderNode({ node, part: TOP_LEFT })}
+                    <Foldable node={{ children: [nodes[0]], maxLevel: 1 }} atom={metaAtom} shades={shades} color={color}
+                        onToggleFold={onToggleFold} render={node => renderNode({ node, part: TOP_LEFT })}
                     />
                 </div>
                 <div id={TOP_RIGHT} ref={tr_ref} className={`${classes} root-scroll`} onScroll={onScroll}
                     style={{ gridArea: '2/2', maxWidth: maxWidthTr, overflow }}>
-                    <Collapsible node={{ children: [nodes[0]], maxLevel: 1 }} atom={metaAtom} shades={shades} flat color={color}
+                    <Foldable node={{ children: [nodes[0]], maxLevel: 1 }} atom={metaAtom} shades={shades} flat color={color}
                         render={node => renderNode({ node, part: TOP_RIGHT })}
                     />
                 </div>
                 <div id={BOTTOM_LEFT} className={classes} ref={bl_ref} style={{ gridArea: '3/1', maxHeight: maxHeightBl }}
                     onWheel={e => br?.scrollBy(0, e.deltaY)}>
-                    <Collapsible node={{ children: nodes[0].children }} atom={metaAtom} shades={shades} onToggleCollapsed={onToggleCollapsed}
+                    <Foldable node={{ children: nodes[0].children }} atom={metaAtom} shades={shades} onToggleFold={onToggleFold}
                         color={color} render={node => renderNode({ node, part: BOTTOM_LEFT })}
                     />
                 </div>
                 <div id={BOTTOM_RIGHT} ref={br_ref} className={`${classes} root-scroll`} onScroll={onScroll}
                     style={{ gridArea: '3/2', maxWidth: maxWidthBr }} >
-                    <Collapsible node={{ children: nodes[0].children }} atom={metaAtom} shades={shades} flat color={color}
+                    <Foldable node={{ children: nodes[0].children }} atom={metaAtom} shades={shades} flat color={color}
                         render={node => renderNode({ node, part: BOTTOM_RIGHT })}
                     />
                 </div>

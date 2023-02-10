@@ -528,13 +528,13 @@ input::-webkit-inner-spin-button {
   text-overflow: ellipsis;
 }
 
-.collapsible {
+.foldable {
   display: grid;
   place-self: start;
   align-content: start;
 }
 
-.collapsible-item {
+.foldable-item {
   height: 28px;
   display: grid;
   grid: auto / auto 1fr;
@@ -542,22 +542,22 @@ input::-webkit-inner-spin-button {
   outline: none;
 }
 
-.collapsible-toggle {
+.foldable-toggle {
   grid-area: 1/1;
   padding: 6px;
   opacity: 0.6;
   transition: transform 250ms;
 }
 
-.collapsible-toggle-expanded {
+.foldable-toggle-expanded {
   transform: rotate(90deg);
 }
 
-.collapsible-toggle:hover {
+.foldable-toggle:hover {
   opacity: 1;
 }
 
-.collapsible-row {
+.foldable-row {
   border: 0px solid var(--cell-border-color);
   border-bottom-width: 1px;
 }

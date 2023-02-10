@@ -1,6 +1,6 @@
 import { GREEN, WHITE } from '../const';
 
-const SvgPortfolio = props => {
+const Icon = props => {
     let { width, color = GREEN, disabled = false, viewBox = '0 0 700 600', style, many = false } = props;
     color = disabled ? WHITE : color;
     const transform = many ? 'translate(-30,-15)' : null;
@@ -19,4 +19,4 @@ const SvgPortfolio = props => {
     );
 };
 
-export default SvgPortfolio;
+export default Icon;

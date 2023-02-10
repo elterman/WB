@@ -4,7 +4,7 @@ import HiGrid from './HiGrid';
 import { useComingSoon } from './hooks';
 import _ from 'lodash';
 import { PINK } from './const';
-import { parentKey } from './Collapsible Utils';
+import { parentKey } from './Foldable Utils';
 import { formatNumeric } from './utils';
 
 const TargetsPage = () => {

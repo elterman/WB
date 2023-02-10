@@ -1,6 +1,6 @@
 import React from 'react';
 
-const SvgCollapsible = ({ style = {}, color = '#FFF', width = '100%', viewBox = '0 0 200 200' }) => (
+const Icon = ({ style = {}, color = '#FFF', width = '100%', viewBox = '0 0 200 200' }) => (
   <svg style={{ ...style, display: 'block' }} width={width} height={width} viewBox={viewBox} xmlns="http://www.w3.org/2000/svg">
     {/* <rect width='100%' height='100%' fill='#000' /> */}
     <g stroke={color} strokeWidth="20" fill="none" strokeLinecap="round" strokeLinejoin="round">
@@ -9,4 +9,4 @@ const SvgCollapsible = ({ style = {}, color = '#FFF', width = '100%', viewBox = 
   </svg>
 );
 
-export default SvgCollapsible;
+export default Icon;

@@ -36,7 +36,8 @@ export const PALETTES = {
     'traffic': { levels: ['#6C282B', '#6C5530', '#3A5A44', '#5A5757', '#4E6268', '#625C50'] },
     'mono-gold': { levels: ['#FFFFFF18', '#FFE4AD28', '#FFE4AD10', '#FFE4AD40', '#FFE4AD70', '#FFE4AD58'] },
     'mono-gray': { levels: ['#FFFFFF10', '#FFFFFF30', '#FFFFFF20', '#FFFFFF40', '#FFFFFF60', '#FFFFFF50'] },
-    'traffic-lite': { levels: ['#FFFFFFE0', '#FAF3BB', '#B7E1AB', '#FFFFFFB8', '#F5C8FB', '#E1DDD3'] },
+    'traffic-lite': { levels: ['#F5C8FB', '#FAF3BB', '#B7E1AB', '#FFFFFFB8', '#C8FBF5', '#E1DDD3'] },
+    'mono-gold-lite': { levels: ['#FFE4AD80', '#FFE4ADA0', '#FFE4AD90', '#FFE4ADB0', '#FFE4ADD0', '#FFE4ADC8'] },
     'mono-lite': { levels: ['#FFFFFF80', '#FFFFFFA0', '#FFFFFF90', '#FFFFFFB0', '#FFFFFFD0', '#FFFFFFC0'] },
 };
 

@@ -26,7 +26,7 @@ export const nodeVisible = (key, meta) => {
 
     const pkey = parentKey(key);
 
-    if (meta[pkey]?.collapsed) {
+    if (meta[pkey]?.folded) {
         return false;
     }
 
