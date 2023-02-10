@@ -57,9 +57,9 @@ const TargetsPage = () => {
         let node = meta[cell.key].node;
         node.item[cell.col] = +value;
 
-        // update final weight = trade - target
-        const fwcol = cell.col + sectionSize;
-        node.item[fwcol] = +value - node.item[cell.col - sectionSize];
+        // update final weight = target + trade
+        const wcol = cell.col + sectionSize;
+        node.item[wcol] = +value + node.item[cell.col - sectionSize];
 
         const updateTotal = (key, col) => {
             if (_.isEmpty(key)) {
@@ -78,9 +78,9 @@ const TargetsPage = () => {
             updateTotal(parentKey(key), col);
         };
 
-        let pkey = parentKey(cell.key);
-        updateTotal(pkey, cell.col);
-        updateTotal(pkey, fwcol);
+        const key = parentKey(cell.key);
+        updateTotal(key, cell.col);
+        updateTotal(key, wcol);
     };
 
     return <HiGrid atom={atom} columnHeaders={columnHeaders} sectionHeaders={['Current Targets (%)', 'Trades (%)', 'Final Weights (%)']}
