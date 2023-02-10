@@ -5,6 +5,7 @@ import { useComingSoon } from './hooks';
 import _ from 'lodash';
 import { PINK } from './const';
 import { parentKey } from './Collapsible Utils';
+import { formatNumeric } from './utils';
 
 const TargetsPage = () => {
     const renderComingSoon = useComingSoon();
@@ -29,7 +30,7 @@ const TargetsPage = () => {
         const values = node.item;
         const value = values[col];
 
-        if (section === 3 && node.key.length === 1 && value !== 100) {
+        if (section === 3 && node.key.length === 1 && formatNumeric(value) !== '100.0') {
             background = lite ? PINK : 'brown';
         } else if ((section === 2 && !node.children && +value) || (section === 3 && +values[col - sectionSize])) {
             background = lite ? '#A2C0D9' : '#506C85';

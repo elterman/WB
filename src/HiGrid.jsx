@@ -3,7 +3,7 @@ import _ from 'lodash';
 import { Fragment, useCallback, useEffect, useRef, useState } from 'react';
 import { a_lite, a_palette, a_selected_cell } from './atoms';
 import Collapsible, { LEVEL_INDENT } from './Collapsible';
-import { cellBox, cellId, nodeVisible, split, splitKey } from './Collapsible Utils';
+import { cellBox, cellId, nodeVisible, parentKey, split, splitKey } from './Collapsible Utils';
 import { APP_BACKGROUND, PALETTES, GOLD, LAVENDER, OFF_BACKGROUND, OFF_WHITE } from './const';
 import { useForceUpdate } from './hooks';
 import { useTooltip } from './Tooltip';
@@ -214,9 +214,15 @@ const HiGrid = (props) => {
             return;
         }
 
+        if (e.key === 'Backspace') {
+            const cell = { ...selectedCell, key: parentKey(selectedCell.key) };
+
+            scrollIntoView(cell);
+            setSelectedCell(cell);
+        }
+
         if (e.key === 'Home' || e.key === 'End') {
             const home = e.key === 'Home';
-
             const cell = { ...selectedCell, col: home ? 0 : ncols - 1 };
 
             if (e.ctrlKey) {
@@ -229,7 +235,23 @@ const HiGrid = (props) => {
         }
 
         if (e.key === 'ArrowLeft' || e.key === 'ArrowRight' || e.key === 'ArrowUp' || e.key === 'ArrowDown') {
-            !editing && onNavigate(e);
+            if (editing) {
+                return;
+            }
+
+            if (e.ctrlKey) {
+                if ((e.key === 'ArrowLeft' || e.key === 'ArrowRight')) {
+                    // (un)fold node
+                    meta[selectedCell.key].collapsed = e.key === 'ArrowLeft';
+                    setMeta({ ...meta });
+                    forceUpdate();
+                } else{
+
+                }
+                return;
+            }
+
+            onNavigate(e);
             return;
         }
 
@@ -408,7 +430,7 @@ const HiGrid = (props) => {
     const maxWidthHeaders = trw ? `${trw - 1}px` : `${tr?.clientWidth - 1}px`;
 
     return (
-        <div style={{ display: 'grid', overflow: 'hidden' }} onClick={() => l.view.focus}>
+        <div style={{ display: 'grid', overflow: 'hidden' }} onClick={() => l.view.focus()}>
             <div id='higrid-view' ref={e => l.view = e} className='higrid-view' tabIndex={0} onKeyDown={onKeyDown}>
                 <div id='gh' ref={gh_ref} className='higrid-headers' style={{ gridArea: '1/2', grid: headerGrid, maxWidth: maxWidthHeaders }}>
                     {renderHeaders()}
