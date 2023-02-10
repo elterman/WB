@@ -45,8 +45,8 @@ const HiGrid = (props) => {
 
     useEffect(() => {
         forceUpdate();
-        l.this?.focus();
-    }, [forceUpdate, l.this]);
+        l.view?.focus();
+    }, [forceUpdate, l.view]);
 
     const scrollIntoView = useCallback(cell => {
         const cbox = cellBox(cell);
@@ -189,7 +189,7 @@ const HiGrid = (props) => {
 
     const endEdit = () => {
         setEditing(false);
-        _.delay(() => l.this.focus());
+        _.delay(() => l.view.focus());
     };
 
     const onKeyDown = (e) => {
@@ -203,7 +203,7 @@ const HiGrid = (props) => {
             return;
         }
 
-        if (e.key === 'F2' || e.code === 'Space') {
+        if (e.key === 'F2' || e.code === 'Space' || e.key === 'Enter') {
             onEdit();
             return;
         }
@@ -238,7 +238,11 @@ const HiGrid = (props) => {
                 return;
             }
 
-            const level = +e.key;
+            let level = +e.key;
+
+            if (level === 1 && meta['1'].collapsed) {
+                level = 0;
+            }
 
             _.each(_.keys(meta), key => {
                 const mob = meta[key];
@@ -313,12 +317,6 @@ const HiGrid = (props) => {
         const indent = node.key.length * LEVEL_INDENT;
         const cx = col ? CELL_SIZE : (300 - indent);
 
-        const onClick = () => {
-            editing && acceptChange();
-            cell.col > 0 && scrollIntoView(cell);
-            setSelectedCell(cell);
-        };
-
         const renderInput = () => {
             const onBlur = () => editing && acceptChange();
 
@@ -344,6 +342,12 @@ const HiGrid = (props) => {
                 onClick={onEdit} />;
         };
 
+        const onClickCell = () => {
+            editing && acceptChange();
+            cell.col > 0 && scrollIntoView(cell);
+            setSelectedCell(cell);
+        };
+
         const justifyContent = col ? 'end' : 'start';
         const width = `${cx}px`;
         const hasSectionBorder = (col % columnHeaders.length === 1);
@@ -354,11 +358,9 @@ const HiGrid = (props) => {
         const style = { gridArea, width, justifyContent, borderLeftWidth, borderRightWidth, borderLeftColor, ...cellStyle };
         const id = cellId(node.key, col);
 
-        value = formatNumeric(value);
-
         return <Fragment key={col}>
-            <div id={id} className='higrid-cell' style={style} onClick={onClick}>
-                <div className='ellipsis'>{value}</div>
+            <div id={id} className='higrid-cell' style={style} onClick={onClickCell}>
+                <div className='ellipsis'>{formatNumeric(value)}</div>
             </div>
             {editing && _.isEqual(cell, selectedCell) && renderInput()}
             {renderSelectedBorder()}
@@ -406,34 +408,36 @@ const HiGrid = (props) => {
     const maxWidthHeaders = trw ? `${trw - 1}px` : `${tr?.clientWidth - 1}px`;
 
     return (
-        <div id='higrid-view' ref={e => l.this = e} className='higrid-view' tabIndex={0} onKeyDown={onKeyDown}>
-            <div id='gh' ref={gh_ref} className='higrid-headers' style={{ gridArea: '1/2', grid: headerGrid, maxWidth: maxWidthHeaders }}>
-                {renderHeaders()}
+        <div style={{ display: 'grid', overflow: 'hidden' }} onClick={() => l.view.focus}>
+            <div id='higrid-view' ref={e => l.view = e} className='higrid-view' tabIndex={0} onKeyDown={onKeyDown}>
+                <div id='gh' ref={gh_ref} className='higrid-headers' style={{ gridArea: '1/2', grid: headerGrid, maxWidth: maxWidthHeaders }}>
+                    {renderHeaders()}
+                </div>
+                <div id={TOP_LEFT} className={classes} style={{ gridArea: '2/1' }}>
+                    <Collapsible node={{ children: [nodes[0]], maxLevel: 1 }} atom={metaAtom} shades={shades} color={color}
+                        onToggleCollapsed={onToggleCollapsed} render={node => renderNode({ node, part: TOP_LEFT })}
+                    />
+                </div>
+                <div id={TOP_RIGHT} ref={tr_ref} className={`${classes} root-scroll`} onScroll={onScroll}
+                    style={{ gridArea: '2/2', maxWidth: maxWidthTr, overflow }}>
+                    <Collapsible node={{ children: [nodes[0]], maxLevel: 1 }} atom={metaAtom} shades={shades} flat color={color}
+                        render={node => renderNode({ node, part: TOP_RIGHT })}
+                    />
+                </div>
+                <div id={BOTTOM_LEFT} className={classes} ref={bl_ref} style={{ gridArea: '3/1', maxHeight: maxHeightBl }}
+                    onWheel={e => br?.scrollBy(0, e.deltaY)}>
+                    <Collapsible node={{ children: nodes[0].children }} atom={metaAtom} shades={shades} onToggleCollapsed={onToggleCollapsed}
+                        color={color} render={node => renderNode({ node, part: BOTTOM_LEFT })}
+                    />
+                </div>
+                <div id={BOTTOM_RIGHT} ref={br_ref} className={`${classes} root-scroll`} onScroll={onScroll}
+                    style={{ gridArea: '3/2', maxWidth: maxWidthBr }} >
+                    <Collapsible node={{ children: nodes[0].children }} atom={metaAtom} shades={shades} flat color={color}
+                        render={node => renderNode({ node, part: BOTTOM_RIGHT })}
+                    />
+                </div>
             </div>
-            <div id={TOP_LEFT} className={classes} style={{ gridArea: '2/1' }}>
-                <Collapsible node={{ children: [nodes[0]], maxLevel: 1 }} atom={metaAtom} shades={shades} color={color}
-                    onToggleCollapsed={onToggleCollapsed} render={node => renderNode({ node, part: TOP_LEFT })}
-                />
-            </div>
-            <div id={TOP_RIGHT} ref={tr_ref} className={`${classes} root-scroll`} onScroll={onScroll}
-                style={{ gridArea: '2/2', maxWidth: maxWidthTr, overflow }}>
-                <Collapsible node={{ children: [nodes[0]], maxLevel: 1 }} atom={metaAtom} shades={shades} flat color={color}
-                    render={node => renderNode({ node, part: TOP_RIGHT })}
-                />
-            </div>
-            <div id={BOTTOM_LEFT} className={classes} ref={bl_ref} style={{ gridArea: '3/1', maxHeight: maxHeightBl }}
-                onWheel={e => br?.scrollBy(0, e.deltaY)}>
-                <Collapsible node={{ children: nodes[0].children }} atom={metaAtom} shades={shades} onToggleCollapsed={onToggleCollapsed}
-                    color={color} render={node => renderNode({ node, part: BOTTOM_LEFT })}
-                />
-            </div>
-            <div id={BOTTOM_RIGHT} ref={br_ref} className={`${classes} root-scroll`} onScroll={onScroll}
-                style={{ gridArea: '3/2', maxWidth: maxWidthBr }} >
-                <Collapsible node={{ children: nodes[0].children }} atom={metaAtom} shades={shades} flat color={color}
-                    render={node => renderNode({ node, part: BOTTOM_RIGHT })}
-                />
-            </div>
-        </div>
+        </div >
     );
 
 };

@@ -143,7 +143,7 @@ const setGridData = ({ atom, set, nodes }) => {
 
         _.each(nodes, (node, i) => {
             node.key = [...parentKey, i + 1];
-            meta[node.key] = { collapsed: false, node };
+            meta[node.key] = { node };
             processNodes(node.children, node.key);
         });
     };
