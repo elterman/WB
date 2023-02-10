@@ -51,3 +51,9 @@ export const COMPARE = 'Compare';
 export const BENCHMARKS = 'Benchmarks';
 export const METRICS = 'Metrics';
 export const TABS = [TARGETS, COMPARE, BENCHMARKS, METRICS];
+
+export const LEFT = 'ArrowLeft';
+export const RIGHT = 'ArrowRight';
+export const UP = 'ArrowUp';
+export const DOWN = 'ArrowDown';
+export const GOTO_PARENT = 'GO TO PARENT';

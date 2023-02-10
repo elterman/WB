@@ -4,6 +4,7 @@ import { useResetAtom } from 'jotai/utils';
 import { a_date_picker_visible, a_dropdown, refilter_search, a_search_selector_filter } from './atoms';
 import SearchPanel from './SearchPanel';
 import _ from 'lodash';
+import { UP } from './const';
 
 const SearchSelector = (props) => {
     const { id, allItems, onSelectItem, renderItem, renderHeader, searchMatch, clear = false, style, offset = 0 } = props;
@@ -69,7 +70,7 @@ const SearchSelector = (props) => {
     }, [filter, refilter, onSearch, setRefilter, id]);
 
     const onUpDown = (key) => {
-        filteredItems.length && updateDropdown(filteredItems, key === 'ArrowUp' ? filteredItems.length - 1 : 0);
+        filteredItems.length && updateDropdown(filteredItems, key === UP ? filteredItems.length - 1 : 0);
     };
 
     return (

@@ -4,7 +4,7 @@ import { Fragment, useCallback, useEffect, useRef, useState } from 'react';
 import { a_lite, a_palette, a_selected_cell } from './atoms';
 import Foldable, { LEVEL_INDENT } from './Foldable';
 import { cellBox, cellId, nodeVisible, parentKey, split, splitKey } from './Foldable Utils';
-import { APP_BACKGROUND, PALETTES, GOLD, LAVENDER, OFF_BACKGROUND, OFF_WHITE } from './const';
+import { APP_BACKGROUND, PALETTES, GOLD, LAVENDER, OFF_BACKGROUND, OFF_WHITE, LEFT, RIGHT, UP, DOWN, GOTO_PARENT } from './const';
 import { useForceUpdate } from './hooks';
 import { useTooltip } from './Tooltip';
 import { getBox, hasScrollbar, syncScroll, windowSize, formatNumeric } from './utils';
@@ -87,50 +87,65 @@ const HiGrid = (props) => {
         });
 
         let cell = null;
+        const _case = e.key === UP && e.ctrlKey && e.altKey ? GOTO_PARENT : e.key;
 
-        if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
-            const left = e.key === 'ArrowLeft';
-            const col = selectedCell.col;
+        switch (_case) {
+            case LEFT: case RIGHT:
+                const left = e.key === LEFT;
+                const col = selectedCell.col;
 
-            if (left ? !col : col === ncols - 1) {
-                return;
-            };
+                if (left ? !col : col === ncols - 1) {
+                    return;
+                };
 
-            cell = { ...selectedCell, col: col + (left ? -1 : 1) };
-            scrollIntoView(cell);
+                cell = { ...selectedCell, col: col + (left ? -1 : 1) };
+                scrollIntoView(cell);
+                break;
+            case GOTO_PARENT: case 'Backspace': {
+                const key = parentKey(selectedCell.key);
 
-        } else if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
-            const up = e.key === 'ArrowUp';
-            const keys = _.keys(meta);
-            let key = selectedCell.key;
-
-            if (e.altKey) {
-                // move to sibling
-                const i = _.last(key) + (e.key === 'ArrowUp' ? -1 : 1);
-                key = [...parentKey(key), i];
-
-                if (_.get(meta, `${key}`)) {
+                if (key) {
                     cell = { ...selectedCell, key };
                     scrollIntoView(cell);
                 }
-            } else {
-                do {
-                    key = `${key}`;
 
-                    if (key === (up ? _.first(keys) : _.last(keys))) {
-                        return;
-                    }
-
-                    let i = _.indexOf(keys, key);
-                    key = keys[i + (up ? -1 : 1)];
-                } while (!nodeVisible(key, meta));
-
-                cell = { ...selectedCell, key: splitKey(key) };
-
-                if (!_.isEqual(cell.key, [1])) {
-                    scrollIntoView(cell);
-                }
+                break;
             }
+            case UP:
+            case DOWN:
+                const up = e.key === UP;
+                const keys = _.keys(meta);
+                let key = selectedCell.key;
+
+                if (e.altKey) {
+                    // move to sibling
+                    const i = _.last(key) + (up ? -1 : 1);
+                    key = [...parentKey(key), i];
+
+                    if (_.get(meta, `${key}`)) {
+                        cell = { ...selectedCell, key };
+                        scrollIntoView(cell);
+                    }
+                } else {
+                    do {
+                        key = `${key}`;
+
+                        if (key === (up ? _.first(keys) : _.last(keys))) {
+                            return;
+                        }
+
+                        let i = _.indexOf(keys, key);
+                        key = keys[i + (up ? -1 : 1)];
+                    } while (!nodeVisible(key, meta));
+
+                    cell = { ...selectedCell, key: splitKey(key) };
+
+                    if (!_.isEqual(cell.key, [1])) {
+                        scrollIntoView(cell);
+                    }
+                }
+                break;
+            default: break;
         }
 
         if (cell) {
@@ -141,13 +156,105 @@ const HiGrid = (props) => {
 
     useEffect(() => {
         if (!_.isEmpty(meta) && !nodeVisible(selectedCell.key, meta)) {
-            onNavigate({ key: 'ArrowUp' });
+            onNavigate({ key: UP });
         }
     }, [meta, onNavigate, selectedCell.key]);
 
     if (_.isEmpty(meta)) {
         return null;
     }
+
+    const onKeyDown = (e) => {
+        if (editing) {
+            if (e.key === 'Enter') {
+                acceptChange();
+            } else if (e.key === 'Escape') {
+                endEdit();
+            }
+
+            return;
+        }
+
+        if ('0123456789'.includes(e.key)) {
+            if (editing) {
+                return;
+            }
+
+            let level = +e.key;
+
+            if (level === 1 && meta['1'].folded) {
+                level = 0;
+            }
+
+            _.each(_.keys(meta), key => {
+                const mob = meta[key];
+                mob.folded = level && split(key).length >= level;
+            });
+
+            setMeta({ ...meta });
+
+            const folded = !getBox(br).height;
+            const pos = br.scrollLeft;
+
+            _.delay(() => {
+                if (folded) {
+                    level !== 1 && syncScroll(BOTTOM_RIGHT, tr.scrollLeft);
+                } else {
+                    level === 1 && syncScroll(TOP_RIGHT, pos);
+                }
+            });
+
+            forceUpdate();
+            return;
+        };
+
+        switch (e.key) {
+            case 'F2': case ' ': case 'Enter':
+                onEdit();
+                return;
+            case 'Delete':
+                acceptChange(true);
+                forceUpdate();
+                return;
+            case 'Home': case 'End':
+                const home = e.key === 'Home';
+                const cell = { ...selectedCell, col: home ? 0 : ncols - 1 };
+
+                if (e.ctrlKey) {
+                    const key = home ? '1' : _.findLastKey(meta, (mob, key) => nodeVisible(key, meta));
+                    cell.key = split(key);
+                }
+
+                scrollIntoView(cell);
+                setSelectedCell(cell);
+                return;
+            case LEFT: case RIGHT: case UP: case DOWN: case 'Backspace':
+                if (editing) {
+                    return;
+                }
+
+                if (e.altKey) {
+                    if (e.key === LEFT || e.key === RIGHT) {// (un)fold node
+                        meta[selectedCell.key].folded = e.key === LEFT;
+                        setMeta({ ...meta });
+                        forceUpdate();
+
+                        return;
+                    }
+                } else if (e.ctrlKey) {
+                    // scroll
+                    const dx = e.key === LEFT ? -CELL_SIZE : e.key === RIGHT ? CELL_SIZE : 0;
+                    const dy = e.key === UP ? -ROW_SIZE : e.key === DOWN ? ROW_SIZE : 0;
+                    br.scrollBy(dx, dy);
+
+                    return;
+                }
+
+                onNavigate(e);
+                return;
+            default: break;
+        }
+    };
 
     const onScroll = e => {
         forceUpdate();
@@ -202,108 +309,6 @@ const HiGrid = (props) => {
     const endEdit = () => {
         setEditing(false);
         _.delay(() => l.view.focus());
-    };
-
-    const onKeyDown = (e) => {
-        if (editing) {
-            if (e.key === 'Enter') {
-                acceptChange();
-            } else if (e.key === 'Escape') {
-                endEdit();
-            }
-
-            return;
-        }
-
-        if (e.key === 'F2' || e.code === 'Space' || e.key === 'Enter') {
-            onEdit();
-            return;
-        }
-
-        if (e.key === 'Delete') {
-            acceptChange(true);
-            forceUpdate();
-            return;
-        }
-
-        if (e.key === 'Backspace') {
-            const cell = { ...selectedCell, key: parentKey(selectedCell.key) };
-
-            scrollIntoView(cell);
-            setSelectedCell(cell);
-        }
-
-        if (e.key === 'Home' || e.key === 'End') {
-            const home = e.key === 'Home';
-            const cell = { ...selectedCell, col: home ? 0 : ncols - 1 };
-
-            if (e.ctrlKey) {
-                const key = home ? '1' : _.findLastKey(meta, (mob, key) => nodeVisible(key, meta));
-                cell.key = split(key);
-            }
-
-            scrollIntoView(cell);
-            setSelectedCell(cell);
-        }
-
-        if (e.key === 'ArrowLeft' || e.key === 'ArrowRight' || e.key === 'ArrowUp' || e.key === 'ArrowDown') {
-            if (editing) {
-                return;
-            }
-
-            if (e.altKey && (e.key === 'ArrowLeft' || e.key === 'ArrowRight')) {
-                // (un)fold node
-                meta[selectedCell.key].folded = e.key === 'ArrowLeft';
-                setMeta({ ...meta });
-                forceUpdate();
-
-                return;
-            }
-
-            if (e.ctrlKey) {
-                // scroll
-                const dx = e.key === 'ArrowLeft' ? -CELL_SIZE : e.key === 'ArrowRight' ? CELL_SIZE : 0;
-                const dy = e.key === 'ArrowUp' ? -ROW_SIZE : e.key === 'ArrowDown' ? ROW_SIZE : 0;
-                br.scrollBy(dx, dy);
-
-                return;
-            }
-
-            onNavigate(e);
-            return;
-        }
-
-        if ('0123456789'.includes(e.key)) {
-            if (editing) {
-                return;
-            }
-
-            let level = +e.key;
-
-            if (level === 1 && meta['1'].folded) {
-                level = 0;
-            }
-
-            _.each(_.keys(meta), key => {
-                const mob = meta[key];
-                mob.folded = level && split(key).length >= level;
-            });
-
-            setMeta({ ...meta });
-
-            const folded = !getBox(br).height;
-            const pos = br.scrollLeft;
-
-            _.delay(() => {
-                if (folded) {
-                    level !== 1 && syncScroll(BOTTOM_RIGHT, tr.scrollLeft);
-                } else {
-                    level === 1 && syncScroll(TOP_RIGHT, pos);
-                }
-            });
-
-            forceUpdate();
-        };
     };
 
     const onToggleFold = (level, folded) => {

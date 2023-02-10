@@ -4,6 +4,7 @@ import { useAtomValue, useAtom } from 'jotai';
 import { a_dropdown } from './atoms';
 import { useSpring, animated } from 'react-spring';
 import { handleModalClick } from './utils';
+import { DOWN, UP } from './const';
 
 const SelectorDropdown = () => {
     const dropdown = useAtomValue(a_dropdown);
@@ -59,10 +60,10 @@ const Dropdown = () => {
         let i;
 
         switch (key) {
-            case 'ArrowUp':
+            case UP:
                 i = highlight > 0 ? highlight - 1 : highlight < 0 ? items.length - 1 : 0;
                 break;
-            case 'ArrowDown':
+            case DOWN:
                 i = Math.min(items.length - 1, highlight + 1);
                 break;
             case 'PageUp':
@@ -99,8 +100,8 @@ const Dropdown = () => {
             case 'Enter':
                 highlight >= 0 && selectItem(e, highlight);
                 break;
-            case 'ArrowUp':
-            case 'ArrowDown':
+            case UP:
+            case DOWN:
             case 'PageUp':
             case 'PageDown':
             case 'Home':

@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { BUTTON_BACKGROUND } from './const';
+import { BUTTON_BACKGROUND, DOWN, UP } from './const';
 
 const SearchPanel = (props) => {
     const { id, height, placeholder, value, clear, onSubmit, focus, onChange, onUpDown } = props;
@@ -71,7 +71,7 @@ const SearchPanel = (props) => {
             return;
         }
 
-        if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
+        if (e.key === UP || e.key === DOWN) {
             if (!onUpDown) {
                 return;
             }
