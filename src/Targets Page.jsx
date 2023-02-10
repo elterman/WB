@@ -4,7 +4,7 @@ import HiGrid from './HiGrid';
 import { useComingSoon } from './hooks';
 import _ from 'lodash';
 import { PINK } from './const';
-import { parentKey } from './utils';
+import { parentKey } from './Collapsible Utils';
 
 const TargetsPage = () => {
     const renderComingSoon = useComingSoon();

@@ -3,10 +3,11 @@ import _ from 'lodash';
 import { Fragment, useCallback, useEffect, useRef, useState } from 'react';
 import { a_lite, a_palette, a_selected_cell } from './atoms';
 import Collapsible, { LEVEL_INDENT } from './Collapsible';
+import { cellBox, cellId, nodeVisible, split, splitKey } from './Collapsible Utils';
 import { APP_BACKGROUND, PALETTES, GOLD, LAVENDER, OFF_BACKGROUND, OFF_WHITE } from './const';
 import { useForceUpdate } from './hooks';
 import { useTooltip } from './Tooltip';
-import { cellBox, cellId, getBox, hasScrollbar, splitKey, nodeVisible, split, syncScroll, windowSize, formatNumeric } from './utils';
+import { getBox, hasScrollbar, syncScroll, windowSize, formatNumeric } from './utils';
 
 const CELL_SIZE = 70;
 const TOP_LEFT = 'top-left';
@@ -207,15 +208,28 @@ const HiGrid = (props) => {
             return;
         }
 
-        if (e.key === 'ArrowLeft' || e.key === 'ArrowRight' || e.key === 'ArrowUp' || e.key === 'ArrowDown') {
-            !editing && onNavigate(e);
-            return;
-        }
-
         if (e.key === 'Delete') {
             acceptChange(true);
             forceUpdate();
+            return;
+        }
 
+        if (e.key === 'Home' || e.key === 'End') {
+            const home = e.key === 'Home';
+
+            const cell = { ...selectedCell, col: home ? 0 : ncols - 1 };
+
+            if (e.ctrlKey) {
+                const key = home ? '1' : _.findLastKey(meta, (mob, key) => nodeVisible(key, meta));
+                cell.key = split(key);
+            }
+
+            scrollIntoView(cell);
+            setSelectedCell(cell);
+        }
+
+        if (e.key === 'ArrowLeft' || e.key === 'ArrowRight' || e.key === 'ArrowUp' || e.key === 'ArrowDown') {
+            !editing && onNavigate(e);
             return;
         }
 

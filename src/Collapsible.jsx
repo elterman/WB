@@ -1,7 +1,7 @@
 import { useAtom } from 'jotai';
 import _ from 'lodash';
+import { parentKey } from './Collapsible Utils';
 import SvgCollapsible from './Icons/Svg Collapsible';
-import { parentKey } from './utils';
 
 export const LEVEL_INDENT = 20;
 const DEFAULT_SHADES = ['#FFFFFF10', '#FFFFFF18', '#FFFFFF20', '#FFFFFF28', '#FFFFFF30', '#FFFFFF38', '#FFFFFF40', '#FFFFFF48'];

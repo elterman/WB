@@ -152,7 +152,19 @@ export const MOCK_NODES = [
                     { item: ['Trading Implementation',] },
                 ]
             },
-            { item: ['Contra Cash',] },
+            {
+                item: ['Contra Cash',],
+                ///////////////////////////////////////////
+                children: [
+                    {
+                        item: ['Level 5.1',], children: [
+                            { item: ['Level 6.1',] },
+                            { item: ['Level 6.2',] }
+                        ]
+                    },
+                ]
+                ///////////////////////////////////////////
+            },
         ]
     },
 ];
