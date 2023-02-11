@@ -52,7 +52,7 @@ const InputPopup = (props) => {
             _.delay(() => {
                 const nodes = MOCK_NODES;
 
-                setTargets(nodes);
+                setTargets({nodes});
                 setLoading(false);
             }, 1000);
         }

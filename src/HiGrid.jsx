@@ -1,13 +1,13 @@
-import { useAtom, useAtomValue } from 'jotai';
+import { useAtom, useAtomValue, useSetAtom } from 'jotai';
 import _ from 'lodash';
 import { Fragment, useCallback, useEffect, useRef, useState } from 'react';
-import { a_lite, a_palette, a_selected_cell } from './atoms';
+import { a_lite, a_palette, a_selected_cell, a_targets } from './atoms';
 import Foldable, { LEVEL_INDENT } from './Foldable';
 import { cellBox, cellId, nodeVisible, parentKey, split, splitKey } from './Foldable Utils';
 import { APP_BACKGROUND, PALETTES, GOLD, LAVENDER, OFF_BACKGROUND, OFF_WHITE, LEFT, RIGHT, UP, DOWN, GOTO_PARENT } from './const';
 import { useForceUpdate } from './hooks';
 import { useTooltip } from './Tooltip';
-import { getBox, hasScrollbar, syncScroll, windowSize, formatNumeric } from './utils';
+import { getBox, hasScrollbar, syncScroll, windowSize, formatNumeric, str } from './utils';
 import HiGridToolbar from './HiGrid Toolbar';
 
 const ROW_SIZE = 29;
@@ -19,8 +19,9 @@ const BOTTOM_RIGHT = 'bottom-right';
 
 const HiGrid = (props) => {
     const { atom, columnHeaders, sectionHeaders, readOnly, isCellEditable, getCellStyle, onAcceptChange } = props;
-    const [{ nodes, metaAtom }] = useAtom(atom);
+    const { nodes, metaAtom } = useAtomValue(atom);
     const [meta, setMeta] = useAtom(metaAtom);
+    const setTargets = useSetAtom(a_targets);
     const lite = useAtomValue(a_lite);
     const [selectedCell, setSelectedCell] = useAtom(a_selected_cell);
     const [editing, setEditing] = useState(null);
@@ -119,18 +120,18 @@ const HiGrid = (props) => {
                 let key = selectedCell.key;
 
                 if (e.altKey) {
-                    // move to sibling
+                    // go to sibling
                     const i = _.last(key) + (up ? -1 : 1);
                     key = [...parentKey(key), i];
 
-                    if (_.get(meta, `${key}`)) {
+                    if (_.get(meta, str(key))) {
                         cell = { ...selectedCell, key };
                         scrollIntoView(cell);
                     }
                 } else {
-                    do {
-                        key = `${key}`;
+                    key = str(key);
 
+                    do {
                         if (key === (up ? _.first(keys) : _.last(keys))) {
                             return;
                         }
@@ -328,6 +329,33 @@ const HiGrid = (props) => {
         forceUpdate();
     };
 
+    const onAddNode = (item, pos) => {
+        let key = [...selectedCell.key];
+        const node = meta[key].node;
+
+        switch (pos) {
+            case 'child':
+                key = [...key, node.children.length + 1];
+                node.children.push({ key, item: [item], canDelete: true });
+                meta[node.key].folded = false;
+                break;
+            case 'above':
+                break;
+            case 'below':
+                break;
+            default: return;
+        }
+
+        setTargets({ nodes, keepMeta: true });
+
+        _.delay(() => {
+            const cell = { key, col: 0 };
+            scrollIntoView(cell);
+            setSelectedCell(cell);
+
+        });
+    };
+
     const renderHeaders = () => {
         const renderHeaderCell = ({ sectionIndex, name, col }) => {
             const gridCol = sectionIndex * columnHeaders.length + col + 1;
@@ -362,6 +390,7 @@ const HiGrid = (props) => {
         const gridArea = `1/${col + 1}`;
         const indent = node.key.length * LEVEL_INDENT;
         const cx = col ? CELL_SIZE : (300 - indent);
+        const selectedRow = _.isEqual(node.key, selectedCell.key);
 
         const renderInput = () => {
             const onBlur = () => editing && acceptChange();
@@ -374,7 +403,7 @@ const HiGrid = (props) => {
         };
 
         const renderSelectedBorder = () => {
-            const selected = _.isEqual(node.key, selectedCell.key) && col === selectedCell.col;
+            const selected = selectedRow && col === selectedCell.col;
 
             if (!selected) {
                 return null;
@@ -394,6 +423,7 @@ const HiGrid = (props) => {
             setSelectedCell(cell);
         };
 
+        const id = cellId(node.key, col);
         const justifyContent = col ? 'end' : 'start';
         const width = `${cx}px`;
         const hasSectionBorder = (col % columnHeaders.length === 1);
@@ -402,11 +432,18 @@ const HiGrid = (props) => {
         const borderLeftColor = hasSectionBorder ? APP_BACKGROUND : OFF_BACKGROUND;
         const cellStyle = getCellStyle ? getCellStyle(node, col) : {};
         const style = { gridArea, width, justifyContent, borderLeftWidth, borderRightWidth, borderLeftColor, ...cellStyle };
-        const id = cellId(node.key, col);
+
+        if (!col && selectedRow) {
+            if (lite) {
+                style.fontFamily = 'Roboto Bold';
+            } else {
+                style.color = GOLD;
+            }
+        }
 
         return <Fragment key={col}>
             <div id={id} className='higrid-cell' style={style} onClick={onClickCell}>
-                <div className='ellipsis'>{formatNumeric(value)}</div>
+                <div className='ellipsis'>{col ? formatNumeric(value) : value}</div>
             </div>
             {editing && _.isEqual(cell, selectedCell) && renderInput()}
             {renderSelectedBorder()}
@@ -456,7 +493,7 @@ const HiGrid = (props) => {
     return (
         <div style={{ display: 'grid', overflow: 'hidden' }} onClick={() => l.view.focus()}>
             <div id='higrid-view' ref={e => l.view = e} className='higrid-view' tabIndex={0} onKeyDown={onKeyDown}>
-                <HiGridToolbar style={{ placeSelf: 'end start', padding: '10px 10px 10px 0' }}/>
+                <HiGridToolbar onAddNode={onAddNode} style={{ placeSelf: 'end start', padding: '10px 10px 10px 0' }} />
                 <div id='gh' ref={gh_ref} className='higrid-headers' style={{ gridArea: '1/2', grid: headerGrid, maxWidth: maxWidthHeaders }}>
                     {renderHeaders()}
                 </div>

@@ -3,7 +3,7 @@ import { atomWithReset, freezeAtomCreator } from 'jotai/utils';
 import _ from 'lodash';
 import { BENCHMARKS, COMPARE, PALETTE, PALETTES, TARGETS } from './const';
 import { MOCK_NUMBERS } from './Mock Data';
-import { lastDayOfPrevMonth, lastWeekday } from './utils';
+import { lastDayOfPrevMonth, lastWeekday, str } from './utils';
 
 export const defaultDate = (monthly = false) => (monthly ? lastDayOfPrevMonth() : lastWeekday()).format('YYYY-MM-DD');
 
@@ -21,6 +21,7 @@ export const a_selected_tab = _atom(TARGETS);
 export const a_loading = _atom(false);
 export const a_funds = _fatom(null);
 export const a_families = _fatom(null);
+export const a_funds_to_add = _fatom(null);
 
 const loadPalette = () => {
     const keys = _.keys(PALETTES);
@@ -132,9 +133,11 @@ const getGridData = ({ atom, get }) => {
     return { nodes: get(natom), meta: get(matom), metaAtom: matom };
 };
 
-const setGridData = ({ atom, set, nodes }) => {
+const setGridData = ({ atom, get, set, payload }) => {
+    const { nodes, keepMeta } = payload;
     const { natom, matom } = gridAtoms(atom);
-    const meta = {};
+    const meta = get(matom);
+    const new_meta = {};
 
     const processNodes = (nodes, parentKey) => {
         if (!parentKey) {
@@ -143,7 +146,9 @@ const setGridData = ({ atom, set, nodes }) => {
 
         _.each(nodes, (node, i) => {
             node.key = [...parentKey, i + 1];
-            meta[node.key] = { node };
+
+            const mob = keepMeta ? _.get(meta, str(node.key)) : null;
+            new_meta[node.key] = { ...mob, node };
             processNodes(node.children, node.key);
         });
     };
@@ -151,29 +156,29 @@ const setGridData = ({ atom, set, nodes }) => {
     processNodes(nodes);
 
     // MOCK ///////////////////////////////////////////////////
-    _.each(_.keys(meta), (key, i) => {
-        const mob = meta[key];
+    _.each(_.keys(new_meta), (key, i) => {
+        const mob = new_meta[key];
         mob.node.item = [mob.node.item[0], ...MOCK_NUMBERS[i]];
     });
     ///////////////////////////////////////////////////////////
 
     set(natom, nodes);
-    set(matom, meta);
+    set(matom, new_meta);
 };
 
 export const a_targets = atom(
     get => getGridData({ atom: a_targets, get }),
-    (get, set, nodes) => setGridData({ atom: a_targets, set, nodes })
+    (get, set, payload) => setGridData({ atom: a_targets, get, set, payload })
 );
 
 export const a_compare = atom(
     get => getGridData({ atom: a_compare, get }),
-    (get, set, nodes) => setGridData({ atom: a_compare, set, nodes })
+    (get, set, payload) => setGridData({ atom: a_compare, get, set, payload })
 );
 
 export const a_benchmarks = atom(
     get => getGridData({ atom: a_benchmarks, get }),
-    (get, set, nodes) => setGridData({ atom: a_benchmarks, set, nodes })
+    (get, set, payload) => setGridData({ atom: a_benchmarks, get, set, payload })
 );
 
 export const a_has_targets = atom(get => !_.isEmpty(get(a_targets_nodes)));

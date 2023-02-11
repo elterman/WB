@@ -363,7 +363,8 @@ input::-webkit-inner-spin-button {
 
 .dropdown {
   z-index: 2;
-  background: #433e3e;
+  background: #ffffff18;
+  background: #433D3D;
   display: grid;
   outline: none;
 }

@@ -6,19 +6,23 @@ import _ from 'lodash';
 import { Fragment } from 'react';
 import { OFF_WHITE, WHITE } from './const';
 import { useAtomValue } from 'jotai';
-import { a_selected_cell, a_targets_meta } from './atoms';
+import { a_funds_to_add, a_selected_cell, a_targets } from './atoms';
+import DropdownSelector from './Dropdown Selector';
 
 const HiGridToolbar = (props) => {
-    const { style } = props;
+    const { onAddNode, style } = props;
     const tooltip = useTooltip();
-    const meta = useAtomValue(a_targets_meta);
+    const { meta } = useAtomValue(a_targets);
     const selectedCell = useAtomValue(a_selected_cell);
-    const leaf = !meta[selectedCell.key].node.children;
+    const node = meta[selectedCell.key].node;
+    const leaf = !node.children;
+    const fundsToAdd = useAtomValue(a_funds_to_add);
 
     const renderHelp = () => {
         const help = [
             ['Press...', 'To...'],
             ['Spacebar, or F2, or Enter', 'Edit Cell'],
+            ['Delete', 'Set Trade to 0%'],
             ['1,2...', 'Collapse All at Level 1,2... and below'],
             ['0', 'Expand All'],
             ['Alt+Left, Alt+Right', 'Collapse/Expand Node'],
@@ -49,9 +53,12 @@ const HiGridToolbar = (props) => {
         </div>
         <div />
         <div />
-        <SvgAddChild width={25} disabled={leaf} />
-        <SvgAddSibling width={25} above={true} disabled={!leaf} />
-        <SvgAddSibling width={25} disabled={!leaf} />
+        {_.map(['child', 'above', 'below'], (pos, i) => <div key={i}><DropdownSelector id={`add-${pos}`} items={_.keys(fundsToAdd)}
+            setItem={item => onAddNode(item, pos)} offset='center' disabled={!!leaf !== !!i} style={{ background: 'none', padding: 0 }}
+            icon={i === 0 ? <SvgAddChild width={25} disabled={leaf} /> :
+                i === 1 ? <SvgAddSibling above width={25} disabled={!leaf} /> :
+                    i === 2 ? <SvgAddSibling width={25} disabled={!leaf} /> : null} />
+        </div>)}
     </div>;
 };
 

@@ -119,19 +119,19 @@ export const formatNumeric = (val, precision = 1, separateThousands, isPercent) 
     const numeric = _.isNumber(val);
 
     if (numeric && isPercent) {
-      val *= 100;
+        val *= 100;
     }
 
     let value = precision === undefined || !numeric ? val : val.toFixed(precision);
 
     if (numeric && separateThousands) {
-      var parts = value.toString().split('.');
-      parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-      value = parts.join('.');
+        var parts = value.toString().split('.');
+        parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+        value = parts.join('.');
     }
 
     return value;
-  };
+};
 
 export const doFetch = (props) => {
     const { uri = null, endpoint, resolve, method = 'GET', text = false } = props;
@@ -155,3 +155,5 @@ export const getBox = id => {
     return ob?.getBoundingClientRect();
 
 };
+
+export const str = value => `${value}`;

@@ -7,7 +7,7 @@ import Toaster from './Toaster';
 import SelectorDropdown from './Selector Dropdown';
 // import AuthProvider from './Auth/Auth Provider';
 import { useAtom } from 'jotai';
-import { a_families, a_funds } from './atoms';
+import { a_families, a_funds, a_funds_to_add } from './atoms';
 
 const App = () => {
     const _this = useRef(null);
@@ -19,7 +19,12 @@ const App = () => {
     }, [_this]);
 
     const [funds, setFunds] = useAtom(a_funds);
+    const [fundsToAdd, setFundsToAdd] = useAtom(a_funds_to_add);
     const [families, setFamilies] = useAtom(a_families);
+
+    if (!fundsToAdd) {
+        setFundsToAdd({ 'CCF': {}, 'Another Fund': {} });
+    }
 
     if (!funds) {
         setFunds({ 'BFAF': {}, 'GRRUF': {}, 'GAAR': {}, 'INFLAION': {} });
