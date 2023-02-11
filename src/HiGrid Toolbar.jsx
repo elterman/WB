@@ -2,7 +2,7 @@ import SvgInfo from './Icons/Svg Info';
 import SvgAddChild from './Icons/Svg Add Child';
 import SvgAddSibling from './Icons/Svg Add Sibling';
 import SvgDeleteNode from './Icons/Svg Delete Node';
-import SvgFloppy from './Icons/Svg Floppy';
+import SvgFloppy from './Icons/Svg Save';
 import { useTooltip } from './Tooltip';
 import _ from 'lodash';
 import { Fragment } from 'react';
@@ -69,7 +69,8 @@ const HiGridToolbar = (props) => {
         <div onClick={() => onDeleteNode(node)}><SvgDeleteNode width={size} disabled={!node.canDelete} /></div>
         <div />
         <div />
-        <Button style={buttonStyle} onClick={() => { }}><SvgFloppy width={18} disabled={false} /></Button>
+        <Button style={buttonStyle} onClick={() => { }}><SvgFloppy width={25} disabled={true} /></Button>
+        <Button style={buttonStyle} onClick={() => { }}><SvgFloppy width={25} disabled={true} /></Button>
     </div>;
 };
 

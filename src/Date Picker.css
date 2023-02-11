@@ -54,7 +54,7 @@
 .mp-month-selector {
     grid-area: 2/1;
     display: grid;
-    color: #fff7;
+    color: #fff9;
     padding: 10px;
 }
 
@@ -86,15 +86,15 @@
 }
 
 .mp-future {
-    color: #000;
+    color: #ffffff28;
 }
 
 .mp-dark-future {
-    color: #000;
+    color: #ffffff28;
 }
 
 .mp-day-selector {
-    color: #fff7;
+    color: #fff9;
     display: grid;
     place-content: start center;
     padding: 0 10px 10px;
