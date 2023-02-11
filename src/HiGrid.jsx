@@ -238,8 +238,22 @@ const HiGrid = (props) => {
                 }
 
                 if (e.altKey) {
-                    if (e.key === LEFT || e.key === RIGHT) {// (un)fold node
-                        meta[selectedCell.key].folded = e.key === LEFT;
+                    if (e.key === LEFT || e.key === RIGHT) {    // (un)fold node
+                        const folded = e.key === LEFT;
+
+                        if (e.ctrlKey) {
+                            const fold = (key) => {
+                                const mob = meta[key];
+                                mob.folded = folded;
+                                _.each(mob.node.children, node => fold(node.key));
+                            };
+
+                            fold(selectedCell.key);
+                        }
+                        else {
+                            meta[selectedCell.key].folded = folded;
+                        }
+
                         setMeta({ ...meta });
                         forceUpdate();
 
@@ -464,7 +478,10 @@ const HiGrid = (props) => {
             }
         }
 
-        const bulletStyle = { gridArea, alignSelf: 'center', color: lite ? APP_BACKGROUND : GOLD, transform: `translateX(${4 - indent}px)` };
+        const bulletStyle = {
+            gridArea, placeSelf: 'center start', transform: `translateX(${4 - indent}px)`,
+            color: lite ? APP_BACKGROUND : GOLD
+        };
 
         return <Fragment key={col}>
             <div id={id} className='higrid-cell' style={style} onClick={onClickCell}>

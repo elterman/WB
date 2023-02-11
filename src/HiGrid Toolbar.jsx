@@ -27,6 +27,7 @@ const HiGridToolbar = (props) => {
             ['1,2...', 'Collapse All from Level 1,2... down'],
             ['0', 'Expand All'],
             ['Alt+Left, Alt+Right', 'Collapse/Expand Row'],
+            ['Ctrl+Alt+Left, Ctrl+Alt+Right', 'Collapse/Expand Row Recursively'],
             ['Home, End', 'Go to Start, End of Row '],
             ['Ctrl+Home, Ctrl+End', 'Go to Upper Left, Bottom Right'],
             ['Alt+Up, Alt+Down', 'Go to Sibling'],
