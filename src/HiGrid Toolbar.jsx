@@ -26,14 +26,14 @@ const HiGridToolbar = (props) => {
             ['Delete', 'Set Trade Cell to 0%'],
             ['1,2...', 'Collapse All from Level 1,2... down'],
             ['0', 'Expand All'],
-            ['Alt+Left/Right', 'Collapse/Expand Row'],
-            ['Ctrl+Alt+Left/Right', 'Collapse/Expand Row Recursively'],
+            ['Alt+⇐/⇒', 'Collapse/Expand Row'],
+            ['Ctrl+Alt+⇐/⇒', 'Collapse/Expand Row Recursively'],
             ['Home, End', 'Go to Start, End of Row '],
             ['Ctrl+Home, Ctrl+End', 'Go to Upper Left, Bottom Right'],
-            ['Alt+Up/Down', 'Go to Sibling'],
-            ['Ctrl+Al+Up or Backspace', 'Go to Parent'],
-            ['Ctrl+Up/Down', 'Scroll Vertically'],
-            ['Ctrl-Left/Right', 'Scroll Horizontally'],
+            ['Alt+⇧/⇩', 'Go to Sibling'],
+            ['Ctrl+Al+⇧ or Backspace', 'Go to Parent'],
+            ['Ctrl+⇧/⇩', 'Scroll Vertically'],
+            ['Ctrl+⇐/⇒', 'Scroll Horizontally'],
         ];
 
         return <div style={{ display: 'grid', grid: 'auto / auto 1fr', gap: '5px 10px' }}>
