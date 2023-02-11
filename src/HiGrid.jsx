@@ -365,9 +365,13 @@ const HiGrid = (props) => {
     const renderHeaders = () => {
         const renderHeaderCell = ({ sectionIndex, name, col }) => {
             const gridCol = sectionIndex * columnHeaders.length + col + 1;
+            const style = { gridArea: `2/${gridCol}`, width: `${CELL_SIZE}px` };
 
-            return <div key={sectionIndex * 100 + col} className='higrid-cell higrid-header-cell'
-                style={{ gridArea: `2/${gridCol}`, width: `${CELL_SIZE}px` }}>
+            if (gridCol === selectedCell.col) {
+                style.color = GOLD;
+            }
+
+            return <div key={sectionIndex * 100 + col} className='higrid-cell higrid-header-cell' style={style}>
                 <div className='ellipsis'
                     onMouseEnter={(e) => tooltip.show({ e, text: name, dx: -5, dy: 25 })}
                     onMouseLeave={tooltip.hide}>{name}
