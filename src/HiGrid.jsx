@@ -363,6 +363,16 @@ const HiGrid = (props) => {
         });
     };
 
+    const onDeleteNode = node => {
+        const pkey = parentKey(node.key);
+        const pnode = meta[pkey].node;
+        const i = _.last(node.key) - 1;
+        pnode.children.splice(i, 1);
+
+        onNavigate({ key: UP });
+        setTargets({ nodes, keepMeta: true });
+    };
+
     const renderHeaders = () => {
         const renderHeaderCell = ({ sectionIndex, name, col }) => {
             const gridCol = sectionIndex * columnHeaders.length + col + 1;
@@ -504,7 +514,8 @@ const HiGrid = (props) => {
     return (
         <div style={{ display: 'grid', overflow: 'hidden' }} onClick={() => l.view.focus()}>
             <div id='higrid-view' ref={e => l.view = e} className='higrid-view' tabIndex={0} onKeyDown={onKeyDown}>
-                <HiGridToolbar onAddNode={onAddNode} style={{ placeSelf: 'end start', padding: '10px 10px 10px 0' }} />
+                <HiGridToolbar style={{ placeSelf: 'end start', padding: '10px 10px 10px 0' }}
+                    onAddNode={onAddNode} onDeleteNode={onDeleteNode} />
                 <div id='gh' ref={gh_ref} className='higrid-headers' style={{ gridArea: '1/2', grid: headerGrid, maxWidth: maxWidthHeaders }}>
                     {renderHeaders()}
                 </div>

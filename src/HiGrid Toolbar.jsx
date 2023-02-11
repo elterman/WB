@@ -1,6 +1,7 @@
 import SvgInfo from './Icons/Svg Info';
 import SvgAddChild from './Icons/Svg Add Child';
 import SvgAddSibling from './Icons/Svg Add Sibling';
+import SvgDeleteNode from './Icons/Svg Delete Node';
 import { useTooltip } from './Tooltip';
 import _ from 'lodash';
 import { Fragment } from 'react';
@@ -10,7 +11,7 @@ import { a_funds_to_add, a_selected_cell, a_targets } from './atoms';
 import DropdownSelector from './Dropdown Selector';
 
 const HiGridToolbar = (props) => {
-    const { onAddNode, style } = props;
+    const { onAddNode, onDeleteNode, style } = props;
     const tooltip = useTooltip();
     const { meta } = useAtomValue(a_targets);
     const selectedCell = useAtomValue(a_selected_cell);
@@ -23,9 +24,9 @@ const HiGridToolbar = (props) => {
             ['Press...', 'To...'],
             ['Spacebar, or F2, or Enter', 'Edit Cell'],
             ['Delete', 'Set Trade Cell to 0%'],
-            ['1,2...', 'Collapse All at Level 1,2... and below'],
+            ['1,2...', 'Collapse All from Level 1,2... down'],
             ['0', 'Expand All'],
-            ['Alt+Left, Alt+Right', 'Collapse/Expand Node'],
+            ['Alt+Left, Alt+Right', 'Collapse/Expand Row'],
             ['Home, End', 'Go to Start, End of Row '],
             ['Ctrl+Home, Ctrl+End', 'Go to Upper Left, Bottom Right'],
             ['Alt+Up, Alt+Down', 'Go to Sibling'],
@@ -59,6 +60,7 @@ const HiGridToolbar = (props) => {
                 i === 1 ? <SvgAddSibling above width={25} disabled={!leaf} /> :
                     i === 2 ? <SvgAddSibling width={25} disabled={!leaf} /> : null} />
         </div>)}
+        <div onClick={() => onDeleteNode(node)}><SvgDeleteNode width={25} disabled={!node.canDelete}/></div>
     </div>;
 };
 
