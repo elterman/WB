@@ -8,6 +8,7 @@ import { APP_BACKGROUND, PALETTES, GOLD, LAVENDER, OFF_BACKGROUND, OFF_WHITE, LE
 import { useForceUpdate } from './hooks';
 import { useTooltip } from './Tooltip';
 import { getBox, hasScrollbar, syncScroll, windowSize, formatNumeric } from './utils';
+import HiGridToolbar from './HiGrid Toolbar';
 
 const ROW_SIZE = 29;
 const CELL_SIZE = 70;
@@ -455,6 +456,7 @@ const HiGrid = (props) => {
     return (
         <div style={{ display: 'grid', overflow: 'hidden' }} onClick={() => l.view.focus()}>
             <div id='higrid-view' ref={e => l.view = e} className='higrid-view' tabIndex={0} onKeyDown={onKeyDown}>
+                <HiGridToolbar style={{ placeSelf: 'end start', padding: '10px 10px 10px 0' }}/>
                 <div id='gh' ref={gh_ref} className='higrid-headers' style={{ gridArea: '1/2', grid: headerGrid, maxWidth: maxWidthHeaders }}>
                     {renderHeaders()}
                 </div>
