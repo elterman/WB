@@ -8,7 +8,7 @@ const Icon = ({ style = {}, color = OFF_WHITE, hoverColor = WHITE, width = '100%
     onMouseOver={() => setColor(hoverColor)} onMouseLeave={() => setColor(color)}>
     {/* <rect width='100%' height='100%' fill='darkslategray' /> */}
     <circle cx={50} cy={50} r={40} fill='none' stroke={_color} strokeWidth={6} />
-    <text x={42} y={72} fill={_color} fontSize={58} fontFamily='Roboto Bold' fontWeight='bold'>i</text>
+    <text x={42} y={72} fill={_color} fontSize={54} fontFamily='Roboto Bold'>i</text>
   </svg>;
 };
 
