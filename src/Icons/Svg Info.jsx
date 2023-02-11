@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import { DARK_GOLD, GOLD } from '../const';
+import { DARK_GOLD, GOLD, OFF_WHITE, WHITE } from '../const';
 
-const Icon = ({ style = {}, color = DARK_GOLD, hoverColor = GOLD, width = '100%', viewBox = '0 0 100 100' }) => {
+const Icon = ({ style = {}, color = OFF_WHITE, hoverColor = WHITE, width = '100%', viewBox = '0 0 100 100' }) => {
   const [_color, setColor] = useState(color);
 
   return <svg style={{ ...style, display: 'block' }} width={width} height={width} viewBox={viewBox} xmlns="http://www.w3.org/2000/svg"

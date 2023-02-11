@@ -5,10 +5,15 @@ import { useTooltip } from './Tooltip';
 import _ from 'lodash';
 import { Fragment } from 'react';
 import { OFF_WHITE, WHITE } from './const';
+import { useAtomValue } from 'jotai';
+import { a_selected_cell, a_targets_meta } from './atoms';
 
 const HiGridToolbar = (props) => {
     const { style } = props;
     const tooltip = useTooltip();
+    const meta = useAtomValue(a_targets_meta);
+    const selectedCell = useAtomValue(a_selected_cell);
+    const leaf = !meta[selectedCell.key].node.children;
 
     const renderHelp = () => {
         const help = [
@@ -40,13 +45,13 @@ const HiGridToolbar = (props) => {
     return <div className='higrid-toolbar' style={{ ...style }}>
         <div onMouseEnter={(e) => tooltip.show({ e, text: renderHelp, style: { maxWidth: '500px', paddingRight: '20px' } })}
             onMouseLeave={tooltip.hide}>
-            <SvgInfo width={25} />
+            <SvgInfo width={24} />
         </div>
-        <div/>
-        <div/>
-        <SvgAddChild width={25} />
-        <SvgAddSibling width={25} above={true}/>
-        <SvgAddSibling width={25} />
+        <div />
+        <div />
+        <SvgAddChild width={25} disabled={leaf} />
+        <SvgAddSibling width={25} above={true} disabled={!leaf} />
+        <SvgAddSibling width={25} disabled={!leaf} />
     </div>;
 };
 
