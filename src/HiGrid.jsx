@@ -7,7 +7,7 @@ import { cellBox, cellId, nodeVisible, parentKey, split, splitKey } from './Fold
 import { APP_BACKGROUND, PALETTES, GOLD, LAVENDER, OFF_BACKGROUND, OFF_WHITE, LEFT, RIGHT, UP, DOWN, GOTO_PARENT } from './const';
 import { useForceUpdate } from './hooks';
 import { useTooltip } from './Tooltip';
-import { getBox, hasScrollbar, syncScroll, windowSize, formatNumeric, str } from './utils';
+import { getBox, hasScrollbar, syncScroll, windowSize, formatNumeric, str, same } from './utils';
 import HiGridToolbar from './HiGrid Toolbar';
 
 const ROW_SIZE = 29;
@@ -142,7 +142,7 @@ const HiGrid = (props) => {
 
                     cell = { ...selectedCell, key: splitKey(key) };
 
-                    if (!_.isEqual(cell.key, [1])) {
+                    if (cell.key.length > 1) {
                         scrollIntoView(cell);
                     }
                 }
@@ -405,7 +405,7 @@ const HiGrid = (props) => {
         </>;
     };
 
-    const isSelectedRow = (node) => _.isEqual(node.key, selectedCell.key);
+    const isSelectedRow = (node) => same(node.key, selectedCell.key);
 
     const renderCell = (node, col, value) => {
         const cell = { key: node.key, col };
@@ -470,7 +470,7 @@ const HiGrid = (props) => {
             <div id={id} className='higrid-cell' style={style} onClick={onClickCell}>
                 <div className='ellipsis'>{col ? formatNumeric(value) : value}</div>
             </div>
-            {editing && _.isEqual(cell, selectedCell) && renderInput()}
+            {editing && same(cell, selectedCell) && renderInput()}
             {renderSelectedBorder()}
             {!col && selectedRow && level > 1 && <div style={bulletStyle}>●</div>}
         </Fragment>;

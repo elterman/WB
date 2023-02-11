@@ -157,3 +157,5 @@ export const getBox = id => {
 };
 
 export const str = value => `${value}`;
+
+export const same = (value1, value2) => _.isEqual(value1, value2);
