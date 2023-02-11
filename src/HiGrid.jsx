@@ -239,23 +239,24 @@ const HiGrid = (props) => {
 
                 if (e.altKey) {
                     if (e.key === LEFT || e.key === RIGHT) {    // (un)fold node
-                        const folded = e.key === LEFT;
-
                         if (e.ctrlKey) {
-                            const fold = (key) => {
-                                const mob = meta[key];
-                                mob.folded = folded;
-                                _.each(mob.node.children, node => fold(node.key));
-                            };
+                            const folded = e.key === LEFT;
 
-                            fold(selectedCell.key);
-                        }
-                        else {
-                            meta[selectedCell.key].folded = folded;
-                        }
+                            if (e.shiftKey) {
+                                const fold = (key) => {
+                                    const mob = meta[key];
+                                    mob.folded = folded;
+                                    _.each(mob.node.children, node => fold(node.key));
+                                };
 
-                        setMeta({ ...meta });
-                        forceUpdate();
+                                fold(selectedCell.key);
+                            } else {
+                                meta[selectedCell.key].folded = folded;
+                            }
+
+                            setMeta({ ...meta });
+                            forceUpdate();
+                        }
 
                         return;
                     }
