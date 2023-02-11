@@ -2,6 +2,7 @@ import SvgInfo from './Icons/Svg Info';
 import SvgAddChild from './Icons/Svg Add Child';
 import SvgAddSibling from './Icons/Svg Add Sibling';
 import SvgDeleteNode from './Icons/Svg Delete Node';
+import SvgFloppy from './Icons/Svg Floppy';
 import { useTooltip } from './Tooltip';
 import _ from 'lodash';
 import { Fragment } from 'react';
@@ -9,6 +10,7 @@ import { OFF_WHITE, WHITE } from './const';
 import { useAtomValue } from 'jotai';
 import { a_funds_to_add, a_selected_cell, a_targets } from './atoms';
 import DropdownSelector from './Dropdown Selector';
+import Button from './Button';
 
 const HiGridToolbar = (props) => {
     const { onAddNode, onDeleteNode, style } = props;
@@ -48,6 +50,9 @@ const HiGridToolbar = (props) => {
         </div>;
     };
 
+    const size = 25;
+    const buttonStyle = { background: 'none', padding: 0 };
+
     return <div className='higrid-toolbar' style={{ ...style }}>
         <div onMouseEnter={(e) => tooltip.show({ e, text: renderHelp, style: { maxWidth: '500px', paddingRight: '20px' } })}
             onMouseLeave={tooltip.hide}>
@@ -56,12 +61,15 @@ const HiGridToolbar = (props) => {
         <div />
         <div />
         {_.map(['child', 'above', 'below'], (pos, i) => <div key={i}><DropdownSelector id={`add-${pos}`} items={_.keys(fundsToAdd)}
-            setItem={item => onAddNode(item, pos)} offset='center' disabled={!!leaf !== !!i} style={{ background: 'none', padding: 0 }}
-            icon={i === 0 ? <SvgAddChild width={25} disabled={leaf} /> :
-                i === 1 ? <SvgAddSibling above width={25} disabled={!leaf} /> :
-                    i === 2 ? <SvgAddSibling width={25} disabled={!leaf} /> : null} />
+            setItem={item => onAddNode(item, pos)} offset='center' disabled={!!leaf !== !!i} style={buttonStyle}
+            icon={i === 0 ? <SvgAddChild width={size} disabled={leaf} /> :
+                i === 1 ? <SvgAddSibling above width={size} disabled={!leaf} /> :
+                    i === 2 ? <SvgAddSibling width={size} disabled={!leaf} /> : null} />
         </div>)}
-        <div onClick={() => onDeleteNode(node)}><SvgDeleteNode width={25} disabled={!node.canDelete}/></div>
+        <div onClick={() => onDeleteNode(node)}><SvgDeleteNode width={size} disabled={!node.canDelete} /></div>
+        <div />
+        <div />
+        <Button style={buttonStyle} onClick={() => { }}><SvgFloppy width={18} disabled={false} /></Button>
     </div>;
 };
 

@@ -3,11 +3,11 @@ import { useTooltip } from '../Tooltip';
 
 const Icon = (props) => {
   const { style = {}, width = '100%', viewBox = '0 0 100 100' } = props;
-  const { disabled, color1 = OFF_WHITE, color2 = GREEN, color3 = '#FFFFFF80' } = props;
+  const { disabled, color1 = OFF_WHITE, color2 = GREEN, color3 = '#C0C0C0' } = props;
   const tooltip = useTooltip();
 
   return <svg style={{ ...style }} display={'block'} width={width} height={width} viewBox={viewBox} xmlns="http://www.w3.org/2000/svg"
-    filter={disabled ? 'grayscale()' : ''} opacity={disabled ? 0.5 : 1} cursor={disabled ? 'initial' : 'pointer'}
+    filter={disabled ? 'grayscale()' : ''} opacity={disabled ? 0.8 : 1} cursor={disabled ? 'initial' : 'pointer'}
     onMouseEnter={e => tooltip.show({ e, text: 'Add Child' })} onMouseLeave={tooltip.hide}>
     {/* <rect width='100%' height='100%' fill='darkslategray' /> */}
     <circle cx={12} cy={20} r={12} fill={color1} />
@@ -16,7 +16,7 @@ const Icon = (props) => {
     <use href="#dot" transform="translate(0,30)" />
     <use href="#dot" transform="translate(15,30)" />
     <use href="#dot" transform="translate(30,30)" />
-    <circle id='dot' cx={80} cy={77} r={15} stroke={color2} strokeWidth={5} fill='none'/>
+    <circle id='dot' cx={80} cy={77} r={15} stroke={color2} strokeWidth={5} fill='none' />
   </svg>;
 };
 

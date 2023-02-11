@@ -52,7 +52,7 @@ const Toast = (props) => {
         setFade(true);
     };
 
-    const handleClick = (e) => {
+    const onClick = (e) => {
         if (e.target.id !== 'toast-x') {
             l.cannotExpire = true;
             forceUpdate();
@@ -78,7 +78,7 @@ const Toast = (props) => {
     const classes = `toast-x ${duration && !l.cannotExpire ? 'toast-x-exp' : ''}`;
 
     return (
-        <animated.div style={{ display: 'grid', opacity, transform, zIndex }} onClick={handleClick}>
+        <animated.div style={{ display: 'grid', opacity, transform, zIndex }} onClick={onClick}>
             <div className="toast" style={{ background, borderColor: color }}>
                 <div className="toast-message root-scroll">{renderCallback ? renderCallback() : message}</div>
                 <div id="toast-x" className={classes} onClick={remove}>

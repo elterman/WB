@@ -64,7 +64,7 @@ const DropdownSelector = (props) => {
             onFocus={() => setFocused(true)}
             onBlur={() => setFocused(false)}
             onKeyDown={handleKeyDown}>
-            <Button id={bid} style={{ ...style }} label={selectedItem} handleClick={updateDropdown} disabled={!!disabled} tip={tip} >
+            <Button id={bid} style={{ ...style }} label={selectedItem} onClick={updateDropdown} disabled={!!disabled} tip={tip} >
                 {icon}
             </Button>
         </div>

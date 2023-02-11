@@ -3,7 +3,7 @@ import { useTooltip } from '../Tooltip';
 
 const Icon = (props) => {
   const { style = {}, width = '100%', viewBox = '0 0 100 100' } = props;
-  const { above, disabled = false, color1 = OFF_WHITE, color2 = GREEN, color3 = '#FFFFFF80' } = props;
+  const { above, disabled = false, color1 = OFF_WHITE, color2 = GREEN, color3 = '#C0C0C0' } = props;
   const tooltip = useTooltip();
 
   const onMouseEnter = e => tooltip.show({ e, text: `Add Sibling ${above ? 'Above' : 'Below'}` });
@@ -12,7 +12,7 @@ const Icon = (props) => {
   const y2 = 82;
 
   return <svg style={{ ...style }} display={'block'} width={width} height={width} viewBox={viewBox} xmlns="http://www.w3.org/2000/svg"
-    filter={disabled ? 'grayscale()' : ''} opacity={disabled ? 0.5 : 1} cursor={disabled ? 'initial' : 'pointer'}
+    filter={disabled ? 'grayscale()' : ''} opacity={disabled ? 0.8 : 1} cursor={disabled ? 'initial' : 'pointer'}
     onMouseEnter={onMouseEnter} onMouseLeave={tooltip.hide}>
 
     {/* <rect width='100%' height='100%' fill='darkslategray' /> */}
