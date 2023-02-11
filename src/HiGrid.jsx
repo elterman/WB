@@ -18,7 +18,7 @@ const BOTTOM_LEFT = 'bottom-left';
 const BOTTOM_RIGHT = 'bottom-right';
 
 const HiGrid = (props) => {
-    const { atom, columnHeaders, sectionHeaders, readOnly, isCellEditable, getCellStyle, onAcceptChange } = props;
+    const { atom, columnHeaders, sectionHeaders, readOnly, isCellEditable, getCellStyle, onAcceptChange, createNode } = props;
     const { nodes, metaAtom } = useAtomValue(atom);
     const [meta, setMeta] = useAtom(metaAtom);
     const setTargets = useSetAtom(a_targets);
@@ -331,8 +331,9 @@ const HiGrid = (props) => {
     };
 
     const onAddNode = (item, pos) => {
+        const new_node = createNode ? createNode(item) : { item: [item] };
+
         let key = [...selectedCell.key];
-        const new_node = { item: [item], canDelete: true };
 
         switch (pos) {
             case 'child': {

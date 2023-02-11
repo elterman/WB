@@ -55,12 +55,15 @@ const TargetsPage = () => {
             return;
         }
 
-        let node = meta[cell.key].node;
-        node.item[cell.col] = +value;
+        const trade = +value;
 
-        // update final weight = target + trade
+        let node = meta[cell.key].node;
+        node.item[cell.col] = trade;
+
+        // final weight = target + trade
         const wcol = cell.col + sectionSize;
-        node.item[wcol] = +value + node.item[cell.col - sectionSize];
+        const target = node.item[cell.col - sectionSize] || 0;
+        node.item[wcol] = target + trade;
 
         const updateTotal = (key, col) => {
             if (_.isEmpty(key)) {
@@ -84,8 +87,16 @@ const TargetsPage = () => {
         updateTotal(key, wcol);
     };
 
+    const createNode = (name) => {
+        const item = [name, ..._.fill(Array(sectionSize), ''), ..._.fill(Array(sectionSize * 2), 0)];
+        const node = { item, canDelete: true };
+
+        return node;
+    };
+
     return <HiGrid atom={atom} columnHeaders={columnHeaders} sectionHeaders={['Current Targets (%)', 'Trades (%)', 'Final Weights (%)']}
-        readOnly={false} isCellEditable={isCellEditable} getCellStyle={getCellStyle} onAcceptChange={onAcceptChange} />;
+        readOnly={false} isCellEditable={isCellEditable} getCellStyle={getCellStyle}
+        onAcceptChange={onAcceptChange} createNode={createNode} />;
 };
 
 export default TargetsPage;

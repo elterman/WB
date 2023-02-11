@@ -50,7 +50,7 @@ const InputPopup = (props) => {
             setTargetsInput({ date: date1, fname: fname1 });
 
             _.delay(() => {
-                const nodes = MOCK_NODES;
+                const nodes = _.cloneDeep(MOCK_NODES);
 
                 setTargets({nodes});
                 setLoading(false);

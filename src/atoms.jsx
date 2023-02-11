@@ -2,7 +2,6 @@ import { atom } from 'jotai';
 import { atomWithReset, freezeAtomCreator } from 'jotai/utils';
 import _ from 'lodash';
 import { BENCHMARKS, COMPARE, PALETTE, PALETTES, TARGETS } from './const';
-import { MOCK_NUMBERS } from './Mock Data';
 import { lastDayOfPrevMonth, lastWeekday, str } from './utils';
 
 export const defaultDate = (monthly = false) => (monthly ? lastDayOfPrevMonth() : lastWeekday()).format('YYYY-MM-DD');
@@ -154,13 +153,6 @@ const setGridData = ({ atom, get, set, payload }) => {
     };
 
     processNodes(nodes);
-
-    // MOCK ///////////////////////////////////////////////////
-    _.each(_.keys(new_meta), (key, i) => {
-        const mob = new_meta[key];
-        mob.node.item = [mob.node.item[0], ...MOCK_NUMBERS[i]];
-    });
-    ///////////////////////////////////////////////////////////
 
     set(natom, nodes);
     set(matom, new_meta);
