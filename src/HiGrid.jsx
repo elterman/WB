@@ -405,13 +405,16 @@ const HiGrid = (props) => {
         </>;
     };
 
+    const isSelectedRow = (node) => _.isEqual(node.key, selectedCell.key);
+
     const renderCell = (node, col, value) => {
         const cell = { key: node.key, col };
         const editable = isCellEditable && isCellEditable(cell);
         const gridArea = `1/${col + 1}`;
-        const indent = node.key.length * LEVEL_INDENT;
+        const level = node.key.length;
+        const indent = level * LEVEL_INDENT;
         const cx = col ? CELL_SIZE : (300 - indent);
-        const selectedRow = _.isEqual(node.key, selectedCell.key);
+        const selectedRow = isSelectedRow(node);
 
         const renderInput = () => {
             const onBlur = () => editing && acceptChange();
@@ -434,8 +437,7 @@ const HiGrid = (props) => {
             const border = `2px solid ${selectedBorderColor}`;
             const pointerEvents = editing ? 'none' : 'auto';
 
-            return <div style={{ gridArea, width: `${cx - 1}px`, marginLeft: '1px', border, pointerEvents }}
-                onClick={onEdit} />;
+            return <div style={{ gridArea, width: `${cx - 1}px`, marginLeft: '1px', border, pointerEvents }} onClick={onEdit} />;
         };
 
         const onClickCell = () => {
@@ -462,12 +464,15 @@ const HiGrid = (props) => {
             }
         }
 
+        const bulletStyle = { gridArea, alignSelf: 'center', color: lite ? APP_BACKGROUND : GOLD, transform: `translateX(${4 - indent}px)` };
+
         return <Fragment key={col}>
             <div id={id} className='higrid-cell' style={style} onClick={onClickCell}>
                 <div className='ellipsis'>{col ? formatNumeric(value) : value}</div>
             </div>
             {editing && _.isEqual(cell, selectedCell) && renderInput()}
             {renderSelectedBorder()}
+            {!col && selectedRow && level > 1 && <div style={bulletStyle}>●</div>}
         </Fragment>;
 
     };
