@@ -215,8 +215,10 @@ const HiGrid = (props) => {
                 onEdit();
                 return;
             case 'Delete':
-                acceptChange(true);
-                forceUpdate();
+                if (isCellEditable(selectedCell)) {
+                    acceptChange(true);
+                    forceUpdate();
+                }
                 return;
             case 'Home': case 'End':
                 const home = e.key === 'Home';
@@ -295,7 +297,6 @@ const HiGrid = (props) => {
     };
 
     const acceptChange = (clear) => {
-        console.log(editing);
         endEdit();
 
         const value = clear ? 0 : l.inputBox.value;
@@ -331,18 +332,23 @@ const HiGrid = (props) => {
 
     const onAddNode = (item, pos) => {
         let key = [...selectedCell.key];
-        const node = meta[key].node;
+        const new_node = { item: [item], canDelete: true };
 
         switch (pos) {
-            case 'child':
+            case 'child': {
+                const node = meta[key].node;
                 key = [...key, node.children.length + 1];
-                node.children.push({ key, item: [item], canDelete: true });
+                node.children.push(new_node);
                 meta[node.key].folded = false;
                 break;
-            case 'above':
+            }
+            case 'above': case 'below': {
+                const off = pos === 'above' ? 1 : 0;
+                const pkey = parentKey(key);
+                const node = meta[pkey].node;
+                node.children.splice(_.last(key) - off, 0, new_node);
                 break;
-            case 'below':
-                break;
+            }
             default: return;
         }
 

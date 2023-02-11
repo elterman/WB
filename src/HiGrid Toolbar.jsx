@@ -22,7 +22,7 @@ const HiGridToolbar = (props) => {
         const help = [
             ['Press...', 'To...'],
             ['Spacebar, or F2, or Enter', 'Edit Cell'],
-            ['Delete', 'Set Trade to 0%'],
+            ['Delete', 'Set Trade Cell to 0%'],
             ['1,2...', 'Collapse All at Level 1,2... and below'],
             ['0', 'Expand All'],
             ['Alt+Left, Alt+Right', 'Collapse/Expand Node'],
