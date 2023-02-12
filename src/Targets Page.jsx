@@ -94,9 +94,13 @@ const TargetsPage = () => {
         return node;
     };
 
+    const onSave = local => {
+        //
+    };
+
     return <HiGrid atom={atom} columnHeaders={columnHeaders} sectionHeaders={['Current Targets (%)', 'Trades (%)', 'Final Weights (%)']}
         readOnly={false} isCellEditable={isCellEditable} getCellStyle={getCellStyle}
-        onAcceptChange={onAcceptChange} createNode={createNode} />;
+        onAcceptChange={onAcceptChange} createNode={createNode} onSave={onSave} />;
 };
 
 export default TargetsPage;

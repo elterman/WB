@@ -161,7 +161,7 @@ const getGridData = ({ atom, get }) => {
 };
 
 const setGridData = ({ atom, get, set, payload }) => {
-    const { nodes, keepMeta } = payload;
+    const { nodes, update } = payload;
     const { natom, matom } = gridAtoms(atom);
     const meta = get(matom);
     const new_meta = {};
@@ -174,7 +174,7 @@ const setGridData = ({ atom, get, set, payload }) => {
         _.each(nodes, (node, i) => {
             node.key = [...parentKey, i + 1];
 
-            const mob = keepMeta ? _.get(meta, str(node.key)) : null;
+            const mob = update ? _.get(meta, str(node.key)) : null;
             new_meta[node.key] = { ...mob, node };
             processNodes(node.children, node.key);
         });

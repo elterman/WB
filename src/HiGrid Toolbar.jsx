@@ -14,7 +14,7 @@ import DropdownSelector from './Dropdown Selector';
 import Button from './Button';
 
 const HiGridToolbar = (props) => {
-    const { onAddNode, onDeleteNode, style } = props;
+    const { onAddNode, onDeleteNode, canSave, onSave, style } = props;
     const tooltip = useTooltip();
     const { meta } = useAtomValue(a_targets);
     const selectedCell = useAtomValue(a_selected_cell);
@@ -29,14 +29,14 @@ const HiGridToolbar = (props) => {
             ['Delete', 'Set Trade Cell to 0%'],
             ['1,2...', 'Collapse All from Level 1,2... down'],
             ['0', 'Expand All'],
-            ['Ctrl + Alt + ⇐/⇒', 'Collapse/Expand Row'],
-            ['Shift + Ctrl + Alt + ⇐/⇒', 'Collapse/Expand Row Recursively'],
+            ['Ctrl + Alt + ⇦/⇨', 'Collapse/Expand Row'],
+            ['Shift + Ctrl + Alt + ⇦/⇨', 'Collapse/Expand Row Recursively'],
             ['Home, End', 'Go to Start, End of Row '],
             ['Ctrl + Home, Ctrl + End', 'Go to Upper Left, Bottom Right'],
             ['Alt + ⇧/⇩', 'Go to Sibling'],
             ['Ctrl + Alt + ⇧, or Backspace', 'Go to Parent'],
             ['Ctrl + ⇧/⇩', 'Scroll Vertically'],
-            ['Ctrl + ⇐/⇒', 'Scroll Horizontally'],
+            ['Ctrl + ⇦/⇨', 'Scroll Horizontally'],
         ];
 
         return <div style={{ display: 'grid', grid: 'auto / auto 1fr', gap: '5px 10px' }}>
@@ -68,8 +68,8 @@ const HiGridToolbar = (props) => {
         </div>)}
         <div onClick={() => onDeleteNode(node)}><SvgDeleteNode width={size} disabled={!node.canDelete} /></div>
         <div/>
-        <Button style={buttonStyle} onClick={() => { }}><SvgSave width={size} disabled={true} /></Button>
-        <Button style={buttonStyle} onClick={() => { }}><SvgSaveLocal width={size} disabled={true} /></Button>
+        <Button style={buttonStyle} onClick={() => onSave(false)}><SvgSave width={size} disabled={!canSave.global} /></Button>
+        <Button style={buttonStyle} onClick={() => onSave(true)}><SvgSaveLocal width={size} disabled={!canSave.local} /></Button>
     </div>;
 };
 

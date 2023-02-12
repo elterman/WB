@@ -18,7 +18,8 @@ const BOTTOM_LEFT = 'bottom-left';
 const BOTTOM_RIGHT = 'bottom-right';
 
 const HiGrid = (props) => {
-    const { atom, columnHeaders, sectionHeaders, readOnly, isCellEditable, getCellStyle, onAcceptChange, createNode } = props;
+    const { atom, columnHeaders, sectionHeaders, readOnly, isCellEditable, getCellStyle } = props;
+    const { onAcceptChange, createNode, canSave = { local: false, global: false }, onSave } = props;
     const { nodes, metaAtom } = useAtomValue(atom);
     const [meta, setMeta] = useAtom(metaAtom);
     const setTargets = useSetAtom(a_targets);
@@ -370,7 +371,7 @@ const HiGrid = (props) => {
             default: return;
         }
 
-        setTargets({ nodes, keepMeta: true });
+        setTargets({ nodes, update: true });
 
         _.delay(() => {
             const cell = { key, col: 0 };
@@ -387,7 +388,7 @@ const HiGrid = (props) => {
         pnode.children.splice(i, 1);
 
         onNavigate({ key: UP });
-        setTargets({ nodes, keepMeta: true });
+        setTargets({ nodes, update: true });
     };
 
     const renderHeaders = () => {
@@ -540,7 +541,7 @@ const HiGrid = (props) => {
         <div style={{ display: 'grid', overflow: 'hidden' }} onClick={() => l.view.focus()}>
             <div id='higrid-view' ref={e => l.view = e} className='higrid-view' tabIndex={0} onKeyDown={onKeyDown}>
                 <HiGridToolbar style={{ placeSelf: 'end start', padding: '0 10px 5px 0' }}
-                    onAddNode={onAddNode} onDeleteNode={onDeleteNode} />
+                    onAddNode={onAddNode} onDeleteNode={onDeleteNode} canSave={canSave} onSave={onSave} />
                 <div id='gh' ref={gh_ref} className='higrid-headers' style={{ gridArea: '1/2', grid: headerGrid, maxWidth: maxWidthHeaders }}>
                     {renderHeaders()}
                 </div>

@@ -21,7 +21,7 @@ const Icon = ({ style = {}, width, disabled = false, color = GREEN, viewBox = '0
             </g>
 
             <g strokeWidth={6} stroke={DARK_GOLD} fill={APP_BACKGROUND} transform='scale(0.65) translate(55,55)'>
-                <circle cx={50} cy={50} r={55} stroke='none'/>
+                <circle cx={50} cy={50} r={60} stroke='none'/>
                 <circle cx={50} cy={50} r={46} />
                 <circle cx={50} cy={34} r={14} />
                 <path d='M18,80 C 30,50 70,50 82,80' />
