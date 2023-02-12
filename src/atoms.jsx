@@ -1,7 +1,7 @@
 import { atom } from 'jotai';
 import { atomWithReset, freezeAtomCreator } from 'jotai/utils';
 import _ from 'lodash';
-import { BENCHMARKS, COMPARE, PALETTE, PALETTES, TARGETS } from './const';
+import { APP_BACKGROUND, BENCHMARKS, COMPARE, GOLD, LAVENDER, OFF_WHITE, PALETTE, PALETTES, TARGETS, WHITE } from './const';
 import { lastDayOfPrevMonth, lastWeekday, str } from './utils';
 
 export const defaultDate = (monthly = false) => (monthly ? lastDayOfPrevMonth() : lastWeekday()).format('YYYY-MM-DD');
@@ -46,11 +46,16 @@ export const a_lite = atom(get => {
     return p.includes('-lite');
 });
 
-export const a_theme_colors = atom(get => {
+export const a_theme = atom(get => {
     const lite = get(a_lite);
 
     return {
         alert: lite ? '#FFA07A' : '#B63715',
+        change: lite ? '#A2C0D9' : '#506C85',
+        input: { background: lite ? '#F0EAD6' : APP_BACKGROUND, color: lite ? APP_BACKGROUND : OFF_WHITE },
+        selectedBorder: { editable: lite ? 'darkmagenta' : LAVENDER, readonly: lite ? 'darkgreen' : GOLD },
+        rowMarker:lite ? APP_BACKGROUND : GOLD,
+        toggle:  lite ? APP_BACKGROUND : WHITE,
     };
 });
 

@@ -1,5 +1,5 @@
 import { useAtom, useAtomValue } from 'jotai';
-import {  a_lite, a_originals, a_selected_family, a_targets, a_theme_colors } from './atoms';
+import { a_lite, a_originals, a_selected_family, a_targets, a_theme } from './atoms';
 import HiGrid from './HiGrid';
 import { useComingSoon } from './hooks';
 import _ from 'lodash';
@@ -13,8 +13,7 @@ const TargetsPage = () => {
     const atom = a_targets;
     const { nodes, meta } = useAtomValue(atom);
     const json = JSON.stringify(nodes);
-    const lite = useAtomValue(a_lite);
-    const colors = useAtomValue(a_theme_colors);
+    const theme = useAtomValue(a_theme);
     const [originals, setOriginals] = useAtom(a_originals);
     const forceUpdate = useForceUpdate(true);
 
@@ -35,9 +34,9 @@ const TargetsPage = () => {
         const value = values[col];
 
         if (section === 3 && level === 1 && formatNumeric(value) !== '100.0') {
-            style.background = colors.alert;
+            style.background = theme.alert;
         } else if ((section === 2 && !node.children && +value) || (section === 3 && +values[col - sectionSize])) {
-            style.background = lite ? '#A2C0D9' : '#506C85';
+            style.background = theme.change;
         }
 
         return style;

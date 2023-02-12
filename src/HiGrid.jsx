@@ -1,10 +1,10 @@
 import { useAtom, useAtomValue, useSetAtom } from 'jotai';
 import _ from 'lodash';
 import { Fragment, useCallback, useEffect, useRef, useState } from 'react';
-import { a_theme_colors, a_lite, a_palette, a_selected_cell, a_targets } from './atoms';
+import { a_theme, a_lite, a_palette, a_selected_cell, a_targets } from './atoms';
 import Foldable, { LEVEL_INDENT } from './Foldable';
 import { cellBox, cellId, nodeVisible, parentKey, split, splitKey } from './Foldable Utils';
-import { APP_BACKGROUND, PALETTES, GOLD, LAVENDER, OFF_BACKGROUND, OFF_WHITE, LEFT, RIGHT, UP, DOWN, GOTO_PARENT, WHITE } from './const';
+import { APP_BACKGROUND, PALETTES, GOLD, OFF_BACKGROUND, LEFT, RIGHT, UP, DOWN, GOTO_PARENT, WHITE } from './const';
 import { useForceUpdate } from './hooks';
 import { useTooltip } from './Tooltip';
 import { getBox, hasScrollbar, syncScroll, windowSize, formatNumeric, str, same } from './utils';
@@ -24,7 +24,7 @@ const HiGrid = (props) => {
     const [meta, setMeta] = useAtom(metaAtom);
     const setTargets = useSetAtom(a_targets);
     const lite = useAtomValue(a_lite);
-    const colors = useAtomValue(a_theme_colors);
+    const theme = useAtomValue(a_theme);
     const [selectedCell, setSelectedCell] = useAtom(a_selected_cell);
     const [editing, setEditing] = useState(null);
     const forceUpdate = useForceUpdate(true);
@@ -436,8 +436,8 @@ const HiGrid = (props) => {
         const renderInput = () => {
             const onBlur = () => editing && acceptChange();
 
-            const background = lite ? '#F0EAD6' : APP_BACKGROUND;
-            const color = lite ? APP_BACKGROUND : OFF_WHITE;
+            const background = theme.input.background;
+            const color = theme.input.color;
 
             return <input className='cell-input' ref={e => (l.inputBox = e)} type="number" onBlur={onBlur}
                 style={{ gridArea, width: `${cx - 1}px`, background, color }} />;
@@ -450,7 +450,7 @@ const HiGrid = (props) => {
                 return null;
             }
 
-            const selectedBorderColor = lite ? (editable ? 'darkmagenta' : 'darkgreen') : (editable ? LAVENDER : GOLD);
+            const selectedBorderColor = theme.selectedBorder[editable ? 'editable' : 'readonly'];
             const border = `2px solid ${selectedBorderColor}`;
             const pointerEvents = editing ? 'none' : 'auto';
 
@@ -481,10 +481,7 @@ const HiGrid = (props) => {
             }
         }
 
-        const rowMarkerStyle = {
-            gridArea, placeSelf: 'center start', transform: `translateX(${4 - indent}px)`,
-            color: lite ? APP_BACKGROUND : GOLD
-        };
+        const rowMarkerStyle = { gridArea, placeSelf: 'center start', transform: `translateX(${4 - indent}px)`, color: theme.rowMarker };
 
         return <Fragment key={col}>
             <div id={id} className='higrid-cell' style={style} onClick={onClickCell}>
@@ -526,7 +523,6 @@ const HiGrid = (props) => {
 
     const { x: wx } = windowSize();
     const classes = `${lite ? 'higrid-view-lite' : ''}`;
-    const toggleColor = lite ? APP_BACKGROUND : WHITE;
     const overflow = `${br && !hasScrollbar(BOTTOM_RIGHT, true) ? 'auto' : 'hidden'}`;
     const headerGrid = `auto auto / repeat(${ncols - 1}, ${CELL_SIZE})`;
     const shades = palette.levels;
@@ -547,7 +543,7 @@ const HiGrid = (props) => {
                 </div>
                 <div id={TOP_LEFT} className={classes} style={{ gridArea: '2/1' }}>
                     <Foldable node={{ children: [nodes[0]], maxLevel: 1 }} atom={metaAtom}
-                        shades={alert ? [colors.alert] : shades} toggleColor={toggleColor}
+                        shades={alert ? [theme.alert] : shades} toggleColor={theme.toggle}
                         onToggleFold={onToggleFold} render={node => renderNode({ node, part: TOP_LEFT })}
                     />
                 </div>
@@ -560,7 +556,7 @@ const HiGrid = (props) => {
                 <div id={BOTTOM_LEFT} className={classes} ref={bl_ref} style={{ gridArea: '3/1', maxHeight: maxHeightBl }}
                     onWheel={e => br?.scrollBy(0, e.deltaY)}>
                     <Foldable node={{ children: nodes[0].children }} atom={metaAtom} shades={shades} onToggleFold={onToggleFold}
-                        toggleColor={toggleColor} render={node => renderNode({ node, part: BOTTOM_LEFT })}
+                        toggleColor={theme.toggle} render={node => renderNode({ node, part: BOTTOM_LEFT })}
                     />
                 </div>
                 <div id={BOTTOM_RIGHT} ref={br_ref} className={`${classes} root-scroll`} onScroll={onScroll}
