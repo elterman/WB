@@ -215,3 +215,5 @@ export const a_selected_family = atom(
         return { fname, members: fob?.members };
     }
 );
+
+export const a_originals = atom({ local: null, global: null });

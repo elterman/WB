@@ -540,9 +540,10 @@ const HiGrid = (props) => {
     return (
         <div style={{ display: 'grid', overflow: 'hidden' }} onClick={() => l.view.focus()}>
             <div id='higrid-view' ref={e => l.view = e} className='higrid-view' tabIndex={0} onKeyDown={onKeyDown}>
-                <HiGridToolbar style={{ placeSelf: 'end start', padding: '0 10px 5px 0' }}
-                    onAddNode={onAddNode} onDeleteNode={onDeleteNode} canSave={canSave} onSave={onSave} />
-                <div id='gh' ref={gh_ref} className='higrid-headers' style={{ gridArea: '1/2', grid: headerGrid, maxWidth: maxWidthHeaders }}>
+                <HiGridToolbar style={{ placeSelf: 'center' }} onAddNode={onAddNode}
+                    onDeleteNode={onDeleteNode} canSave={canSave} onSave={onSave} />
+                <div id='gh' ref={gh_ref} className='higrid-headers'
+                    style={{ gridArea: '1/2', grid: headerGrid, maxWidth: maxWidthHeaders }}>
                     {renderHeaders()}
                 </div>
                 <div id={TOP_LEFT} className={classes} style={{ gridArea: '2/1' }}>

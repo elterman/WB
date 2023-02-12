@@ -1,18 +1,22 @@
-import { useAtomValue } from 'jotai';
-import { a_lite, a_selected_family, a_targets } from './atoms';
+import { useAtom, useAtomValue } from 'jotai';
+import { a_lite, a_originals, a_selected_family, a_targets } from './atoms';
 import HiGrid from './HiGrid';
 import { useComingSoon } from './hooks';
 import _ from 'lodash';
 import { PINK } from './const';
 import { parentKey } from './Foldable Utils';
 import { formatNumeric } from './utils';
+import { useForceUpdate } from '@react-spring/shared';
 
 const TargetsPage = () => {
     const renderComingSoon = useComingSoon();
     const fob = useAtomValue(a_selected_family);
     const atom = a_targets;
-    const { meta } = useAtomValue(atom);
+    const { nodes, meta } = useAtomValue(atom);
+    const json = JSON.stringify(nodes);
     const lite = useAtomValue(a_lite);
+    const [originals, setOriginals] = useAtom(a_originals);
+    const forceUpdate = useForceUpdate(true);
 
     if (fob.fname && fob.fname !== 'BFAF') {
         return renderComingSoon();
@@ -26,11 +30,20 @@ const TargetsPage = () => {
     const getCellStyle = (node, col) => {
         let background = 'none';
 
+        const level = node.key.length;
         const section = getSection(col);
         const values = node.item;
         const value = values[col];
 
-        if (section === 3 && node.key.length === 1 && formatNumeric(value) !== '100.0') {
+        if (level === 1 && !col) {
+            const mincol = sectionSize * 2 + 1;
+            const maxcol = mincol + sectionSize - 1;
+            const weights = _.filter(values, (v, col) => col >= mincol && col <= maxcol);
+
+            if (_.some(weights, w => formatNumeric(w) !== '100.0')) {
+                background = lite ? PINK : 'brown';
+            }
+        } else if (section === 3 && level === 1 && formatNumeric(value) !== '100.0') {
             background = lite ? PINK : 'brown';
         } else if ((section === 2 && !node.children && +value) || (section === 3 && +values[col - sectionSize])) {
             background = lite ? '#A2C0D9' : '#506C85';
@@ -85,6 +98,8 @@ const TargetsPage = () => {
         const key = parentKey(cell.key);
         updateTotal(key, cell.col);
         updateTotal(key, wcol);
+
+        forceUpdate();
     };
 
     const createNode = (name) => {
@@ -95,12 +110,16 @@ const TargetsPage = () => {
     };
 
     const onSave = local => {
-        //
+        const orgs = { ...originals };
+        orgs[local ? 'local' : 'global'] = json;
+        setOriginals(orgs);
     };
+
+    const canSave = { local: json !== originals.local, global: json !== originals.global };
 
     return <HiGrid atom={atom} columnHeaders={columnHeaders} sectionHeaders={['Current Targets (%)', 'Trades (%)', 'Final Weights (%)']}
         readOnly={false} isCellEditable={isCellEditable} getCellStyle={getCellStyle}
-        onAcceptChange={onAcceptChange} createNode={createNode} onSave={onSave} />;
+        onAcceptChange={onAcceptChange} createNode={createNode} canSave={canSave} onSave={onSave} />;
 };
 
 export default TargetsPage;
