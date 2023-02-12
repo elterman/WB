@@ -61,7 +61,7 @@ const HiGridToolbar = (props) => {
         </div>
         <div/>
         {_.map(['child', 'above', 'below'], (pos, i) => <div key={i}><DropdownSelector id={`add-${pos}`} items={_.keys(fundsToAdd)}
-            setItem={item => onAddNode(item, pos)} offset='center' disabled={!!leaf !== !!i} style={buttonStyle}
+            setItem={item => onAddNode(item, pos)} offset='left' disabled={!!leaf !== !!i} style={buttonStyle}
             icon={i === 0 ? <SvgAddChild width={size} disabled={leaf} /> :
                 i === 1 ? <SvgAddSibling above width={size} disabled={!leaf} /> :
                     i === 2 ? <SvgAddSibling width={size} disabled={!leaf} /> : null} />

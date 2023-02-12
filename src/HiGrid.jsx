@@ -18,7 +18,7 @@ const BOTTOM_LEFT = 'bottom-left';
 const BOTTOM_RIGHT = 'bottom-right';
 
 const HiGrid = (props) => {
-    const { atom, columnHeaders, sectionHeaders, readOnly, isCellEditable, getCellStyle } = props;
+    const { atom, columnHeaders, sectionHeaders, readOnly, isCellEditable, getCellStyle, alert } = props;
     const { onAcceptChange, createNode, canSave = { local: false, global: false }, onSave } = props;
     const { nodes, metaAtom } = useAtomValue(atom);
     const [meta, setMeta] = useAtom(metaAtom);
@@ -39,7 +39,7 @@ const HiGrid = (props) => {
     const br = br_ref.current;
     const nsections = sectionHeaders?.length || 1;
     const ncols = 1 + nsections * (columnHeaders?.length || 0);
-    const palette = PALETTES[paletteKey];
+    const palette =  PALETTES[paletteKey];
     const l = useRef({}).current;
 
     useEffect(() => {
@@ -545,7 +545,8 @@ const HiGrid = (props) => {
                     {renderHeaders()}
                 </div>
                 <div id={TOP_LEFT} className={classes} style={{ gridArea: '2/1' }}>
-                    <Foldable node={{ children: [nodes[0]], maxLevel: 1 }} atom={metaAtom} shades={shades} color={color}
+                    <Foldable node={{ children: [nodes[0]], maxLevel: 1 }} atom={metaAtom}
+                        shades={alert ? [(lite ? '#FFA07A' : '#B63715')] : shades} color={color}
                         onToggleFold={onToggleFold} render={node => renderNode({ node, part: TOP_LEFT })}
                     />
                 </div>

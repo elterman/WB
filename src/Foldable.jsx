@@ -7,7 +7,7 @@ export const LEVEL_INDENT = 20;
 const DEFAULT_SHADES = ['#FFFFFF10', '#FFFFFF18', '#FFFFFF20', '#FFFFFF28', '#FFFFFF30', '#FFFFFF38', '#FFFFFF40', '#FFFFFF48'];
 
 const Foldable = (props) => {
-    let { node, maxLevel = Number.MAX_SAFE_INTEGER, flat, render, shades = DEFAULT_SHADES, atom, onToggleFold, color } = props;
+    let { id = '', node, maxLevel = Number.MAX_SAFE_INTEGER, flat, render, shades = DEFAULT_SHADES, atom, onToggleFold, color } = props;
     const [meta, setMeta] = useAtom(atom);
     const hasChildren = !_.isEmpty(node?.children);
 
@@ -65,7 +65,7 @@ const Foldable = (props) => {
         <div className='foldable'>
             {node.key && renderItem()}
             {!folded && level < maxLevel && _.map(node.children, (child, i) =>
-                <Foldable key={i} node={child} maxLevel={node.maxLevel} flat={flat} color={color}
+                <Foldable key={i} id={id} node={child} maxLevel={node.maxLevel} flat={flat} color={color}
                     render={render} shades={shades} atom={atom} onToggleFold={onToggleFold} />)}
         </div>
     );

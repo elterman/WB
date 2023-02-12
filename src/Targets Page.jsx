@@ -3,7 +3,6 @@ import { a_lite, a_originals, a_selected_family, a_targets } from './atoms';
 import HiGrid from './HiGrid';
 import { useComingSoon } from './hooks';
 import _ from 'lodash';
-import { PINK } from './const';
 import { parentKey } from './Foldable Utils';
 import { formatNumeric } from './utils';
 import { useForceUpdate } from '@react-spring/shared';
@@ -41,7 +40,7 @@ const TargetsPage = () => {
             const weights = _.filter(values, (v, col) => col >= mincol && col <= maxcol);
 
             if (_.some(weights, w => formatNumeric(w) !== '100.0')) {
-                background = lite ? '#FFA07A' : '#B63715';
+                // background = lite ? '#FFA07A' : '#B63715';
             }
         } else if (section === 3 && level === 1 && formatNumeric(value) !== '100.0') {
             background = lite ? '#FFA07A' : '#B63715';
@@ -115,10 +114,21 @@ const TargetsPage = () => {
         setOriginals(orgs);
     };
 
+    let alert = false;
+    const pnode = nodes.length ? nodes[0] : null;
+    const values = pnode?.item;
+    const mincol = sectionSize * 2 + 1;
+    const maxcol = mincol + sectionSize - 1;
+    const weights = _.filter(values, (v, col) => col >= mincol && col <= maxcol);
+
+    if (_.some(weights, w => formatNumeric(w) !== '100.0')) {
+        alert = true;
+    }
+
     const canSave = { local: json !== originals.local, global: json !== originals.global };
 
     return <HiGrid atom={atom} columnHeaders={columnHeaders} sectionHeaders={['Current Targets (%)', 'Trades (%)', 'Final Weights (%)']}
-        readOnly={false} isCellEditable={isCellEditable} getCellStyle={getCellStyle}
+        readOnly={false} isCellEditable={isCellEditable} getCellStyle={getCellStyle} alert={alert}
         onAcceptChange={onAcceptChange} createNode={createNode} canSave={canSave} onSave={onSave} />;
 };
 
