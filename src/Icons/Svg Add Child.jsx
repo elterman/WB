@@ -7,7 +7,7 @@ const Icon = (props) => {
   const tooltip = useTooltip();
 
   return <svg style={{ ...style }} display={'block'} width={width} height={width} viewBox={viewBox} xmlns="http://www.w3.org/2000/svg"
-    filter={disabled ? 'grayscale()' : ''} opacity={disabled ? 0.8 : 1} cursor={disabled ? 'initial' : 'pointer'}
+    filter={disabled ? 'grayscale()' : ''} opacity={disabled ? 0.5 : 1} cursor={disabled ? 'initial' : 'pointer'}
     onMouseEnter={e => tooltip.show({ e, text: 'Add Child' })} onMouseLeave={tooltip.hide}>
     {/* <rect width='100%' height='100%' fill='darkslategray' /> */}
     <circle cx={12} cy={20} r={12} fill={color1} />

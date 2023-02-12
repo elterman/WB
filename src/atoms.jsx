@@ -96,6 +96,34 @@ export const a_input = atom(
     }
 );
 
+const firstCell = { key: [1, 1], col: 1 };
+const a_targets_selected_cell = _fatom(firstCell);
+const a_compare_selected_cell = _fatom(firstCell);
+const a_benchmarks_selected_cell = _fatom(firstCell);
+
+export const a_selected_cell = atom(
+    get => {
+        const tab = get(a_selected_tab);
+
+        switch (tab) {
+            case TARGETS: return get(a_targets_selected_cell);
+            case COMPARE: return get(a_compare_selected_cell);
+            case BENCHMARKS: return get(a_benchmarks_selected_cell);
+            default: return firstCell;
+        }
+    },
+    (get, set, cell) => {
+        const tab = get(a_selected_tab);
+
+        switch (tab) {
+            case TARGETS: return set(a_targets_selected_cell, cell);
+            case COMPARE: return set(a_compare_selected_cell, cell);
+            case BENCHMARKS: return set(a_benchmarks_selected_cell, cell);
+            default: return firstCell;
+        }
+    }
+);
+
 const a_targets_nodes = _fatom(null);
 const a_compare_nodes = _fatom(null);
 const a_benchmarks_nodes = _fatom(null);
@@ -156,6 +184,7 @@ const setGridData = ({ atom, get, set, payload }) => {
 
     set(natom, nodes);
     set(matom, new_meta);
+    set(a_selected_cell, firstCell);
 };
 
 export const a_targets = atom(
@@ -184,33 +213,5 @@ export const a_selected_family = atom(
         const fob = families[fname];
 
         return { fname, members: fob?.members };
-    }
-);
-
-const firstCell = { key: [1, 1, 1, 2], col: 2 };
-const a_targets_selected_cell = _fatom(firstCell);
-const a_compare_selected_cell = _fatom(firstCell);
-const a_benchmarks_selected_cell = _fatom(firstCell);
-
-export const a_selected_cell = atom(
-    get => {
-        const tab = get(a_selected_tab);
-
-        switch (tab) {
-            case TARGETS: return get(a_targets_selected_cell);
-            case COMPARE: return get(a_compare_selected_cell);
-            case BENCHMARKS: return get(a_benchmarks_selected_cell);
-            default: return firstCell;
-        }
-    },
-    (get, set, cell) => {
-        const tab = get(a_selected_tab);
-
-        switch (tab) {
-            case TARGETS: return set(a_targets_selected_cell, cell);
-            case COMPARE: return set(a_compare_selected_cell, cell);
-            case BENCHMARKS: return set(a_benchmarks_selected_cell, cell);
-            default: return firstCell;
-        }
     }
 );

@@ -12,7 +12,7 @@ const Icon = (props) => {
   const y2 = 82;
 
   return <svg style={{ ...style }} display={'block'} width={width} height={width} viewBox={viewBox} xmlns="http://www.w3.org/2000/svg"
-    filter={disabled ? 'grayscale()' : ''} opacity={disabled ? 0.8 : 1} cursor={disabled ? 'initial' : 'pointer'}
+    filter={disabled ? 'grayscale()' : ''} opacity={disabled ? 0.5 : 1} cursor={disabled ? 'initial' : 'pointer'}
     onMouseEnter={onMouseEnter} onMouseLeave={tooltip.hide}>
 
     {/* <rect width='100%' height='100%' fill='darkslategray' /> */}

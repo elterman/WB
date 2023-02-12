@@ -359,10 +359,12 @@ const HiGrid = (props) => {
                 break;
             }
             case 'above': case 'below': {
-                const off = pos === 'above' ? 1 : 0;
                 const pkey = parentKey(key);
+                const above = pos === 'above';
+                const off = above ? 1 : 0;
                 const node = meta[pkey].node;
                 node.children.splice(_.last(key) - off, 0, new_node);
+                !above && (key[key.length - 1] = _.last(key) + 1);
                 break;
             }
             default: return;
@@ -537,7 +539,7 @@ const HiGrid = (props) => {
     return (
         <div style={{ display: 'grid', overflow: 'hidden' }} onClick={() => l.view.focus()}>
             <div id='higrid-view' ref={e => l.view = e} className='higrid-view' tabIndex={0} onKeyDown={onKeyDown}>
-                <HiGridToolbar style={{ placeSelf: 'end start', padding: '10px 10px 10px 0' }}
+                <HiGridToolbar style={{ placeSelf: 'end start', padding: '0 10px 5px 0' }}
                     onAddNode={onAddNode} onDeleteNode={onDeleteNode} />
                 <div id='gh' ref={gh_ref} className='higrid-headers' style={{ gridArea: '1/2', grid: headerGrid, maxWidth: maxWidthHeaders }}>
                     {renderHeaders()}

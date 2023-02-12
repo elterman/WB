@@ -2,7 +2,8 @@ import SvgInfo from './Icons/Svg Info';
 import SvgAddChild from './Icons/Svg Add Child';
 import SvgAddSibling from './Icons/Svg Add Sibling';
 import SvgDeleteNode from './Icons/Svg Delete Node';
-import SvgFloppy from './Icons/Svg Save';
+import SvgSave from './Icons/Svg Save';
+import SvgSaveLocal from './Icons/Svg Save Local';
 import { useTooltip } from './Tooltip';
 import _ from 'lodash';
 import { Fragment } from 'react';
@@ -58,8 +59,7 @@ const HiGridToolbar = (props) => {
             onMouseLeave={tooltip.hide}>
             <SvgInfo width={24} />
         </div>
-        <div />
-        <div />
+        <div/>
         {_.map(['child', 'above', 'below'], (pos, i) => <div key={i}><DropdownSelector id={`add-${pos}`} items={_.keys(fundsToAdd)}
             setItem={item => onAddNode(item, pos)} offset='center' disabled={!!leaf !== !!i} style={buttonStyle}
             icon={i === 0 ? <SvgAddChild width={size} disabled={leaf} /> :
@@ -67,10 +67,9 @@ const HiGridToolbar = (props) => {
                     i === 2 ? <SvgAddSibling width={size} disabled={!leaf} /> : null} />
         </div>)}
         <div onClick={() => onDeleteNode(node)}><SvgDeleteNode width={size} disabled={!node.canDelete} /></div>
-        <div />
-        <div />
-        <Button style={buttonStyle} onClick={() => { }}><SvgFloppy width={25} disabled={true} /></Button>
-        <Button style={buttonStyle} onClick={() => { }}><SvgFloppy width={25} disabled={true} /></Button>
+        <div/>
+        <Button style={buttonStyle} onClick={() => { }}><SvgSave width={size} disabled={true} /></Button>
+        <Button style={buttonStyle} onClick={() => { }}><SvgSaveLocal width={size} disabled={true} /></Button>
     </div>;
 };
 
