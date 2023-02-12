@@ -32,7 +32,6 @@ export const BROWN = '#863C3C';
 
 export const PALETTE = 'PALETTE';
 export const PALETTES = {
-    // 'eggplant': { levels: ['#544E68', '#6C5530', '#3A5A44', '#5A5757', '#4E6268', '#625C50'] },
     'traffic': { levels: ['#6C282B', '#6C5530', '#3A5A44', '#5A5757', '#4E6268', '#625C50'] },
     'mono-gold': { levels: ['#FFFFFF18', '#FFE4AD28', '#FFE4AD10', '#FFE4AD40', '#FFE4AD70', '#FFE4AD58'] },
     'mono-gray': { levels: ['#FFFFFF10', '#FFFFFF30', '#FFFFFF20', '#FFFFFF40', '#FFFFFF60', '#FFFFFF50'] },
@@ -40,6 +39,8 @@ export const PALETTES = {
     'mono-gold-lite': { levels: ['#FFE4AD80', '#FFE4ADA0', '#FFE4AD90', '#FFE4ADB0', '#FFE4ADD0', '#FFE4ADC8'] },
     'mono-lite': { levels: ['#FFFFFF80', '#FFFFFFA0', '#FFFFFF90', '#FFFFFFB0', '#FFFFFFD0', '#FFFFFFC0'] },
 };
+
+export const ALERT_SHADES = { lite: '#FFA07A', dark: '#B63715' };
 
 export const ARROW_STYLE = { padding: '0 5px', background: 'transparent' };
 export const ATTENTION_BORDER = `1px solid ${ROSE}`;

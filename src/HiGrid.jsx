@@ -1,10 +1,10 @@
 import { useAtom, useAtomValue, useSetAtom } from 'jotai';
 import _ from 'lodash';
 import { Fragment, useCallback, useEffect, useRef, useState } from 'react';
-import { a_lite, a_palette, a_selected_cell, a_targets } from './atoms';
+import { a_alert_shade, a_lite, a_palette, a_selected_cell, a_targets } from './atoms';
 import Foldable, { LEVEL_INDENT } from './Foldable';
 import { cellBox, cellId, nodeVisible, parentKey, split, splitKey } from './Foldable Utils';
-import { APP_BACKGROUND, PALETTES, GOLD, LAVENDER, OFF_BACKGROUND, OFF_WHITE, LEFT, RIGHT, UP, DOWN, GOTO_PARENT } from './const';
+import { APP_BACKGROUND, PALETTES, GOLD, LAVENDER, OFF_BACKGROUND, OFF_WHITE, LEFT, RIGHT, UP, DOWN, GOTO_PARENT, ALERT_SHADES } from './const';
 import { useForceUpdate } from './hooks';
 import { useTooltip } from './Tooltip';
 import { getBox, hasScrollbar, syncScroll, windowSize, formatNumeric, str, same } from './utils';
@@ -24,6 +24,7 @@ const HiGrid = (props) => {
     const [meta, setMeta] = useAtom(metaAtom);
     const setTargets = useSetAtom(a_targets);
     const lite = useAtomValue(a_lite);
+    const alertShade = useAtomValue(a_alert_shade);
     const [selectedCell, setSelectedCell] = useAtom(a_selected_cell);
     const [editing, setEditing] = useState(null);
     const forceUpdate = useForceUpdate(true);
@@ -546,7 +547,7 @@ const HiGrid = (props) => {
                 </div>
                 <div id={TOP_LEFT} className={classes} style={{ gridArea: '2/1' }}>
                     <Foldable node={{ children: [nodes[0]], maxLevel: 1 }} atom={metaAtom}
-                        shades={alert ? [(lite ? '#FFA07A' : '#B63715')] : shades} color={color}
+                        shades={alert ? [alertShade] : shades} color={color}
                         onToggleFold={onToggleFold} render={node => renderNode({ node, part: TOP_LEFT })}
                     />
                 </div>

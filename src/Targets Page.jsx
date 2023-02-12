@@ -1,5 +1,5 @@
 import { useAtom, useAtomValue } from 'jotai';
-import { a_lite, a_originals, a_selected_family, a_targets } from './atoms';
+import { a_alert_shade, a_lite, a_originals, a_selected_family, a_targets } from './atoms';
 import HiGrid from './HiGrid';
 import { useComingSoon } from './hooks';
 import _ from 'lodash';
@@ -14,6 +14,7 @@ const TargetsPage = () => {
     const { nodes, meta } = useAtomValue(atom);
     const json = JSON.stringify(nodes);
     const lite = useAtomValue(a_lite);
+    const alertShade = useAtomValue(a_alert_shade);
     const [originals, setOriginals] = useAtom(a_originals);
     const forceUpdate = useForceUpdate(true);
 
@@ -34,16 +35,8 @@ const TargetsPage = () => {
         const values = node.item;
         const value = values[col];
 
-        if (level === 1 && !col) {
-            const mincol = sectionSize * 2 + 1;
-            const maxcol = mincol + sectionSize - 1;
-            const weights = _.filter(values, (v, col) => col >= mincol && col <= maxcol);
-
-            if (_.some(weights, w => formatNumeric(w) !== '100.0')) {
-                // background = lite ? '#FFA07A' : '#B63715';
-            }
-        } else if (section === 3 && level === 1 && formatNumeric(value) !== '100.0') {
-            background = lite ? '#FFA07A' : '#B63715';
+        if (section === 3 && level === 1 && formatNumeric(value) !== '100.0') {
+            background = alertShade;
         } else if ((section === 2 && !node.children && +value) || (section === 3 && +values[col - sectionSize])) {
             background = lite ? '#A2C0D9' : '#506C85';
         }
@@ -114,16 +107,12 @@ const TargetsPage = () => {
         setOriginals(orgs);
     };
 
-    let alert = false;
-    const pnode = nodes.length ? nodes[0] : null;
+    const pnode = nodes?.length ? nodes[0] : null;
     const values = pnode?.item;
     const mincol = sectionSize * 2 + 1;
     const maxcol = mincol + sectionSize - 1;
     const weights = _.filter(values, (v, col) => col >= mincol && col <= maxcol);
-
-    if (_.some(weights, w => formatNumeric(w) !== '100.0')) {
-        alert = true;
-    }
+    const alert = _.some(weights, w => formatNumeric(w) !== '100.0');
 
     const canSave = { local: json !== originals.local, global: json !== originals.global };
 
