@@ -1,7 +1,7 @@
 import { atom } from 'jotai';
 import { atomWithReset, freezeAtomCreator } from 'jotai/utils';
 import _ from 'lodash';
-import { ALERT_SHADES, BENCHMARKS, COMPARE, PALETTE, PALETTES, TARGETS } from './const';
+import { BENCHMARKS, COMPARE, PALETTE, PALETTES, TARGETS } from './const';
 import { lastDayOfPrevMonth, lastWeekday, str } from './utils';
 
 export const defaultDate = (monthly = false) => (monthly ? lastDayOfPrevMonth() : lastWeekday()).format('YYYY-MM-DD');
@@ -46,7 +46,13 @@ export const a_lite = atom(get => {
     return p.includes('-lite');
 });
 
-export const a_alert_shade = atom(get => ALERT_SHADES[get(a_lite) ? 'lite' : 'dark']);
+export const a_theme_colors = atom(get => {
+    const lite = get(a_lite);
+
+    return {
+        alert: lite ? '#FFA07A' : '#B63715',
+    };
+});
 
 const a_targets_date = _atom(defaultDate());
 const a_targets_fname = _atom(null);

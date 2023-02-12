@@ -40,8 +40,6 @@ export const PALETTES = {
     'mono-lite': { levels: ['#FFFFFF80', '#FFFFFFA0', '#FFFFFF90', '#FFFFFFB0', '#FFFFFFD0', '#FFFFFFC0'] },
 };
 
-export const ALERT_SHADES = { lite: '#FFA07A', dark: '#B63715' };
-
 export const ARROW_STYLE = { padding: '0 5px', background: 'transparent' };
 export const ATTENTION_BORDER = `1px solid ${ROSE}`;
 

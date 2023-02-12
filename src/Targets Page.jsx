@@ -1,5 +1,5 @@
 import { useAtom, useAtomValue } from 'jotai';
-import { a_alert_shade, a_lite, a_originals, a_selected_family, a_targets } from './atoms';
+import {  a_lite, a_originals, a_selected_family, a_targets, a_theme_colors } from './atoms';
 import HiGrid from './HiGrid';
 import { useComingSoon } from './hooks';
 import _ from 'lodash';
@@ -14,7 +14,7 @@ const TargetsPage = () => {
     const { nodes, meta } = useAtomValue(atom);
     const json = JSON.stringify(nodes);
     const lite = useAtomValue(a_lite);
-    const alertShade = useAtomValue(a_alert_shade);
+    const colors = useAtomValue(a_theme_colors);
     const [originals, setOriginals] = useAtom(a_originals);
     const forceUpdate = useForceUpdate(true);
 
@@ -28,20 +28,19 @@ const TargetsPage = () => {
     const getSection = (col) => col ? _.floor((col - 1) / sectionSize) + 1 : 0;
 
     const getCellStyle = (node, col) => {
-        let background = 'none';
-
+        const style = {};
         const level = node.key.length;
         const section = getSection(col);
         const values = node.item;
         const value = values[col];
 
         if (section === 3 && level === 1 && formatNumeric(value) !== '100.0') {
-            background = alertShade;
+            style.background = colors.alert;
         } else if ((section === 2 && !node.children && +value) || (section === 3 && +values[col - sectionSize])) {
-            background = lite ? '#A2C0D9' : '#506C85';
+            style.background = lite ? '#A2C0D9' : '#506C85';
         }
 
-        return { background };
+        return style;
     };
 
     const isCellEditable = cell => {

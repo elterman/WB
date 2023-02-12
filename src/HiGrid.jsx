@@ -1,10 +1,10 @@
 import { useAtom, useAtomValue, useSetAtom } from 'jotai';
 import _ from 'lodash';
 import { Fragment, useCallback, useEffect, useRef, useState } from 'react';
-import { a_alert_shade, a_lite, a_palette, a_selected_cell, a_targets } from './atoms';
+import { a_theme_colors, a_lite, a_palette, a_selected_cell, a_targets } from './atoms';
 import Foldable, { LEVEL_INDENT } from './Foldable';
 import { cellBox, cellId, nodeVisible, parentKey, split, splitKey } from './Foldable Utils';
-import { APP_BACKGROUND, PALETTES, GOLD, LAVENDER, OFF_BACKGROUND, OFF_WHITE, LEFT, RIGHT, UP, DOWN, GOTO_PARENT, ALERT_SHADES } from './const';
+import { APP_BACKGROUND, PALETTES, GOLD, LAVENDER, OFF_BACKGROUND, OFF_WHITE, LEFT, RIGHT, UP, DOWN, GOTO_PARENT, WHITE } from './const';
 import { useForceUpdate } from './hooks';
 import { useTooltip } from './Tooltip';
 import { getBox, hasScrollbar, syncScroll, windowSize, formatNumeric, str, same } from './utils';
@@ -24,7 +24,7 @@ const HiGrid = (props) => {
     const [meta, setMeta] = useAtom(metaAtom);
     const setTargets = useSetAtom(a_targets);
     const lite = useAtomValue(a_lite);
-    const alertShade = useAtomValue(a_alert_shade);
+    const colors = useAtomValue(a_theme_colors);
     const [selectedCell, setSelectedCell] = useAtom(a_selected_cell);
     const [editing, setEditing] = useState(null);
     const forceUpdate = useForceUpdate(true);
@@ -40,7 +40,7 @@ const HiGrid = (props) => {
     const br = br_ref.current;
     const nsections = sectionHeaders?.length || 1;
     const ncols = 1 + nsections * (columnHeaders?.length || 0);
-    const palette =  PALETTES[paletteKey];
+    const palette = PALETTES[paletteKey];
     const l = useRef({}).current;
 
     useEffect(() => {
@@ -526,7 +526,7 @@ const HiGrid = (props) => {
 
     const { x: wx } = windowSize();
     const classes = `${lite ? 'higrid-view-lite' : ''}`;
-    const color = lite ? APP_BACKGROUND : null;
+    const toggleColor = lite ? APP_BACKGROUND : WHITE;
     const overflow = `${br && !hasScrollbar(BOTTOM_RIGHT, true) ? 'auto' : 'hidden'}`;
     const headerGrid = `auto auto / repeat(${ncols - 1}, ${CELL_SIZE})`;
     const shades = palette.levels;
@@ -547,25 +547,25 @@ const HiGrid = (props) => {
                 </div>
                 <div id={TOP_LEFT} className={classes} style={{ gridArea: '2/1' }}>
                     <Foldable node={{ children: [nodes[0]], maxLevel: 1 }} atom={metaAtom}
-                        shades={alert ? [alertShade] : shades} color={color}
+                        shades={alert ? [colors.alert] : shades} toggleColor={toggleColor}
                         onToggleFold={onToggleFold} render={node => renderNode({ node, part: TOP_LEFT })}
                     />
                 </div>
                 <div id={TOP_RIGHT} ref={tr_ref} className={`${classes} root-scroll`} onScroll={onScroll}
                     style={{ gridArea: '2/2', maxWidth: maxWidthTr, overflow }}>
-                    <Foldable node={{ children: [nodes[0]], maxLevel: 1 }} atom={metaAtom} shades={shades} flat color={color}
+                    <Foldable node={{ children: [nodes[0]], maxLevel: 1 }} atom={metaAtom} shades={shades} flat
                         render={node => renderNode({ node, part: TOP_RIGHT })}
                     />
                 </div>
                 <div id={BOTTOM_LEFT} className={classes} ref={bl_ref} style={{ gridArea: '3/1', maxHeight: maxHeightBl }}
                     onWheel={e => br?.scrollBy(0, e.deltaY)}>
                     <Foldable node={{ children: nodes[0].children }} atom={metaAtom} shades={shades} onToggleFold={onToggleFold}
-                        color={color} render={node => renderNode({ node, part: BOTTOM_LEFT })}
+                        toggleColor={toggleColor} render={node => renderNode({ node, part: BOTTOM_LEFT })}
                     />
                 </div>
                 <div id={BOTTOM_RIGHT} ref={br_ref} className={`${classes} root-scroll`} onScroll={onScroll}
                     style={{ gridArea: '3/2', maxWidth: maxWidthBr }} >
-                    <Foldable node={{ children: nodes[0].children }} atom={metaAtom} shades={shades} flat color={color}
+                    <Foldable node={{ children: nodes[0].children }} atom={metaAtom} shades={shades} flat
                         render={node => renderNode({ node, part: BOTTOM_RIGHT })} />
                 </div>
             </div>
