@@ -423,8 +423,6 @@ const HiGrid = (props) => {
         </>;
     };
 
-    const isSelectedRow = (node) => same(node.key, selectedCell.key);
-
     const renderCell = (node, col, value) => {
         const cell = { key: node.key, col };
         const editable = isCellEditable && isCellEditable(cell);
@@ -432,7 +430,7 @@ const HiGrid = (props) => {
         const level = node.key.length;
         const indent = level * LEVEL_INDENT;
         const cx = col ? CELL_SIZE : (300 - indent);
-        const selectedRow = isSelectedRow(node);
+        const selectedRow = same(node.key, selectedCell.key);
 
         const renderInput = () => {
             const onBlur = () => editing && acceptChange();
@@ -482,7 +480,7 @@ const HiGrid = (props) => {
             }
         }
 
-        const bulletStyle = {
+        const rowMarkerStyle = {
             gridArea, placeSelf: 'center start', transform: `translateX(${4 - indent}px)`,
             color: lite ? APP_BACKGROUND : GOLD
         };
@@ -493,7 +491,7 @@ const HiGrid = (props) => {
             </div>
             {editing && same(cell, selectedCell) && renderInput()}
             {renderSelectedBorder()}
-            {!col && selectedRow && level > 1 && <div style={bulletStyle}>●</div>}
+            {!col && selectedRow && level > 1 && <div style={rowMarkerStyle}>●</div>}
         </Fragment>;
 
     };

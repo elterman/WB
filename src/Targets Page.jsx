@@ -41,10 +41,10 @@ const TargetsPage = () => {
             const weights = _.filter(values, (v, col) => col >= mincol && col <= maxcol);
 
             if (_.some(weights, w => formatNumeric(w) !== '100.0')) {
-                background = lite ? PINK : 'brown';
+                background = lite ? '#FFA07A' : '#B63715';
             }
         } else if (section === 3 && level === 1 && formatNumeric(value) !== '100.0') {
-            background = lite ? PINK : 'brown';
+            background = lite ? '#FFA07A' : '#B63715';
         } else if ((section === 2 && !node.children && +value) || (section === 3 && +values[col - sectionSize])) {
             background = lite ? '#A2C0D9' : '#506C85';
         }

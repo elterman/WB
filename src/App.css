@@ -364,7 +364,7 @@ input::-webkit-inner-spin-button {
 .dropdown {
   z-index: 2;
   background: #ffffff18;
-  background: #433D3D;
+  background: #433d3d;
   display: grid;
   outline: none;
 }
@@ -689,4 +689,11 @@ input::-webkit-inner-spin-button {
   grid-auto-flow: column;
   gap: 8px;
   align-items: center;
+}
+
+.higrid-row-marker {
+  justify-self: start;
+  border: solid var(--gold);
+  border-width: 0 0 0 2px;
+  height: 100%;
 }
