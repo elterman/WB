@@ -3,7 +3,7 @@ import { a_selected_tab } from './atoms';
 import { BENCHMARKS, COMPARE, TABS, TARGETS } from './const';
 import InputControl from './Input Control';
 import TabBar from './Tab Bar';
-import PaletteSwitch from './Palette Switch';
+import PaletteBrowser from './Palette Browser';
 
 const TabPanel = () => {
     const [tab, setSelectedTab] = useAtom(a_selected_tab);
@@ -13,7 +13,7 @@ const TabPanel = () => {
         <TabBar tabs={TABS} selectedTab={tab} style={{ gridArea: '1/1/1/span 3' }}
             onSelectedChange={setSelectedTab} />
         {hasInput && <div className='input-panel' style={{ gridArea: '1/1' }}><InputControl /></div>}
-        {hasInput && <PaletteSwitch />}
+        {hasInput && <PaletteBrowser />}
     </div>;
 };
 

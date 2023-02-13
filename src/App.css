@@ -684,7 +684,7 @@ input::-webkit-inner-spin-button {
   text-align: end;
 }
 
-.higrid-toolbar {
+.toolbar {
   display: grid;
   grid-auto-flow: column;
   gap: 8px;

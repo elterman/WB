@@ -18,22 +18,26 @@ const HiGridToolbar = (props) => {
     const leaf = !node.children;
     const fundsToAdd = useAtomValue(a_funds_to_add);
 
+    const renderAddButton = (pos, icon, disabled) => <DropdownSelector id={`add-${pos}`} items={_.keys(fundsToAdd)}
+        setItem={item => onAddNode(item, pos)} offset='left' disabled={disabled} style={buttonStyle} icon={icon} />;
+
     const size = 25;
     const buttonStyle = { background: 'none', padding: 0 };
 
-    return <div className='higrid-toolbar' style={{ ...style }}>
+    return <div className='toolbar' style={{ ...style }}>
         <Info />
-        <div />
-        {_.map(['child', 'above', 'below'], (pos, i) => <div key={i}><DropdownSelector id={`add-${pos}`} items={_.keys(fundsToAdd)}
-            setItem={item => onAddNode(item, pos)} offset='left' disabled={!!leaf !== !!i} style={buttonStyle}
-            icon={i === 0 ? <SvgAddChild width={size} disabled={leaf} /> :
-                i === 1 ? <SvgAddSibling above width={size} disabled={!leaf} /> :
-                    i === 2 ? <SvgAddSibling width={size} disabled={!leaf} /> : null} />
-        </div>)}
-        <div onClick={() => onDeleteNode(node)}><SvgDeleteNode width={size} disabled={!node.canDelete} /></div>
-        <div />
-        <Button style={buttonStyle} onClick={() => onSave(false)}><SvgSave width={size} disabled={!canSave.global} /></Button>
-        <Button style={buttonStyle} onClick={() => onSave(true)}><SvgSaveLocal width={size} disabled={!canSave.local} /></Button>
+        {onAddNode && <>
+            <div />
+            {renderAddButton('child', <SvgAddChild width={size} disabled={leaf} />, leaf)}
+            {renderAddButton('above', <SvgAddSibling above width={size} disabled={!leaf} />, !leaf)}
+            {renderAddButton('below', <SvgAddSibling width={size} disabled={!leaf} />, !leaf)}
+        </>}
+        {onDeleteNode && <div onClick={() => onDeleteNode(node)}><SvgDeleteNode width={size} disabled={!node.canDelete} /></div>}
+        {onSave && <>
+            <div />
+            <Button style={buttonStyle} onClick={() => onSave(false)}><SvgSave width={size} disabled={!canSave.global} /></Button>
+            <Button style={buttonStyle} onClick={() => onSave(true)}><SvgSaveLocal width={size} disabled={!canSave.local} /></Button>
+        </>}
     </div>;
 };
 

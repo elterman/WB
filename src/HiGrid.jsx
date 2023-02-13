@@ -392,7 +392,6 @@ const HiGrid = (props) => {
         pnode.children.splice(i, 1);
 
         onNavigate({ key: UP });
-        setTargets({ nodes, update: true });
     };
 
     const renderHeaders = () => {
@@ -538,8 +537,8 @@ const HiGrid = (props) => {
     return (
         <div style={{ display: 'grid', overflow: 'hidden' }} onClick={() => l.view.focus()}>
             <div id='higrid-view' ref={e => l.view = e} className='higrid-view' tabIndex={0} onKeyDown={onKeyDown}>
-                <HiGridToolbar style={{ placeSelf: 'center' }} onAddNode={onAddNode}
-                    onDeleteNode={onDeleteNode} canSave={canSave} onSave={onSave} />
+                <HiGridToolbar style={{ placeSelf: 'center' }} onAddNode={readOnly ? null : onAddNode}
+                    onDeleteNode={readOnly ? null : onDeleteNode} onSave={readOnly ? null : onSave} canSave={canSave} />
                 <div id='gh' ref={gh_ref} className='higrid-headers'
                     style={{ gridArea: '1/2', grid: headerGrid, maxWidth: maxWidthHeaders }}>
                     {renderHeaders()}
