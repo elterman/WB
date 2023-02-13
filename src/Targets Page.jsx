@@ -12,8 +12,9 @@ const TargetsPage = () => {
     const fob = useAtomValue(a_selected_family);
     const { nodes, meta } = useAtomValue(a_grid_data);
     const json = JSON.stringify(nodes);
-    const theme = useAtomValue(a_theme);
     const [originals, setOriginals] = useAtom(a_originals);
+    const canSave = { local: json !== originals.local, global: json !== originals.global };
+    const theme = useAtomValue(a_theme);
     const forceUpdate = useForceUpdate(true);
     const setSaving = useSetAtom(a_saving);
 
@@ -117,8 +118,6 @@ const TargetsPage = () => {
     const maxcol = mincol + sectionSize - 1;
     const weights = _.filter(values, (v, col) => col >= mincol && col <= maxcol);
     const alert = _.some(weights, w => formatNumeric(w) !== '100.0');
-
-    const canSave = { local: json !== originals.local, global: json !== originals.global };
 
     return <HiGrid columnHeaders={columnHeaders}
         sectionHeaders={['Current Targets (%)', 'Trades (%)', 'Final Weights (%)']}
