@@ -5,7 +5,7 @@ import { a_theme, a_palette, a_selected_cell, a_targets } from './atoms';
 import Foldable, { LEVEL_INDENT } from './Foldable';
 import { cellBox, cellId, nodeVisible, parentKey, split, splitKey } from './Foldable Utils';
 import { APP_BACKGROUND, PALETTES, GOLD, OFF_BACKGROUND, LEFT, RIGHT, UP, DOWN, GOTO_PARENT } from './const';
-import { useForceUpdate } from './hooks';
+import { useChangePalette, useForceUpdate } from './hooks';
 import { useTooltip } from './Tooltip';
 import { getBox, hasScrollbar, syncScroll, windowSize, formatNumeric, str, same } from './utils';
 import HiGridToolbar from './HiGrid Toolbar';
@@ -40,6 +40,7 @@ const HiGrid = (props) => {
     const nsections = sectionHeaders?.length || 1;
     const ncols = 1 + nsections * (columnHeaders?.length || 0);
     const palette = PALETTES[paletteKey];
+    const changePalette = useChangePalette();
     const l = useRef({}).current;
 
     useEffect(() => {
@@ -271,6 +272,9 @@ const HiGrid = (props) => {
                 }
 
                 onNavigate(e);
+                return;
+            case '-': case '=':
+                changePalette(e.key === '-')
                 return;
             default: break;
         }

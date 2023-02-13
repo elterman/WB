@@ -47,7 +47,7 @@ export const a_theme = atom(get => {
     return {
         lite,
         alert: lite ? '#FFA07A' : '#B63715',
-        change: lite ? '#A2C0D9' : '#506C85',
+        change: lite ? '#ABC6DC' : '#506C85',
         input: { background: lite ? '#F0EAD6' : APP_BACKGROUND, color: lite ? APP_BACKGROUND : OFF_WHITE },
         selectedBorder: { editable: lite ? '#8A0000' : LAVENDER, readonly: lite ? 'black' : GOLD },
         rowMarker:lite ? APP_BACKGROUND : GOLD,

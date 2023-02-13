@@ -37,6 +37,7 @@ const HiGridToolbar = (props) => {
             ['Ctrl + Alt + ⇧, or Backspace', 'Go to Parent'],
             ['Ctrl + ⇧/⇩', 'Scroll Vertically'],
             ['Ctrl + ⇦/⇨', 'Scroll Horizontally'],
+            ['=, –', 'Browse Color Schemes'],
         ];
 
         return <div style={{ display: 'grid', grid: 'auto / auto 1fr', gap: '5px 10px' }}>

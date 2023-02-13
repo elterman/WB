@@ -1,6 +1,9 @@
 import { useState, useCallback } from 'react';
 import { useToaster } from './Toaster';
 import _ from 'lodash';
+import { a_palette } from './atoms';
+import { PALETTES } from './const';
+import { useAtom } from 'jotai';
 
 export const useForceUpdate = (timeout) => {
     const [, setState] = useState();
@@ -45,4 +48,21 @@ export const useComingSoon = () => {
     };
 
     return renderComingSoon;
+};
+
+export const useChangePalette = () => {
+    const [pkey, setPaletteKey] = useAtom(a_palette);
+
+    return (prev) => {
+        const keys = _.keys(PALETTES);
+        const last = keys.length - 1;
+
+        let i = _.findIndex(keys, k => k === pkey);
+        i = prev ? (i > 0 ? i - 1 : last) : (i < last ? i + 1 : 0);
+
+        setPaletteKey(keys[i]);
+
+        const obs = document.getElementsByClassName('higrid-view');
+        _.get(obs, 0)?.focus();
+    };
 };
