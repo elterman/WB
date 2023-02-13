@@ -38,8 +38,7 @@ const Info = () => {
     };
 
     return <div onMouseEnter={(e) => tooltip.show({ e, text: renderHelp, style: { maxWidth: '500px', paddingRight: '20px' } })}
-        onMouseLeave={tooltip.hide}>
-        <SvgInfo width={24} />
+        onMouseLeave={tooltip.hide}><SvgInfo width={24} />
     </div>;
 };
 
