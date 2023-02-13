@@ -393,7 +393,7 @@ const HiGrid = (props) => {
         pnode.children.splice(i, 1);
 
         onNavigate({ key: UP });
-        setGridNodes({ nodes });
+        setGridNodes({ nodes, update: true });
     };
 
     const renderHeaders = () => {

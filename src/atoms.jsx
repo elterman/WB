@@ -195,7 +195,7 @@ export const a_grid_data = atom(
 
         set(natom, nodes);
         set(matom, new_meta);
-        set(a_selected_cell, firstCell);
+        !update && set(a_selected_cell, firstCell);
     }
 );
 
