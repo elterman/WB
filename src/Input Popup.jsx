@@ -74,11 +74,11 @@ const InputPopup = (props) => {
     let ok = !loading;
 
     return <div className='modal-screen dimmed'>
-        <Popup ok='Load' isOk={ok} style={{ left: 430, top: 135, width: 310, height, padding: '10px 10px 10px 0px' }}
+        <Popup ok='Load' isOk={ok} style={{ left: 430, top: 135, width: 310, height, padding: '10px' }}
             onExit={handleExit}>
             <div style={{ display: 'grid' }}>
                 <div className='grid-cols' style={{ placeContent: 'start' }}>
-                    <DateButton id='date1' date={date1} onClick={setDateId} style={{ background, width, justifyContent }} />
+                    <DateButton id='date1' date={date1} onClick={setDateId} style={{ background, width, justifyContent }}/>
                     <DropdownSelector id='input.dd1' items={items} selectedItem={fname1 || 'BFAF'} setItem={setFundOrFamilyName}
                         offset='center' icon={<SvgPortfolio width={28} many={!compare} />} style={{ background }} />
                 </div>

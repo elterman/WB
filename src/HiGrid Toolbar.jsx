@@ -18,7 +18,7 @@ const HiGridToolbar = (props) => {
     const leaf = !node.children;
     const fundsToAdd = useAtomValue(a_funds_to_add);
 
-    const renderAddButton = (pos, icon, disabled) => <DropdownSelector id={`add-${pos}`} items={_.keys(fundsToAdd)}
+    const renderAddButton = (pos, icon,  disabled) => <DropdownSelector id={`add-${pos}`} items={_.keys(fundsToAdd)}
         setItem={item => onAddNode(item, pos)} offset='left' disabled={disabled} style={buttonStyle} icon={icon} />;
 
     const size = 25;

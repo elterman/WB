@@ -21,7 +21,7 @@ const DateButton = (props) => {
     };
 
     return (
-        <div tabIndex={0} style={{ borderColor }} onFocus={() => setFocused(true)} onBlur={() => setFocused(false)} onKeyDown={handleKeyDown}>
+        <div tabIndex={-1} style={{ borderColor }} onFocus={() => setFocused(true)} onBlur={() => setFocused(false)} onKeyDown={handleKeyDown}>
             <Button id={id} style={{ ...style }} disabled={disabled}
                 label={date ? formatLongDate(date.slice(0, 4), date.slice(5, 7), monthly ? 0 : date.slice(8)) : placeholder}
                 tip={tip} tipoff={{ x: 210, y: -5 }} onClick={() => {

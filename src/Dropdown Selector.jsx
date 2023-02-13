@@ -59,7 +59,7 @@ const DropdownSelector = (props) => {
 
     return (
         <div
-            tabIndex={0}
+            tabIndex={-1}
             style={{ borderColor, height: '30px' }}
             onFocus={() => setFocused(true)}
             onBlur={() => setFocused(false)}
