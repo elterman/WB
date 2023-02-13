@@ -697,3 +697,9 @@ input::-webkit-inner-spin-button {
   border-width: 0 0 0 2px;
   height: 100%;
 }
+
+#cheat-sheet {
+  display: grid;
+  grid: auto / auto 1fr;
+  gap: 5px 10px;
+}

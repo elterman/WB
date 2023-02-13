@@ -25,7 +25,7 @@ const Info = () => {
             ['p, P', 'Browse Grid Palettes'],
         ];
 
-        return <div style={{ display: 'grid', grid: 'auto / auto 1fr', gap: '5px 10px' }}>
+        return <div id='cheat-sheet'>
             {_.map(help, (line, i) => {
                 const color = i ? OFF_WHITE : WHITE;
 
