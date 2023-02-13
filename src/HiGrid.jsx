@@ -273,8 +273,8 @@ const HiGrid = (props) => {
 
                 onNavigate(e);
                 return;
-            case '-': case '=':
-                changePalette(e.key === '-')
+            case 'P': case 'p':
+                changePalette(e.key === 'P');
                 return;
             default: break;
         }

@@ -5,7 +5,7 @@ import _ from 'lodash';
 import { useTooltip } from './Tooltip';
 import { useChangePalette } from './hooks';
 
-const PaletteSwitch = () => {
+const PaletteBrowser = () => {
     const tab = useAtomValue(a_selected_tab);
     const hasTargets = useAtomValue(a_has_targets);
     const hasCompare = useAtomValue(a_has_compare);
@@ -26,7 +26,7 @@ const PaletteSwitch = () => {
     }
 
     return <div className='palette-switch' onClick={e => changePalette(e.shiftKey)}
-        onMouseEnter={(e) => tooltip.show({ e, text: 'Browse color schemes.\nHold Shift to navigate backwards.', dx: 12, dy: -55 })}
+        onMouseEnter={(e) => tooltip.show({ e, text: 'Browse grid palettes.\nHold Shift to navigate backwards.', dx: 12, dy: -55 })}
         onMouseLeave={tooltip.hide}>
         {_.map([RED, TANGERINE, YELLOW, GREEN, DARK_BLUE,], (background, i) => {
             const size = 20 - i * 3.5;
@@ -39,4 +39,4 @@ const PaletteSwitch = () => {
     </div>;
 };
 
-export default PaletteSwitch;
+export default PaletteBrowser;
