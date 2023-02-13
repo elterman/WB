@@ -5,14 +5,14 @@ import SvgSave from './Icons/Svg Save';
 import SvgSaveLocal from './Icons/Svg Save Local';
 import _ from 'lodash';
 import { useAtomValue } from 'jotai';
-import { a_funds_to_add, a_selected_cell, a_targets } from './atoms';
+import { a_funds_to_add, a_selected_cell, a_grid_data } from './atoms';
 import DropdownSelector from './Dropdown Selector';
 import Button from './Button';
 import Info from './Info';
 
 const HiGridToolbar = (props) => {
     const { onAddNode, onDeleteNode, canSave, onSave, style } = props;
-    const { meta } = useAtomValue(a_targets);
+    const { meta } = useAtomValue(a_grid_data);
     const selectedCell = useAtomValue(a_selected_cell);
     const node = meta[selectedCell.key].node;
     const leaf = !node.children;

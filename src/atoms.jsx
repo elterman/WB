@@ -18,6 +18,7 @@ export const a_date_picker_visible = _atom(false);
 export const a_search_selector_filter = _atom('');
 export const a_selected_tab = _atom(TARGETS);
 export const a_loading = _atom(false);
+export const a_saving = _atom(false);
 export const a_funds = _fatom(null);
 export const a_families = _fatom(null);
 export const a_funds_to_add = _fatom(null);
@@ -50,8 +51,8 @@ export const a_theme = atom(get => {
         change: lite ? '#ABC6DC' : '#506C85',
         input: { background: lite ? '#F0EAD6' : APP_BACKGROUND, color: lite ? APP_BACKGROUND : OFF_WHITE },
         selectedBorder: { editable: lite ? '#8A0000' : LAVENDER, readonly: lite ? 'black' : GOLD },
-        rowMarker:lite ? APP_BACKGROUND : GOLD,
-        toggle:  lite ? APP_BACKGROUND : WHITE,
+        rowMarker: lite ? APP_BACKGROUND : GOLD,
+        toggle: lite ? APP_BACKGROUND : WHITE,
     };
 });
 
@@ -141,74 +142,61 @@ export const a_targets_meta = _fatom(null);
 export const a_compare_meta = _fatom(null);
 export const a_benchmarks_meta = _fatom(null);
 
-const gridAtoms = atom => {
+const gridAtoms = (get) => {
     let natom, matom;
+    const tab = get(a_selected_tab);
 
-    switch (atom) {
-        case a_targets:
+    switch (tab) {
+        case TARGETS:
             natom = a_targets_nodes;
             matom = a_targets_meta;
             break;
-        case a_compare:
+        case COMPARE:
             natom = a_compare_nodes;
             matom = a_compare_meta;
             break;
-        case a_benchmarks:
+        case BENCHMARKS:
             natom = a_benchmarks_nodes;
             matom = a_benchmarks_meta;
             break;
-        default: break;
+        default: return null;
     }
 
     return { natom, matom };
 };
 
-const getGridData = ({ atom, get }) => {
-    const { natom, matom } = gridAtoms(atom);
+export const a_grid_data = atom(
+    get => {
+        const { natom, matom } = gridAtoms(get);
+        return { nodes: get(natom), meta: get(matom), metaAtom: matom };
+    },
 
-    return { nodes: get(natom), meta: get(matom), metaAtom: matom };
-};
+    (get, set, payload) => {
+        const { natom, matom } = gridAtoms(get);
+        const { nodes, update } = payload;
+        const meta = get(matom);
+        const new_meta = {};
 
-const setGridData = ({ atom, get, set, payload }) => {
-    const { nodes, update } = payload;
-    const { natom, matom } = gridAtoms(atom);
-    const meta = get(matom);
-    const new_meta = {};
+        const processNodes = (nodes, parentKey) => {
+            if (!parentKey) {
+                parentKey = [];
+            }
 
-    const processNodes = (nodes, parentKey) => {
-        if (!parentKey) {
-            parentKey = [];
-        }
+            _.each(nodes, (node, i) => {
+                node.key = [...parentKey, i + 1];
 
-        _.each(nodes, (node, i) => {
-            node.key = [...parentKey, i + 1];
+                const mob = update ? _.get(meta, str(node.key)) : null;
+                new_meta[node.key] = { ...mob, node };
+                processNodes(node.children, node.key);
+            });
+        };
 
-            const mob = update ? _.get(meta, str(node.key)) : null;
-            new_meta[node.key] = { ...mob, node };
-            processNodes(node.children, node.key);
-        });
-    };
+        processNodes(nodes);
 
-    processNodes(nodes);
-
-    set(natom, nodes);
-    set(matom, new_meta);
-    set(a_selected_cell, firstCell);
-};
-
-export const a_targets = atom(
-    get => getGridData({ atom: a_targets, get }),
-    (get, set, payload) => setGridData({ atom: a_targets, get, set, payload })
-);
-
-export const a_compare = atom(
-    get => getGridData({ atom: a_compare, get }),
-    (get, set, payload) => setGridData({ atom: a_compare, get, set, payload })
-);
-
-export const a_benchmarks = atom(
-    get => getGridData({ atom: a_benchmarks, get }),
-    (get, set, payload) => setGridData({ atom: a_benchmarks, get, set, payload })
+        set(natom, nodes);
+        set(matom, new_meta);
+        set(a_selected_cell, firstCell);
+    }
 );
 
 export const a_has_targets = atom(get => !_.isEmpty(get(a_targets_nodes)));

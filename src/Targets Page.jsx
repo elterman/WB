@@ -1,5 +1,5 @@
-import { useAtom, useAtomValue } from 'jotai';
-import { a_originals, a_selected_family, a_targets, a_theme } from './atoms';
+import { useAtom, useAtomValue, useSetAtom } from 'jotai';
+import { a_grid_data, a_saving, a_originals, a_selected_family, a_theme } from './atoms';
 import HiGrid from './HiGrid';
 import { useComingSoon } from './hooks';
 import _ from 'lodash';
@@ -10,12 +10,12 @@ import { useForceUpdate } from '@react-spring/shared';
 const TargetsPage = () => {
     const renderComingSoon = useComingSoon();
     const fob = useAtomValue(a_selected_family);
-    const atom = a_targets;
-    const { nodes, meta } = useAtomValue(atom);
+    const { nodes, meta } = useAtomValue(a_grid_data);
     const json = JSON.stringify(nodes);
     const theme = useAtomValue(a_theme);
     const [originals, setOriginals] = useAtom(a_originals);
     const forceUpdate = useForceUpdate(true);
+    const setSaving = useSetAtom(a_saving);
 
     if (fob.fname && fob.fname !== 'BFAF') {
         return renderComingSoon();
@@ -100,9 +100,15 @@ const TargetsPage = () => {
     };
 
     const onSave = local => {
-        const orgs = { ...originals };
-        orgs[local ? 'local' : 'global'] = json;
-        setOriginals(orgs);
+        setSaving(true);
+
+        _.delay(() => {
+            const orgs = { ...originals };
+            orgs[local ? 'local' : 'global'] = json;
+            setOriginals(orgs);
+
+            setSaving(false);
+        }, 1000);
     };
 
     const pnode = nodes?.length ? nodes[0] : null;
@@ -114,7 +120,8 @@ const TargetsPage = () => {
 
     const canSave = { local: json !== originals.local, global: json !== originals.global };
 
-    return <HiGrid atom={atom} columnHeaders={columnHeaders} sectionHeaders={['Current Targets (%)', 'Trades (%)', 'Final Weights (%)']}
+    return <HiGrid columnHeaders={columnHeaders}
+        sectionHeaders={['Current Targets (%)', 'Trades (%)', 'Final Weights (%)']}
         readOnly={false} isCellEditable={isCellEditable} getCellStyle={getCellStyle} alert={alert}
         onAcceptChange={onAcceptChange} createNode={createNode} canSave={canSave} onSave={onSave} />;
 };

@@ -1,7 +1,7 @@
 import { useAtom, useAtomValue, useSetAtom } from 'jotai';
 import _ from 'lodash';
 import { Fragment, useCallback, useEffect, useRef, useState } from 'react';
-import { a_theme, a_palette, a_selected_cell, a_targets } from './atoms';
+import { a_theme, a_palette, a_selected_cell, a_grid_data, a_saving } from './atoms';
 import Foldable, { LEVEL_INDENT } from './Foldable';
 import { cellBox, cellId, nodeVisible, parentKey, split, splitKey } from './Foldable Utils';
 import { APP_BACKGROUND, PALETTES, GOLD, OFF_BACKGROUND, LEFT, RIGHT, UP, DOWN, GOTO_PARENT } from './const';
@@ -9,6 +9,7 @@ import { useChangePalette, useForceUpdate } from './hooks';
 import { useTooltip } from './Tooltip';
 import { getBox, hasScrollbar, syncScroll, windowSize, formatNumeric, str, same } from './utils';
 import HiGridToolbar from './HiGrid Toolbar';
+import Spinner from './Spinner';
 
 const ROW_SIZE = 29;
 const CELL_SIZE = 70;
@@ -18,15 +19,15 @@ const BOTTOM_LEFT = 'bottom-left';
 const BOTTOM_RIGHT = 'bottom-right';
 
 const HiGrid = (props) => {
-    const { atom, columnHeaders, sectionHeaders, readOnly, isCellEditable, getCellStyle, alert } = props;
+    const { columnHeaders, sectionHeaders, readOnly, isCellEditable, getCellStyle, alert } = props;
     const { onAcceptChange, createNode, canSave = { local: false, global: false }, onSave } = props;
-    const { nodes, metaAtom } = useAtomValue(atom);
-    const [meta, setMeta] = useAtom(metaAtom);
-    const setTargets = useSetAtom(a_targets);
+    const [{ nodes, meta, metaAtom }, setGridNodes] = useAtom(a_grid_data);
+    const setMeta = useSetAtom(metaAtom);
     const theme = useAtomValue(a_theme);
     const [selectedCell, setSelectedCell] = useAtom(a_selected_cell);
     const [editing, setEditing] = useState(null);
     const forceUpdate = useForceUpdate(true);
+    const saving = useAtomValue(a_saving);
     const tooltip = useTooltip();
     const paletteKey = useAtomValue(a_palette);
     const gh_ref = useRef(null);
@@ -375,7 +376,7 @@ const HiGrid = (props) => {
             default: return;
         }
 
-        setTargets({ nodes, update: true });
+        setGridNodes({ nodes, update: true });
 
         _.delay(() => {
             const cell = { key, col: 0 };
@@ -536,7 +537,8 @@ const HiGrid = (props) => {
 
     return (
         <div style={{ display: 'grid', overflow: 'hidden' }} onClick={() => l.view.focus()}>
-            <div id='higrid-view' ref={e => l.view = e} className='higrid-view' tabIndex={-1} onKeyDown={onKeyDown}>
+            <div id='higrid-view' ref={e => l.view = e} className='higrid-view' style={{ gridArea: '1/1' }}
+                tabIndex={-1} onKeyDown={onKeyDown}>
                 <HiGridToolbar style={{ placeSelf: 'center' }} onAddNode={readOnly ? null : onAddNode}
                     onDeleteNode={readOnly ? null : onDeleteNode} onSave={readOnly ? null : onSave} canSave={canSave} />
                 <div id='gh' ref={gh_ref} className='higrid-headers'
@@ -567,6 +569,7 @@ const HiGrid = (props) => {
                         render={node => renderNode({ node, part: BOTTOM_RIGHT })} />
                 </div>
             </div>
+            {saving && <Spinner width={160} style={{ gridArea: '1/1' }} />}
         </div>
     );
 };

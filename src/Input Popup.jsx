@@ -5,7 +5,7 @@ import DatePickerView from './Date Picker View';
 import DropdownSelector from './Dropdown Selector';
 import SvgPortfolio from './Icons/Svg Portfolio';
 import { useAtom, useAtomValue, useSetAtom } from 'jotai';
-import { a_funds, a_loading, a_originals, a_selected_tab, a_targets, a_targets_input } from './atoms';
+import { a_funds, a_grid_data, a_loading, a_originals, a_selected_tab, a_targets_input } from './atoms';
 import { a_compare_input, a_date_picker_visible, a_families, a_input } from './atoms';
 import { useState } from 'react';
 import { BLUE, COMPARE } from './const';
@@ -22,7 +22,7 @@ const InputPopup = (props) => {
     const [date2, setDate2] = useState(input.date2);
     const setTargetsInput = useSetAtom(a_targets_input);
     const setCompareInput = useSetAtom(a_compare_input);
-    const setTargets = useSetAtom(a_targets);
+    const setGridNodes = useSetAtom(a_grid_data);
     const [loading, setLoading] = useAtom(a_loading);
     const [dateId, setDateId] = useState(null);
     const setOriginals = useSetAtom(a_originals);
@@ -52,8 +52,7 @@ const InputPopup = (props) => {
 
             _.delay(() => {
                 const nodes = _.cloneDeep(MOCK_NODES);
-
-                setTargets({ nodes });
+                setGridNodes({ nodes });
 
                 const json = JSON.stringify(nodes);
                 setOriginals({ local: json, global: json });
