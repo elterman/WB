@@ -28,7 +28,7 @@ const HiGridToolbar = (props) => {
             ['Spacebar, or F2, or Enter', 'Edit Cell'],
             ['Delete', 'Set Trade Cell to 0%'],
             ['1,2...', 'Collapse All from Level 1,2... down'],
-            ['0', 'Expand All'],
+            ['0, or 1 twice', 'Expand All'],
             ['Ctrl + Alt + ⇦/⇨', 'Collapse/Expand Row'],
             ['Shift + Ctrl + Alt + ⇦/⇨', 'Collapse/Expand Row Recursively'],
             ['Home, End', 'Go to Start, End of Row '],
