@@ -1,5 +1,5 @@
 import { useAtom, useAtomValue } from 'jotai';
-import { a_lite, a_originals, a_selected_family, a_targets, a_theme } from './atoms';
+import { a_originals, a_selected_family, a_targets, a_theme } from './atoms';
 import HiGrid from './HiGrid';
 import { useComingSoon } from './hooks';
 import _ from 'lodash';

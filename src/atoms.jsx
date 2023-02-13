@@ -41,19 +41,15 @@ export const a_palette = atom(
     }
 );
 
-export const a_lite = atom(get => {
-    const p = get(a_palette);
-    return p.includes('-lite');
-});
-
 export const a_theme = atom(get => {
-    const lite = get(a_lite);
+    const lite = get(a_palette).includes('-lite');;
 
     return {
+        lite,
         alert: lite ? '#FFA07A' : '#B63715',
         change: lite ? '#A2C0D9' : '#506C85',
         input: { background: lite ? '#F0EAD6' : APP_BACKGROUND, color: lite ? APP_BACKGROUND : OFF_WHITE },
-        selectedBorder: { editable: lite ? 'darkmagenta' : LAVENDER, readonly: lite ? 'darkgreen' : GOLD },
+        selectedBorder: { editable: lite ? '#8A0000' : LAVENDER, readonly: lite ? 'black' : GOLD },
         rowMarker:lite ? APP_BACKGROUND : GOLD,
         toggle:  lite ? APP_BACKGROUND : WHITE,
     };

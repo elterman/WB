@@ -1,10 +1,10 @@
 import { useAtom, useAtomValue, useSetAtom } from 'jotai';
 import _ from 'lodash';
 import { Fragment, useCallback, useEffect, useRef, useState } from 'react';
-import { a_theme, a_lite, a_palette, a_selected_cell, a_targets } from './atoms';
+import { a_theme, a_palette, a_selected_cell, a_targets } from './atoms';
 import Foldable, { LEVEL_INDENT } from './Foldable';
 import { cellBox, cellId, nodeVisible, parentKey, split, splitKey } from './Foldable Utils';
-import { APP_BACKGROUND, PALETTES, GOLD, OFF_BACKGROUND, LEFT, RIGHT, UP, DOWN, GOTO_PARENT, WHITE } from './const';
+import { APP_BACKGROUND, PALETTES, GOLD, OFF_BACKGROUND, LEFT, RIGHT, UP, DOWN, GOTO_PARENT } from './const';
 import { useForceUpdate } from './hooks';
 import { useTooltip } from './Tooltip';
 import { getBox, hasScrollbar, syncScroll, windowSize, formatNumeric, str, same } from './utils';
@@ -23,7 +23,6 @@ const HiGrid = (props) => {
     const { nodes, metaAtom } = useAtomValue(atom);
     const [meta, setMeta] = useAtom(metaAtom);
     const setTargets = useSetAtom(a_targets);
-    const lite = useAtomValue(a_lite);
     const theme = useAtomValue(a_theme);
     const [selectedCell, setSelectedCell] = useAtom(a_selected_cell);
     const [editing, setEditing] = useState(null);
@@ -474,7 +473,7 @@ const HiGrid = (props) => {
         const style = { gridArea, width, justifyContent, borderLeftWidth, borderRightWidth, borderLeftColor, ...cellStyle };
 
         if (!col && selectedRow) {
-            if (lite) {
+            if (theme.lite) {
                 style.fontFamily = 'Roboto Bold';
             } else {
                 style.color = GOLD;
@@ -522,7 +521,7 @@ const HiGrid = (props) => {
     };
 
     const { x: wx } = windowSize();
-    const classes = `${lite ? 'higrid-view-lite' : ''}`;
+    const classes = `${theme.lite ? 'higrid-view-lite' : ''}`;
     const overflow = `${br && !hasScrollbar(BOTTOM_RIGHT, true) ? 'auto' : 'hidden'}`;
     const headerGrid = `auto auto / repeat(${ncols - 1}, ${CELL_SIZE})`;
     const shades = palette.levels;
