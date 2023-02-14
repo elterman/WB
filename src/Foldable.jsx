@@ -26,7 +26,7 @@ const Foldable = (props) => {
 
     const renderItem = () => {
         const level = node.key.length;
-        const indent = flat ? 0 : `${(level - 1) * LEVEL_INDENT}px`;
+        const indent = flat ? 0 : `${(level - 1) * LEVEL_INDENT + (hasChildren ? 0 : 24)}px`;
         const background = shades[level - 1];
 
         const renderToggle = () => {
@@ -44,7 +44,7 @@ const Foldable = (props) => {
         return (
             <div className='foldable-row' style={{ background }}>
                 <div className='foldable-item' style={{ marginLeft: indent }}>
-                    {!flat && renderToggle()}
+                    {!flat && hasChildren && renderToggle()}
                     {_.isFunction(node.item) ? node.item(node) : render ? render(node) : (node.item || '•••')}
                 </div>
             </div>
