@@ -42,12 +42,12 @@ const TradesPage = () => {
         const trade = +value;
 
         let node = meta[cell.key].node;
-        node.item[cell.col] = trade;
+        node.data[cell.col] = trade;
 
         // final weight = target + trade
         const wcol = cell.col + sectionSize;
-        const target = node.item[cell.col - sectionSize] || 0;
-        node.item[wcol] = target + trade;
+        const target = node.data[cell.col - sectionSize] || 0;
+        node.data[wcol] = target + trade;
 
         const updateTotal = (key, col) => {
             if (_.isEmpty(key)) {
@@ -58,10 +58,10 @@ const TradesPage = () => {
             let total = 0;
 
             _.each(node.children, n => {
-                total += n.item[col];
+                total += n.data[col];
             });
 
-            node.item[col] = total;
+            node.data[col] = total;
 
             updateTotal(parentKey(key), col);
         };

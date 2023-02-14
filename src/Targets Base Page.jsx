@@ -15,7 +15,7 @@ const TargetsBasePage = (props) => {
         const style = {};
         const level = node.key.length;
         const section = getSection(col, sectionSize);
-        const values = node.item;
+        const values = node.data;
         const value = values[col];
 
         if (section === 3 && level === 1 && formatNumeric(value) !== '100.0') {
@@ -28,7 +28,7 @@ const TargetsBasePage = (props) => {
     };
 
     const pnode = nodes?.length ? nodes[0] : null;
-    const values = pnode?.item;
+    const values = pnode?.data;
     const mincol = sectionSize * 2 + 1;
     const maxcol = mincol + sectionSize - 1;
     const weights = _.filter(values, (v, col) => col >= mincol && col <= maxcol);

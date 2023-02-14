@@ -9,7 +9,7 @@ import { a_funds, a_grid_data, a_loading, a_originals, a_selected_tab, a_targets
 import { a_compare_input, a_date_picker_visible, a_families, a_input } from './atoms';
 import { useState } from 'react';
 import { BLUE, COMPARE } from './const';
-import { MOCK_TARGET_NODES, MOCK_COMPARE_NODES } from './Mock Data';
+import { MOCK_TRADE_NODES, MOCK_COMPARE_NODES } from './Mock Data';
 
 const LoaderPopup = (props) => {
     const { onExit } = props;
@@ -53,7 +53,7 @@ const LoaderPopup = (props) => {
             setTargetsInput({ date: date1, fname: fname1 });
 
             _.delay(() => {
-                const nodes = _.cloneDeep(MOCK_TARGET_NODES);
+                const nodes = _.cloneDeep(MOCK_TRADE_NODES);
                 setGridNodes({ nodes });
 
                 const json = JSON.stringify(nodes);

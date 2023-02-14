@@ -309,7 +309,7 @@ const HiGrid = (props) => {
         if (!isCellEditable || isCellEditable(selectedCell)) {
             setEditing(true);
 
-            const value = meta[selectedCell.key].node.item[selectedCell.col];
+            const value = meta[selectedCell.key].node.data[selectedCell.col];
 
             _.delay(() => {
                 l.inputBox.value = value;
@@ -328,7 +328,7 @@ const HiGrid = (props) => {
             onAcceptChange(selectedCell, value);
         } else if (value !== '') {
             const node = meta[selectedCell.key].node;
-            node.item[selectedCell.col] = +value;
+            node.data[selectedCell.col] = +value;
         }
     };
 
@@ -504,7 +504,7 @@ const HiGrid = (props) => {
     };
 
     const renderNode = ({ node, part }) => {
-        const values = node.item;
+        const values = node.data;
         let min = 0;
         let max = values.length - 1;
 

@@ -46,12 +46,13 @@ const Foldable = (props) => {
             const background = shades[level - 1];
             const rid = `${id}-${node.key}-row`;
             const iid = `${id}-${node.key}-item`;
+            const fn = _.isFunction(node.data) ? node.data : null;
 
             return (
                 <div id={rid} className='foldable-row' style={{ background }}>
                     <div id={iid} className='foldable-item' style={{ marginLeft: indent }}>
                         {!flat && hasChildren && renderToggle()}
-                        {_.isFunction(node.item) ? node.item(node) : render ? render(node) : (node.item || '•••')}
+                        {fn ? fn(node) : render ? render(node) : node.data}
                     </div>
                 </div>
             );
