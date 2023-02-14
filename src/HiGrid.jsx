@@ -354,7 +354,7 @@ const HiGrid = (props) => {
     };
 
     const onAddNode = (item, pos) => {
-        const new_node = createNode ? createNode(item) : { item: [item] };
+        const new_node = createNode ? createNode(item) : { data: [item] };
 
         let key = [...selectedCell.key];
 

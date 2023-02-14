@@ -74,8 +74,8 @@ const TradesPage = () => {
     };
 
     const createNode = (name) => {
-        const item = [name, ..._.fill(Array(sectionSize), ''), ..._.fill(Array(sectionSize * 2), 0)];
-        const node = { item, canDelete: true };
+        const data = [name, ..._.fill(Array(sectionSize), ''), ..._.fill(Array(sectionSize * 2), 0)];
+        const node = { data, canDelete: true };
 
         return node;
     };
