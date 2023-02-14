@@ -75,9 +75,7 @@ const TradesPage = () => {
 
     const createNode = (name) => {
         const data = [name, ..._.fill(Array(sectionSize), ''), ..._.fill(Array(sectionSize * 2), 0)];
-        const node = { data, canDelete: true };
-
-        return node;
+        return { data, canDelete: true };
     };
 
     const onSave = local => {
