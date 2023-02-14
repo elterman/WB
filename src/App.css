@@ -154,14 +154,14 @@ input::-webkit-inner-spin-button {
   border-color: #fff2;
 }
 
-.tab-drop {
+.tab-content {
   display: grid;
   grid-auto-flow: column;
   /* grid-gap: 18px; */
   align-items: center;
 }
 
-.tab-drop-button {
+.tab-content-button {
   display: grid;
   align-content: center;
   color: #fff4;
@@ -170,7 +170,7 @@ input::-webkit-inner-spin-button {
   cursor: pointer;
 }
 
-.tab-drop-button:hover {
+.tab-content-button:hover {
   color: #fff;
 }
 

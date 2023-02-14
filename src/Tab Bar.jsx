@@ -7,11 +7,13 @@ const TabBar = (props) => {
         <div style={{ display: 'grid', ...style }}>
             <div className="tabs-border"></div>
             <div className="tabs">
-                {_.map(tabs, (item) => {
+                {_.map(tabs, (item, i) => {
                     const classes = `tab ${item === selectedTab ? 'tab-selected' : ''}`;
+                    const eid = `tab-${i + 1}`
+
                     return (
-                        <div id={`tab-${item}`} key={item} className={classes} onClick={() => onSelectedChange && onSelectedChange(item)}>
-                            <div className="tab-drop" style={{ ...itemStyle }}>{item}</div>
+                        <div key={i} id={eid} className={classes} onClick={() => onSelectedChange && onSelectedChange(item)}>
+                            <div id={`${eid}-name`} className="tab-content" style={{ ...itemStyle }}>{item}</div>
                         </div>
                     );
                 })}

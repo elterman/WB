@@ -25,7 +25,7 @@ const PaletteBrowser = () => {
         return null;
     }
 
-    return <div className='palette-switch' onClick={e => changePalette(e.shiftKey)}
+    return <div id='palette-browser' className='palette-switch' onClick={e => changePalette(e.shiftKey)}
         onMouseEnter={(e) => tooltip.show({ e, text: 'Browse grid palettes.\nHold Shift to navigate backwards.', dx: 12, dy: -55 })}
         onMouseLeave={tooltip.hide}>
         {_.map([RED, TANGERINE, YELLOW, GREEN, DARK_BLUE,], (background, i) => {

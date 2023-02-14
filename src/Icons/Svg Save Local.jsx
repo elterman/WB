@@ -1,11 +1,11 @@
-import { APP_BACKGROUND, BLUE, DARK_GOLD, GOLD, GREEN } from '../const';
+import { APP_BACKGROUND, DARK_GOLD, GREEN } from '../const';
 import { useTooltip } from '../Tooltip';
 
 const Icon = ({ style = {}, width, disabled = false, color = GREEN, viewBox = '0 0 100 100' }) => {
     const tooltip = useTooltip();
 
     return (
-        <svg id='svg-floppy' style={{ ...style }} width={width} height={width} viewBox={viewBox} xmlns="http://www.w3.org/2000/svg"
+        <svg id='svg-save-local' style={{ ...style }} width={width} height={width} viewBox={viewBox} xmlns="http://www.w3.org/2000/svg"
             filter={disabled ? 'grayscale()' : ''} opacity={disabled ? 0.5 : 1} cursor={disabled ? 'initial' : 'pointer'}
             onMouseEnter={e => tooltip.show({ e, text: 'Save for Myself' })} onMouseLeave={tooltip.hide}>
 

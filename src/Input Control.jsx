@@ -17,14 +17,14 @@ const InputControl = () => {
         date = `${dayjs(date).format('MMMM D, YYYY')}`;
 
         return <>
-            <div style={{ color }}>{date}</div>
+            <div id={`input-date-${color}`} style={{ color }}>{date}</div>
             {separator(BULLET)}
-            <div style={{ color }}>{fname}</div>
+            <div id={`input-fund-${color}`} style={{ color }}>{fname}</div>
         </>;
     };
 
     return <>
-        <div className='prompt' style={{ cursor: 'pointer' }} onClick={() => setPopup(true)}>
+        <div id='input-prompt' className='prompt' style={{ cursor: 'pointer' }} onClick={() => setPopup(true)}>
             {fname1 ?
                 <div className='grid-cols'>
                     {render(date1, fname1)}

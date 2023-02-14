@@ -10,9 +10,11 @@ import { useTooltip } from './Tooltip';
 import { getBox, hasScrollbar, syncScroll, windowSize, formatNumeric, str, same } from './utils';
 import HiGridToolbar from './HiGrid Toolbar';
 import Spinner from './Spinner';
+import PaletteBrowser from './Palette Browser';
 
 const ROW_SIZE = 29;
 const CELL_SIZE = 70;
+const GRID_HEADERS = 'grid-headers';
 const TOP_LEFT = 'top-left';
 const TOP_RIGHT = 'top-right';
 const BOTTOM_LEFT = 'bottom-left';
@@ -291,7 +293,7 @@ const HiGrid = (props) => {
         }
 
         if ((ob.scrollLeft !== gh.scrollLeft)) {
-            syncScroll('gh', ob.scrollLeft);
+            syncScroll(GRID_HEADERS, ob.scrollLeft);
         }
 
         if (br.scrollTop !== bl.scrollTop) {
@@ -400,13 +402,14 @@ const HiGrid = (props) => {
         const renderHeaderCell = ({ sectionIndex, name, col }) => {
             const gridCol = sectionIndex * columnHeaders.length + col + 1;
             const style = { gridArea: `2/${gridCol}`, width: `${CELL_SIZE}px` };
+            const eid = `col-${col + 1}`;
 
             if (gridCol === selectedCell.col) {
                 style.color = GOLD;
             }
 
-            return <div key={sectionIndex * 100 + col} className='higrid-cell higrid-header-cell' style={style}>
-                <div className='ellipsis'
+            return <div id={eid} key={sectionIndex * 100 + col} className='higrid-cell higrid-header-cell' style={style}>
+                <div id={`${eid}-value`} className='ellipsis'
                     onMouseEnter={(e) => tooltip.show({ e, text: name, dx: -5, dy: 25 })}
                     onMouseLeave={tooltip.hide}>{name}
                 </div>
@@ -417,9 +420,10 @@ const HiGrid = (props) => {
             {_.map(sectionHeaders, (name, i) => {
                 const col = i * columnHeaders.length + 1;
                 const span = columnHeaders.length;
+                const eid = `section-${i + 1}`;
 
                 return <Fragment key={i}>
-                    <div key={i} className='higrid-cell higrid-header-cell' style={{ gridArea: `1/${col}/auto/span ${span}` }}>
+                    <div key={i} id={eid} className='higrid-cell higrid-header-cell' style={{ gridArea: `1/${col}/auto/span ${span}` }}>
                         {name}
                     </div>
                     {_.map(columnHeaders, (name, col) => renderHeaderCell({ sectionIndex: i, name, col }))}
@@ -545,7 +549,7 @@ const HiGrid = (props) => {
                 tabIndex={-1} onKeyDown={onKeyDown}>
                 <HiGridToolbar style={{ placeSelf: 'center' }} onAddNode={readOnly ? null : onAddNode}
                     onDeleteNode={readOnly ? null : onDeleteNode} onSave={readOnly ? null : onSave} canSave={canSave} />
-                <div id='gh' ref={gh_ref} className='higrid-headers'
+                <div id={GRID_HEADERS} ref={gh_ref} className='higrid-headers'
                     style={{ gridArea: '1/2', grid: headerGrid, maxWidth: maxWidthHeaders }}>
                     {renderHeaders()}
                 </div>
@@ -574,6 +578,7 @@ const HiGrid = (props) => {
                 </div>
             </div>
             {saving && <Spinner width={160} style={{ gridArea: '1/1' }} />}
+            {<PaletteBrowser />}
         </div>
     );
 };
