@@ -2,9 +2,9 @@ import { useAtomValue } from 'jotai';
 import { a_loading, a_selected_tab } from './atoms';
 import BenchmarksPage from './Benchmarks Page';
 import ComparePage from './Compare Page';
-import { BENCHMARKS, COMPARE, METRICS, TARGETS } from './const';
+import { BENCHMARKS, COMPARE, METRICS, TRADE } from './const';
 import MetricsPage from './Metrics Page';
-import TargetPage from './Targets Page';
+import TargetPage from './Trades Page';
 import Spinner from './Spinner';
 import TabPanel from './Tab Panel';
 
@@ -14,7 +14,7 @@ const ContentArea = () => {
 
     const renderPage = () => {
         switch (selectedTab) {
-            case TARGETS: return <TargetPage />;
+            case TRADE: return <TargetPage />;
             case COMPARE: return <ComparePage />;
             case BENCHMARKS: return <BenchmarksPage />;
             case METRICS: return <MetricsPage />;

@@ -4,7 +4,7 @@ import dayjs from 'dayjs';
 import { BLUE, BULLET, COMPARE, GREEN, OFF_WHITE } from './const';
 import { nbsp } from './utils';
 import { useState } from 'react';
-import InputPopup from './Input Popup';
+import LoaderPopup from './Loader Popup';
 
 const InputControl = () => {
     const tab = useAtomValue(a_selected_tab);
@@ -33,7 +33,7 @@ const InputControl = () => {
                 <>{tab === COMPARE ? 'Select Dates and Funds to Compare' : 'Select Date and Fund Family'}</>
             }
         </div>
-        {popup && <InputPopup onExit={() => setPopup(false)} />}
+        {popup && <LoaderPopup onExit={() => setPopup(false)} />}
     </>;
 };
 

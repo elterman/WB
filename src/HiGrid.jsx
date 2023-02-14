@@ -21,7 +21,7 @@ const BOTTOM_LEFT = 'bottom-left';
 const BOTTOM_RIGHT = 'bottom-right';
 
 const HiGrid = (props) => {
-    const { id = 'higrid', columnHeaders, sectionHeaders, readOnly, isCellEditable, getCellStyle, alert } = props;
+    const { id = 'higrid', columnHeaders, sectionHeaders, readOnly, isCellEditable, getCellStyle, warn } = props;
     const { onAcceptChange, createNode, canSave = { local: false, global: false }, onSave } = props;
     const [{ nodes, meta, metaAtom }, setGridNodes] = useAtom(a_grid_data);
     const setMeta = useSetAtom(metaAtom);
@@ -555,7 +555,7 @@ const HiGrid = (props) => {
                 </div>
                 <div id={TOP_LEFT} className={classes} style={{ gridArea: '2/1' }}>
                     <Foldable id={TOP_LEFT} nodes={[nodes[0]]} maxLevel={1} atom={metaAtom}
-                        shades={alert ? [theme.alert] : shades} toggleColor={theme.toggle}
+                        shades={warn ? [theme.warn] : shades} toggleColor={theme.toggle}
                         onToggleFold={onToggleFold} render={node => renderNode({ node, part: TOP_LEFT })}
                     />
                 </div>

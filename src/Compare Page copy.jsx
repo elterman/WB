@@ -1,7 +1,7 @@
 import { useComingSoon } from './hooks';
+import HiGrid from './HiGrid';
 import { useAtomValue } from 'jotai';
 import { a_compare_input } from './atoms';
-import TargetsBasePage from './Targets Base Page';
 
 const ComparePage = () => {
     const renderComingSoon = useComingSoon();
@@ -13,7 +13,9 @@ const ComparePage = () => {
 
     const columnHeaders = [fname1, fname2, 'Delta'];
 
-    return <TargetsBasePage columnHeaders={columnHeaders} readOnly />;
+    return <HiGrid columnHeaders={columnHeaders}
+        sectionHeaders={['Current Targets (%)', 'Trades (%)', 'Final Weights (%)']}
+        readOnly getCellStyle={null} warn={false} />;
 };
 
 export default ComparePage;

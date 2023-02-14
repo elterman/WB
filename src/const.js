@@ -45,11 +45,11 @@ export const ATTENTION_BORDER = `1px solid ${ROSE}`;
 
 export const TODAY = dayjs();
 
-export const TARGETS = 'Targets';
+export const TRADE = 'Trade';
 export const COMPARE = 'Compare';
 export const BENCHMARKS = 'Benchmarks';
 export const METRICS = 'Metrics';
-export const TABS = [TARGETS, COMPARE, BENCHMARKS, METRICS];
+export const TABS = [TRADE, COMPARE, BENCHMARKS, METRICS];
 
 export const LEFT = 'ArrowLeft';
 export const RIGHT = 'ArrowRight';

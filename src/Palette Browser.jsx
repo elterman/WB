@@ -1,6 +1,6 @@
 import { useAtomValue } from 'jotai';
 import { a_has_benchmarks, a_has_compare, a_has_targets, a_selected_tab } from './atoms';
-import { BENCHMARKS, COMPARE, DARK_BLUE, GREEN, RED, TANGERINE, TARGETS, YELLOW } from './const';
+import { BENCHMARKS, COMPARE, DARK_BLUE, GREEN, RED, TANGERINE, TRADE, YELLOW } from './const';
 import _ from 'lodash';
 import { useTooltip } from './Tooltip';
 import { useChangePalette } from './hooks';
@@ -13,7 +13,7 @@ const PaletteBrowser = () => {
     const tooltip = useTooltip();
     const changePalette = useChangePalette();
 
-    if (tab === TARGETS && !hasTargets) {
+    if (tab === TRADE && !hasTargets) {
         return null;
     }
 

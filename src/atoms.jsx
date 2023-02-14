@@ -1,7 +1,7 @@
 import { atom } from 'jotai';
 import { atomWithReset, freezeAtomCreator } from 'jotai/utils';
 import _ from 'lodash';
-import { APP_BACKGROUND, BENCHMARKS, COMPARE, GOLD, LAVENDER, OFF_WHITE, PALETTE, PALETTES, TARGETS, WHITE } from './const';
+import { APP_BACKGROUND, BENCHMARKS, COMPARE, GOLD, LAVENDER, OFF_WHITE, PALETTE, PALETTES, TRADE, WHITE } from './const';
 import { lastDayOfPrevMonth, lastWeekday, str } from './utils';
 
 export const defaultDate = (monthly = false) => (monthly ? lastDayOfPrevMonth() : lastWeekday()).format('YYYY-MM-DD');
@@ -16,7 +16,7 @@ export const a_dropdown = _fatom({});
 export const a_toast = _fatom(null);
 export const a_date_picker_visible = _atom(false);
 export const a_search_selector_filter = _atom('');
-export const a_selected_tab = _atom(TARGETS);
+export const a_selected_tab = _atom(TRADE);
 export const a_loading = _atom(false);
 export const a_saving = _atom(false);
 export const a_funds = _fatom(null);
@@ -47,7 +47,7 @@ export const a_theme = atom(get => {
 
     return {
         lite,
-        alert: lite ? '#FFA07A' : '#B63715',
+        warn: lite ? '#FFA07A' : '#B63715',
         change: lite ? '#ABC6DC' : '#506C85',
         input: { background: lite ? '#F0EAD6' : APP_BACKGROUND, color: lite ? APP_BACKGROUND : OFF_WHITE },
         selectedBorder: { editable: lite ? '#8A0000' : LAVENDER, readonly: lite ? 'black' : GOLD },
@@ -91,7 +91,7 @@ export const a_input = atom(
 
         let date1, fname1, date2, fname2;
 
-        if (tab === TARGETS || tab === BENCHMARKS) {
+        if (tab === TRADE || tab === BENCHMARKS) {
             date1 = targetsInput.date;
             fname1 = targetsInput.fname;
         }
@@ -116,7 +116,7 @@ export const a_selected_cell = atom(
         const tab = get(a_selected_tab);
 
         switch (tab) {
-            case TARGETS: return get(a_targets_selected_cell);
+            case TRADE: return get(a_targets_selected_cell);
             case COMPARE: return get(a_compare_selected_cell);
             case BENCHMARKS: return get(a_benchmarks_selected_cell);
             default: return firstCell;
@@ -126,7 +126,7 @@ export const a_selected_cell = atom(
         const tab = get(a_selected_tab);
 
         switch (tab) {
-            case TARGETS: return set(a_targets_selected_cell, cell);
+            case TRADE: return set(a_targets_selected_cell, cell);
             case COMPARE: return set(a_compare_selected_cell, cell);
             case BENCHMARKS: return set(a_benchmarks_selected_cell, cell);
             default: return firstCell;
@@ -147,7 +147,7 @@ const gridAtoms = (get) => {
     const tab = get(a_selected_tab);
 
     switch (tab) {
-        case TARGETS:
+        case TRADE:
             natom = a_targets_nodes;
             matom = a_targets_meta;
             break;

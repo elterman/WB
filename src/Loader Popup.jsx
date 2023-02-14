@@ -9,9 +9,9 @@ import { a_funds, a_grid_data, a_loading, a_originals, a_selected_tab, a_targets
 import { a_compare_input, a_date_picker_visible, a_families, a_input } from './atoms';
 import { useState } from 'react';
 import { BLUE, COMPARE } from './const';
-import { MOCK_NODES } from './Mock Data';
+import { MOCK_TARGET_NODES, MOCK_COMPARE_NODES } from './Mock Data';
 
-const InputPopup = (props) => {
+const LoaderPopup = (props) => {
     const { onExit } = props;
     const datePickerVisible = useAtomValue(a_date_picker_visible);
     const tab = useAtomValue(a_selected_tab);
@@ -44,14 +44,16 @@ const InputPopup = (props) => {
             setCompareInput({ date1, fname1: fname1, date2, fname2: fname2 });
 
             _.delay(() => {
-                setLoading(false);
+                const nodes = _.cloneDeep(MOCK_COMPARE_NODES);
+                setGridNodes({ nodes });
 
+                setLoading(false);
             }, 1000);
         } else {
             setTargetsInput({ date: date1, fname: fname1 });
 
             _.delay(() => {
-                const nodes = _.cloneDeep(MOCK_NODES);
+                const nodes = _.cloneDeep(MOCK_TARGET_NODES);
                 setGridNodes({ nodes });
 
                 const json = JSON.stringify(nodes);
@@ -77,7 +79,7 @@ const InputPopup = (props) => {
             onExit={handleExit}>
             <div style={{ display: 'grid' }}>
                 <div className='grid-cols' style={{ placeContent: 'start' }}>
-                    <DateButton id='date1' date={date1} onClick={setDateId} style={{ background, width, justifyContent }}/>
+                    <DateButton id='date1' date={date1} onClick={setDateId} style={{ background, width, justifyContent }} />
                     <DropdownSelector id='input.dd1' items={items} selectedItem={fname1 || 'BFAF'} setItem={setFundOrFamilyName}
                         offset='center' icon={<SvgPortfolio width={28} many={!compare} />} style={{ background }} />
                 </div>
@@ -92,4 +94,4 @@ const InputPopup = (props) => {
     </div>;
 };
 
-export default InputPopup;
+export default LoaderPopup;

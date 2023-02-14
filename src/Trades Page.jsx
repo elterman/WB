@@ -1,20 +1,18 @@
 import { useAtom, useAtomValue, useSetAtom } from 'jotai';
-import { a_grid_data, a_saving, a_originals, a_selected_family, a_theme } from './atoms';
-import HiGrid from './HiGrid';
+import { a_grid_data, a_saving, a_originals, a_selected_family } from './atoms';
 import { useComingSoon } from './hooks';
 import _ from 'lodash';
 import { parentKey } from './Foldable Utils';
-import { formatNumeric } from './utils';
 import { useForceUpdate } from '@react-spring/shared';
+import TargetsBasePage, { getSection } from './Targets Base Page';
 
-const TargetsPage = () => {
+const TradesPage = () => {
     const renderComingSoon = useComingSoon();
     const fob = useAtomValue(a_selected_family);
     const { nodes, meta } = useAtomValue(a_grid_data);
     const json = JSON.stringify(nodes);
     const [originals, setOriginals] = useAtom(a_originals);
     const canSave = { local: json !== originals.local, global: json !== originals.global };
-    const theme = useAtomValue(a_theme);
     const forceUpdate = useForceUpdate(true);
     const setSaving = useSetAtom(a_saving);
 
@@ -25,27 +23,9 @@ const TargetsPage = () => {
     const columnHeaders = fob.members;
     const sectionSize = columnHeaders?.length;
 
-    const getSection = (col) => col ? _.floor((col - 1) / sectionSize) + 1 : 0;
-
-    const getCellStyle = (node, col) => {
-        const style = {};
-        const level = node.key.length;
-        const section = getSection(col);
-        const values = node.item;
-        const value = values[col];
-
-        if (section === 3 && level === 1 && formatNumeric(value) !== '100.0') {
-            style.background = theme.alert;
-        } else if ((section === 2 && !node.children && +value) || (section === 3 && +values[col - sectionSize])) {
-            style.background = theme.change;
-        }
-
-        return style;
-    };
-
     const isCellEditable = cell => {
         const col = cell.col;
-        const section = getSection(col);
+        const section = getSection(col, sectionSize);
 
         if (section !== 2) {
             return;
@@ -112,17 +92,8 @@ const TargetsPage = () => {
         }, 1000);
     };
 
-    const pnode = nodes?.length ? nodes[0] : null;
-    const values = pnode?.item;
-    const mincol = sectionSize * 2 + 1;
-    const maxcol = mincol + sectionSize - 1;
-    const weights = _.filter(values, (v, col) => col >= mincol && col <= maxcol);
-    const alert = _.some(weights, w => formatNumeric(w) !== '100.0');
-
-    return <HiGrid columnHeaders={columnHeaders}
-        sectionHeaders={['Current Targets (%)', 'Trades (%)', 'Final Weights (%)']}
-        readOnly={false} isCellEditable={isCellEditable} getCellStyle={getCellStyle} alert={alert}
+    return <TargetsBasePage columnHeaders={columnHeaders} readOnly={false} isCellEditable={isCellEditable}
         onAcceptChange={onAcceptChange} createNode={createNode} canSave={canSave} onSave={onSave} />;
 };
 
-export default TargetsPage;
+export default TradesPage;
