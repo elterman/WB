@@ -181,7 +181,7 @@ export const MOCK_COMPARE_NODES = [
                             { data: ['Quant US', 0, 0, 0, 0, 0, 0, 0, 0, 0] },
                             { data: ['US Small Value', 0, 0, 0, 0, 0, 0, 0, 0, 0] },
                             { data: ['US Small Value', 0, 0, 0, 0, 0, 0, 0, 0, 0] },
-                            { data: ['Short, - S&P 500', -2, -2.1, 0.1, 0, 0, 0, -2, -2.1, 0.1] },
+                            { data: ['Short - S&P 500', -2, -2.1, 0.1, 0, 0, 0, -2, -2.1, 0.1] },
                             { data: ['Short - Russell 2000', 0, 0, 0, 0, 0, 0, 0, 0, 0] },
                         ]
                     },
@@ -321,8 +321,8 @@ export const MOCK_COMPARE_NODES = [
                     {
                         data: ['Short Term Notes', 0, 0, 0, 0, 0, 0, 0, 0, 0],
                         children: [
-                            { data: ['1Yr, Notes', 0, 0, 0, 0, 0, 0, 0, 0, 0] },
-                            { data: ['2Yr, Notes', 0, 0, 0, 0, 0, 0, 0, 0, 0] },
+                            { data: ['1Yr Notes', 0, 0, 0, 0, 0, 0, 0, 0, 0] },
+                            { data: ['2Yr Notes', 0, 0, 0, 0, 0, 0, 0, 0, 0] },
                         ]
                     },
                     { data: ['Short Term Structured', 0, 0, 0, 0, 0, 0, 0, 0, 0] },

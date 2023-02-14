@@ -5,15 +5,18 @@ import SvgSave from './Icons/Svg Save';
 import SvgSaveLocal from './Icons/Svg Save Local';
 import _ from 'lodash';
 import { useAtomValue } from 'jotai';
-import { a_funds_to_add, a_selected_cell, a_grid_data } from './atoms';
+import { a_funds_to_add, a_selected_cell, a_grid_data, a_selected_tab } from './atoms';
 import DropdownSelector from './Dropdown Selector';
 import Button from './Button';
 import InfoTool from './Info Tool';
+import { TRADE } from './const';
 
 const HiGridToolbar = (props) => {
     const { onAddNode, onDeleteNode, canSave, onSave, style } = props;
     const { meta } = useAtomValue(a_grid_data);
     const selectedCell = useAtomValue(a_selected_cell);
+    const selectedTab = useAtomValue(a_selected_tab);
+    const trade = selectedTab === TRADE;
     const node = meta[selectedCell.key].node;
     const leaf = !node.children;
     const fundsToAdd = useAtomValue(a_funds_to_add);
@@ -26,23 +29,25 @@ const HiGridToolbar = (props) => {
 
     return <div id='toolbar' className='toolbar' style={{ ...style }}>
         <InfoTool />
-        {onAddNode && <>
-            <div />
-            {renderAddButton('child', <SvgAddChild width={size} disabled={leaf} />, leaf)}
-            {renderAddButton('above', <SvgAddSibling above width={size} disabled={!leaf} />, !leaf)}
-            {renderAddButton('below', <SvgAddSibling width={size} disabled={!leaf} />, !leaf)}
-        </>}
-        {onDeleteNode && <div id='delete-node' onClick={() => onDeleteNode(node)}>
-            <SvgDeleteNode width={size} disabled={!node.canDelete} />
-        </div>}
-        {onSave && <>
-            <div />
-            <Button id='save-local' style={buttonStyle} onClick={() => onSave(false)}>
-                <SvgSave width={size} disabled={!canSave.global} />
-            </Button>
-            <Button id='save-global' style={buttonStyle} onClick={() => onSave(true)}>
-                <SvgSaveLocal width={size} disabled={!canSave.local} />
-            </Button>
+        {trade && <>
+            {onAddNode && <>
+                <div />
+                {renderAddButton('child', <SvgAddChild width={size} disabled={leaf} />, leaf)}
+                {renderAddButton('above', <SvgAddSibling above width={size} disabled={!leaf} />, !leaf)}
+                {renderAddButton('below', <SvgAddSibling width={size} disabled={!leaf} />, !leaf)}
+            </>}
+            {onDeleteNode && <div id='delete-node' onClick={() => onDeleteNode(node)}>
+                <SvgDeleteNode width={size} disabled={!node.canDelete} />
+            </div>}
+            {onSave && <>
+                <div />
+                <Button id='save-local' style={buttonStyle} onClick={() => onSave(false)}>
+                    <SvgSave width={size} disabled={!canSave.global} />
+                </Button>
+                <Button id='save-global' style={buttonStyle} onClick={() => onSave(true)}>
+                    <SvgSaveLocal width={size} disabled={!canSave.local} />
+                </Button>
+            </>}
         </>}
     </div>;
 };

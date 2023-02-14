@@ -547,7 +547,7 @@ const HiGrid = (props) => {
         <div id={id} style={{ display: 'grid', overflow: 'hidden' }} onClick={() => l.view.focus()}>
             <div id='higrid-view' ref={e => l.view = e} className='higrid-view' style={{ gridArea: '1/1' }}
                 tabIndex={-1} onKeyDown={onKeyDown}>
-                <HiGridToolbar style={{ placeSelf: 'center' }} onAddNode={readOnly ? null : onAddNode}
+                <HiGridToolbar style={{ placeSelf: 'center start' }} onAddNode={readOnly ? null : onAddNode}
                     onDeleteNode={readOnly ? null : onDeleteNode} onSave={readOnly ? null : onSave} canSave={canSave} />
                 <div id={GRID_HEADERS} ref={gh_ref} className='higrid-headers'
                     style={{ gridArea: '1/2', grid: headerGrid, maxWidth: maxWidthHeaders }}>

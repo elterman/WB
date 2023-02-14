@@ -2,16 +2,18 @@ import SvgInfo from './Icons/Svg Info';
 import { useTooltip } from './Tooltip';
 import _ from 'lodash';
 import { Fragment } from 'react';
-import { OFF_WHITE, WHITE } from './const';
+import { TRADE, OFF_WHITE, WHITE } from './const';
+import { useAtomValue } from 'jotai';
+import { a_selected_tab } from './atoms';
 
 const InfoTool = () => {
     const tooltip = useTooltip();
+    const selectedTab = useAtomValue(a_selected_tab);
+    const canEdit = selectedTab === TRADE;
 
     const renderHelp = () => {
         const help = [
             ['Press...', 'To...'],
-            ['Spacebar, or F2, or Enter', 'Edit Cell'],
-            ['Delete', 'Set Trade Cell to 0%'],
             ['1,2...', 'Collapse All from Level 1,2... down'],
             ['0, or 1 twice', 'Expand All'],
             ['Ctrl + Alt + ⇦/⇨', 'Collapse/Expand Row'],
@@ -24,6 +26,10 @@ const InfoTool = () => {
             ['Ctrl + ⇦/⇨', 'Scroll Horizontally'],
             ['p, P', 'Browse Grid Palettes'],
         ];
+
+        if (canEdit) {
+            help.splice(1, 0, ['Spacebar, or F2, or Enter', 'Edit Cell'], ['Delete', 'Set Trade Cell to 0%']);
+        }
 
         return <div id='cheat-sheet'>
             {_.map(help, (line, i) => {
