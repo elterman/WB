@@ -9,7 +9,7 @@ const TabBar = (props) => {
             <div className="tabs">
                 {_.map(tabs, (item, i) => {
                     const classes = `tab ${item === selectedTab ? 'tab-selected' : ''}`;
-                    const eid = `tab-${i + 1}`
+                    const eid = `tab-${i + 1}`;
 
                     return (
                         <div key={i} id={eid} className={classes} onClick={() => onSelectedChange && onSelectedChange(item)}>
