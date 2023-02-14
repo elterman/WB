@@ -4,7 +4,7 @@ import _ from 'lodash';
 import { Fragment } from 'react';
 import { OFF_WHITE, WHITE } from './const';
 
-const Info = () => {
+const InfoTool = () => {
     const tooltip = useTooltip();
 
     const renderHelp = () => {
@@ -37,9 +37,9 @@ const Info = () => {
         </div>;
     };
 
-    return <div onMouseEnter={(e) => tooltip.show({ e, text: renderHelp, style: { maxWidth: '500px', paddingRight: '20px' } })}
+    return <div id='info-tool' onMouseEnter={(e) => tooltip.show({ e, text: renderHelp, style: { maxWidth: '500px', paddingRight: '20px' } })}
         onMouseLeave={tooltip.hide}><SvgInfo width={24} />
     </div>;
 };
 
-export default Info;
+export default InfoTool;

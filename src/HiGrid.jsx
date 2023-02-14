@@ -19,7 +19,7 @@ const BOTTOM_LEFT = 'bottom-left';
 const BOTTOM_RIGHT = 'bottom-right';
 
 const HiGrid = (props) => {
-    const { columnHeaders, sectionHeaders, readOnly, isCellEditable, getCellStyle, alert } = props;
+    const { id = 'higrid', columnHeaders, sectionHeaders, readOnly, isCellEditable, getCellStyle, alert } = props;
     const { onAcceptChange, createNode, canSave = { local: false, global: false }, onSave } = props;
     const [{ nodes, meta, metaAtom }, setGridNodes] = useAtom(a_grid_data);
     const setMeta = useSetAtom(metaAtom);
@@ -537,7 +537,7 @@ const HiGrid = (props) => {
     const maxWidthHeaders = trw ? `${trw - 1}px` : `${tr?.clientWidth - 1}px`;
 
     return (
-        <div style={{ display: 'grid', overflow: 'hidden' }} onClick={() => l.view.focus()}>
+        <div id={id} style={{ display: 'grid', overflow: 'hidden' }} onClick={() => l.view.focus()}>
             <div id='higrid-view' ref={e => l.view = e} className='higrid-view' style={{ gridArea: '1/1' }}
                 tabIndex={-1} onKeyDown={onKeyDown}>
                 <HiGridToolbar style={{ placeSelf: 'center' }} onAddNode={readOnly ? null : onAddNode}
@@ -547,26 +547,26 @@ const HiGrid = (props) => {
                     {renderHeaders()}
                 </div>
                 <div id={TOP_LEFT} className={classes} style={{ gridArea: '2/1' }}>
-                    <Foldable node={{ children: [nodes[0]], maxLevel: 1 }} atom={metaAtom}
+                    <Foldable id={TOP_LEFT} node={{ ...nodes[0] }} maxLevel={1} atom={metaAtom}
                         shades={alert ? [theme.alert] : shades} toggleColor={theme.toggle}
                         onToggleFold={onToggleFold} render={node => renderNode({ node, part: TOP_LEFT })}
                     />
                 </div>
                 <div id={TOP_RIGHT} ref={tr_ref} className={`${classes} root-scroll`} onScroll={onScroll}
                     style={{ gridArea: '2/2', maxWidth: maxWidthTr, overflow }}>
-                    <Foldable node={{ children: [nodes[0]], maxLevel: 1 }} atom={metaAtom} shades={shades} flat
+                    <Foldable id={TOP_RIGHT} node={{ ...nodes[0] }} maxLevel={1} atom={metaAtom} shades={shades} flat
                         render={node => renderNode({ node, part: TOP_RIGHT })}
                     />
                 </div>
                 <div id={BOTTOM_LEFT} className={classes} ref={bl_ref} style={{ gridArea: '3/1', maxHeight: maxHeightBl }}
                     onWheel={e => br?.scrollBy(0, e.deltaY)}>
-                    <Foldable node={{ children: nodes[0].children }} atom={metaAtom} shades={shades} onToggleFold={onToggleFold}
+                    <Foldable id={BOTTOM_LEFT} node={{ children: nodes[0].children }} atom={metaAtom} shades={shades} onToggleFold={onToggleFold}
                         toggleColor={theme.toggle} render={node => renderNode({ node, part: BOTTOM_LEFT })}
                     />
                 </div>
                 <div id={BOTTOM_RIGHT} ref={br_ref} className={`${classes} root-scroll`} onScroll={onScroll}
                     style={{ gridArea: '3/2', maxWidth: maxWidthBr }} >
-                    <Foldable node={{ children: nodes[0].children }} atom={metaAtom} shades={shades} flat
+                    <Foldable id={BOTTOM_RIGHT} node={{ children: nodes[0].children }} atom={metaAtom} shades={shades} flat
                         render={node => renderNode({ node, part: BOTTOM_RIGHT })} />
                 </div>
             </div>

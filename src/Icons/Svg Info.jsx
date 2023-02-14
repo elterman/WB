@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { DARK_GOLD, GOLD, OFF_WHITE, WHITE } from '../const';
+import { OFF_WHITE, WHITE } from '../const';
 
 const Icon = ({ style = {}, color = OFF_WHITE, hoverColor = WHITE, width = '100%', viewBox = '0 0 100 100' }) => {
   const [_color, setColor] = useState(color);
