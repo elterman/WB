@@ -14,7 +14,7 @@ export const MOCK_TRADE_NODES = [
                             { data: ['US Opportunistic Value', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0] },
                             { data: ['US Small Value', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0] },
                             { data: ['Short - S&P 500', -2, -2.1, -2, 0, 0, 0, 0, 0, -2, -2.1, -2, 0] },
-                            { data: ['Short - Russel 2000', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0] },
+                            { data: ['Short - Russell 2000', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0] },
                         ]
                     },
                     {
@@ -44,7 +44,7 @@ export const MOCK_TRADE_NODES = [
                     },
                     { data: ['Korean Won Hedge', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0] },
                     { data: ['Resources', 3.1, 3.2, 3.1, 28.2, 0, 0, 0, 0, 3.1, 3.2, 3.1, 28.2] },
-                    { data: ['130 / 30 XUS', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0] },
+                    { data: ['130/30 xUS', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0] },
                     { data: ['Fundamental', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0] },
                     { data: ['Cyclical Survivors', 6.3, 5, 6, 0, 0, 0, 0, 0, 6.3, 5, 6, 0] },
                     { data: ['SOPS', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0] },
@@ -138,7 +138,7 @@ export const MOCK_TRADE_NODES = [
                     { data: ['Alpha-Only', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0] },
                     { data: ['FIHF', 4.4, 4.1, 1.7, 0, 0, 0, 0, 0, 4.4, 4.1, 1.7, 0] },
                     { data: ['Merger', 6.4, 6.4, 0, 0, 0, 0, 0, 0, 6.4, 6.4, 0, 0] },
-                    { data: ['Value Dislocation Long / Short', 20.2, 20.4, 16.8, 16.6, 0, 0, 0, 0, 20.2, 20.4, 16.8, 16.6] },
+                    { data: ['Value Dislocation Long/Short', 20.2, 20.4, 16.8, 16.6, 0, 0, 0, 0, 20.2, 20.4, 16.8, 16.6] },
                     { data: ['Misc. RV', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0] },
                 ]
             },
@@ -176,10 +176,10 @@ export const MOCK_COMPARE_NODES = [
                     {
                         data: ['US', -2, -2.1, 0.1, 2, 0, 2, 0, -2.1, 2.1],
                         children: [
-                            { data: ['US, Norm, Wt', 0, 0, 0, 0, 0, 0, 0, 0, 0] },
+                            { data: ['US Norm Wt', 0, 0, 0, 0, 0, 0, 0, 0, 0] },
                             { data: ['Quality', 0, 0, 0, 2, 0, 2, 2, 0, 2] },
                             { data: ['Quant US', 0, 0, 0, 0, 0, 0, 0, 0, 0] },
-                            { data: ['US Small Value', 0, 0, 0, 0, 0, 0, 0, 0, 0] },
+                            { data: ['US Opportunistic Value', 0, 0, 0, 0, 0, 0, 0, 0, 0] },
                             { data: ['US Small Value', 0, 0, 0, 0, 0, 0, 0, 0, 0] },
                             { data: ['Short - S&P 500', -2, -2.1, 0.1, 0, 0, 0, -2, -2.1, 0.1] },
                             { data: ['Short - Russell 2000', 0, 0, 0, 0, 0, 0, 0, 0, 0] },
