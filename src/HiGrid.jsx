@@ -495,7 +495,6 @@ const HiGrid = (props) => {
             {renderSelectedBorder()}
             {!col && selectedRow && level > 1 && <div style={rowMarkerStyle}>●</div>}
         </Fragment>;
-
     };
 
     const renderNode = ({ node, part }) => {
@@ -547,26 +546,26 @@ const HiGrid = (props) => {
                     {renderHeaders()}
                 </div>
                 <div id={TOP_LEFT} className={classes} style={{ gridArea: '2/1' }}>
-                    <Foldable id={TOP_LEFT} node={{ ...nodes[0] }} maxLevel={1} atom={metaAtom}
+                    <Foldable id={TOP_LEFT} nodes={[nodes[0]]} maxLevel={1} atom={metaAtom}
                         shades={alert ? [theme.alert] : shades} toggleColor={theme.toggle}
                         onToggleFold={onToggleFold} render={node => renderNode({ node, part: TOP_LEFT })}
                     />
                 </div>
                 <div id={TOP_RIGHT} ref={tr_ref} className={`${classes} root-scroll`} onScroll={onScroll}
                     style={{ gridArea: '2/2', maxWidth: maxWidthTr, overflow }}>
-                    <Foldable id={TOP_RIGHT} node={{ ...nodes[0] }} maxLevel={1} atom={metaAtom} shades={shades} flat
+                    <Foldable id={TOP_RIGHT} nodes={[nodes[0]]} maxLevel={1} atom={metaAtom} shades={shades} flat
                         render={node => renderNode({ node, part: TOP_RIGHT })}
                     />
                 </div>
                 <div id={BOTTOM_LEFT} className={classes} ref={bl_ref} style={{ gridArea: '3/1', maxHeight: maxHeightBl }}
                     onWheel={e => br?.scrollBy(0, e.deltaY)}>
-                    <Foldable id={BOTTOM_LEFT} node={{ children: nodes[0].children }} atom={metaAtom} shades={shades} onToggleFold={onToggleFold}
+                    <Foldable id={BOTTOM_LEFT} nodes={nodes[0].children} atom={metaAtom} shades={shades} onToggleFold={onToggleFold}
                         toggleColor={theme.toggle} render={node => renderNode({ node, part: BOTTOM_LEFT })}
                     />
                 </div>
                 <div id={BOTTOM_RIGHT} ref={br_ref} className={`${classes} root-scroll`} onScroll={onScroll}
                     style={{ gridArea: '3/2', maxWidth: maxWidthBr }} >
-                    <Foldable id={BOTTOM_RIGHT} node={{ children: nodes[0].children }} atom={metaAtom} shades={shades} flat
+                    <Foldable id={BOTTOM_RIGHT} nodes={nodes[0].children} atom={metaAtom} shades={shades} flat
                         render={node => renderNode({ node, part: BOTTOM_RIGHT })} />
                 </div>
             </div>
