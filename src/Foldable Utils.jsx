@@ -1,4 +1,3 @@
-import { BULLET } from './const';
 import { getBox } from './utils';
 import _ from 'lodash';
 
@@ -33,6 +32,6 @@ export const nodeVisible = (key, meta) => {
     return nodeVisible(pkey, meta);
 };
 
-export const cellId = (key, col) => `${key}${BULLET}${col}`;
+export const cellId = (key, col) => `${key}-${col}`;
 
 export const cellBox = cell => getBox(cellId(cell.key, cell.col));

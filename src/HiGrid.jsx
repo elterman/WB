@@ -436,14 +436,16 @@ const HiGrid = (props) => {
         const indent = level * LEVEL_INDENT;
         const cx = col ? CELL_SIZE : (300 - indent);
         const selectedRow = same(node.key, selectedCell.key);
+        const cellid = cellId(node.key, col);
 
         const renderInput = () => {
             const onBlur = () => editing && acceptChange();
 
             const background = theme.input.background;
             const color = theme.input.color;
+            const iid = `${cellid}-input`;
 
-            return <input className='cell-input' ref={e => (l.inputBox = e)} type="number" onBlur={onBlur}
+            return <input id={iid} className='cell-input' ref={e => (l.inputBox = e)} type="number" onBlur={onBlur}
                 style={{ gridArea, width: `${cx - 1}px`, background, color }} />;
         };
 
@@ -457,8 +459,9 @@ const HiGrid = (props) => {
             const selectedBorderColor = theme.selectedBorder[editable ? 'editable' : 'readonly'];
             const border = `2px solid ${selectedBorderColor}`;
             const pointerEvents = editing ? 'none' : 'auto';
+            const eid = `${cellid}-selected-border`;
 
-            return <div style={{ gridArea, width: `${cx - 1}px`, marginLeft: '1px', border, pointerEvents }} onClick={onEdit} />;
+            return <div id={eid} style={{ gridArea, width: `${cx - 1}px`, marginLeft: '1px', border, pointerEvents }} onClick={onEdit} />;
         };
 
         const onClickCell = () => {
@@ -467,7 +470,6 @@ const HiGrid = (props) => {
             setSelectedCell(cell);
         };
 
-        const id = cellId(node.key, col);
         const justifyContent = col ? 'end' : 'start';
         const width = `${cx}px`;
         const hasSectionBorder = (col % columnHeaders.length === 1);
@@ -488,12 +490,12 @@ const HiGrid = (props) => {
         const rowMarkerStyle = { gridArea, placeSelf: 'center start', transform: `translateX(${4 - indent}px)`, color: theme.rowMarker };
 
         return <Fragment key={col}>
-            <div id={id} className='higrid-cell' style={style} onClick={onClickCell}>
-                <div className='ellipsis'>{col ? formatNumeric(value) : value}</div>
+            <div id={cellid} className='higrid-cell' style={style} onClick={onClickCell}>
+                <div id={`${cellid}-value`} className='ellipsis'>{col ? formatNumeric(value) : value}</div>
             </div>
             {editing && same(cell, selectedCell) && renderInput()}
             {renderSelectedBorder()}
-            {!col && selectedRow && level > 1 && <div style={rowMarkerStyle}>●</div>}
+            {!col && selectedRow && level > 1 && <div id={`${cellid}-row-marker`} style={rowMarkerStyle}>●</div>}
         </Fragment>;
     };
 
@@ -519,7 +521,9 @@ const HiGrid = (props) => {
                 break;
         }
 
-        return <div className='higrid-row'>
+        const eid = `${part}-${node.key}-higird-row`;
+
+        return <div id={eid} className='higrid-row'>
             {_.map(values, (value, col) => col >= min && col <= max && renderCell(node, col, value))}
         </div>;
     };

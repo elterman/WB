@@ -28,25 +28,28 @@ const Foldable = (props) => {
         };
 
         const doRender = () => {
-            const level = node.key.length;
-            const indent = flat ? 0 : `${(level - 1) * LEVEL_INDENT + (hasChildren ? 0 : 24)}px`;
-            const background = shades[level - 1];
-
             const renderToggle = () => {
                 const classes = `foldable-toggle ${!folded && hasChildren ? 'foldable-toggle-expanded' : ''}`;
                 const opacity = hasChildren ? 1 : 0;
                 const cursor = hasChildren ? 'pointer' : 'auto';
+                const eid = `${id}-${node.key}-toggle`;
 
-                return <div style={{ opacity, cursor, display: 'grid' }}>
+                return <div id={eid} style={{ opacity, cursor, display: 'grid' }}>
                     <div className={classes} onClick={handleToggle}>
                         <Icon width={12} color={toggleColor} />
                     </div>
                 </div>;
             };
 
+            const level = node.key.length;
+            const indent = flat ? 0 : `${(level - 1) * LEVEL_INDENT + (hasChildren ? 0 : 24)}px`;
+            const background = shades[level - 1];
+            const rid = `${id}-${node.key}-row`;
+            const iid = `${id}-${node.key}-item`;
+
             return (
-                <div className='foldable-row' style={{ background }}>
-                    <div className='foldable-item' style={{ marginLeft: indent }}>
+                <div id={rid} className='foldable-row' style={{ background }}>
+                    <div id={iid} className='foldable-item' style={{ marginLeft: indent }}>
                         {!flat && hasChildren && renderToggle()}
                         {_.isFunction(node.item) ? node.item(node) : render ? render(node) : (node.item || '•••')}
                     </div>
@@ -67,11 +70,11 @@ const Foldable = (props) => {
             return null;
         }
 
-        const folded = node.key && meta[node.key].folded;
-        const level = node.key ? node.key.length : 0;
-        const nid = `${id}-${node.key || 0}`;
+        const folded = meta[node.key].folded;
+        const level = node.key.length;
+        const eid = `${id}-${node.key}`;
 
-        return <div id={nid} className='foldable'>
+        return <div id={eid} className='foldable'>
             {node.key && doRender()}
             {!folded && level < maxLevel && _.map(node.children, (child, i) =>
                 <Fragment key={i}>{renderNode(child)}</Fragment>)}
