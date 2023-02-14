@@ -24,11 +24,7 @@ const TargetsBasePage = (props) => {
         const value = values[col];
 
         if (section === 3 && level === 1) {
-            if (compare) {
-                if (col === sectionSize * 3 && isnot(value, 0)) {
-                    style.background = theme.warn;
-                }
-            } else if (isnot(value, 100)) {
+            if ((!compare || col < sectionSize * 3) && isnot(value, 100)) {
                 style.background = theme.warn;
             }
         } else if ((section === 2 && !node.children && +value) || (section === 3 && +values[col - sectionSize])) {
@@ -43,7 +39,7 @@ const TargetsBasePage = (props) => {
     const mincol = sectionSize * 2 + 1;
     const maxcol = mincol + sectionSize - 1 - (compare ? 1 : 0);
     const weights = _.filter(values, (v, col) => col >= mincol && col <= maxcol);
-    const warn = _.some(weights, w => isnot(w, 100)) || (compare && isnot(_.last(values), 0));
+    const warn = _.some(weights, w => isnot(w, 100));
 
     return <HiGrid columnHeaders={columnHeaders}
         sectionHeaders={['Current Targets (%)', 'Trades (%)', 'Final Weights (%)']}
