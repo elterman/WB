@@ -88,13 +88,13 @@ const TradesPage = () => {
             return;
         }
 
-        const mob = meta[str(cell.key)];
-        const name = mob.node.data[0];
+        const name = meta[str(cell.key)].node.data[0];
+        let key = _.findKey(cometa, mob => mob.node.data[0] === name);
 
-        let key = _.findKey(cometa, mob => {
-            const n = mob.node.data[0];
-            return  n === name;
-        });
+        if (!key) {
+            alert(`${name} could not be found in Compare.`)
+            return;
+        }
 
         let node = cometa[key].node;
         node.data[col] = trade;
