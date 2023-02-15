@@ -8,7 +8,7 @@ export const MOCK_TRADE_NODES = [
                     {
                         data: ['US', -2, -2.1, -2, 0, 2, 0, 0, 0, 0, -2.1, -2, 0],
                         children: [
-                            { data: ['US Norm wt', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0] },
+                            { data: ['US Norm Wt', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0] },
                             { data: ['Quality', 0, 0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0] },
                             { data: ['Quant US', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0] },
                             { data: ['US Opportunistic Value', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0] },

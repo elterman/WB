@@ -7,7 +7,8 @@ const ComparePage = () => {
     const renderComingSoon = useComingSoon();
     const { fname1, fname2 } = useAtomValue(a_compare_input);
 
-    if (fname1 !== 'BFAF' || fname2 !== 'GRRUF') {
+    if (!(fname1 === 'BFAF' && fname2 === 'GRRUF') &&
+        !(fname2 === 'BFAF' && fname1 === 'GRRUF')) {
         return renderComingSoon();
     }
 
