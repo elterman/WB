@@ -54,9 +54,9 @@ const DatePickerView = (props) => {
     return (
         <animated.div
             id="date-picker-screen"
-            className="modal-screen dimmed"
+            className="modal-screen"
             style={{ cursor: 'initial', opacity }}
-            onClick={(e) => handleModalClick(e, () => setVisible(false))}>
+            onClick={(e) => handleModalClick(e, () => setVisible(false), false)}>
             <DatePicker
                 style={{ left, top: `${r?.bottom + 7}px`, opacity }}
                 monthly={monthly}

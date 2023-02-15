@@ -5,11 +5,12 @@ import DatePickerView from './Date Picker View';
 import DropdownSelector from './Dropdown Selector';
 import SvgPortfolio from './Icons/Svg Portfolio';
 import { useAtom, useAtomValue, useSetAtom } from 'jotai';
-import { a_funds, a_grid_data, a_loading, a_originals, a_selected_tab, a_targets_input } from './atoms';
+import { a_funds, a_grid_data, a_loading, a_originals, a_selected_tab, a_trades_input } from './atoms';
 import { a_compare_input, a_date_picker_visible, a_families, a_input } from './atoms';
 import { useState } from 'react';
 import { BLUE, COMPARE } from './const';
 import { MOCK_TRADE_NODES, MOCK_COMPARE_NODES } from './Mock Data';
+import { handleModalClick } from './utils';
 
 const LoaderPopup = (props) => {
     const { onExit } = props;
@@ -20,7 +21,7 @@ const LoaderPopup = (props) => {
     const input = useAtomValue(a_input);
     const [date1, setDate1] = useState(input.date1);
     const [date2, setDate2] = useState(input.date2);
-    const setTargetsInput = useSetAtom(a_targets_input);
+    const setTradesInput = useSetAtom(a_trades_input);
     const setCompareInput = useSetAtom(a_compare_input);
     const setGridNodes = useSetAtom(a_grid_data);
     const [loading, setLoading] = useAtom(a_loading);
@@ -50,7 +51,7 @@ const LoaderPopup = (props) => {
                 setLoading(false);
             }, 1000);
         } else {
-            setTargetsInput({ date: date1, fname: fname1 });
+            setTradesInput({ date: date1, fname: fname1 });
 
             _.delay(() => {
                 const nodes = _.cloneDeep(MOCK_TRADE_NODES);
@@ -67,14 +68,16 @@ const LoaderPopup = (props) => {
     const isDate1 = dateId === 'date1';
     const setDate = date => isDate1 ? setDate1(date) : setDate2(date);
 
+    const id = 'loader-modal';
     const background = 'none';
     const width = '175px';
     const justifyContent = 'start';
     const height = compare ? 120 : 90;
     const items = _.keys(compare ? funds : families);
-    let ok = !loading;
+    const ok = !loading;
 
-    return <div className='modal-screen dimmed'>
+    return <div id={id} className='modal-screen dimmed'
+        onClick={(e) => e.target.id === id && handleModalClick(e, () => handleExit(false))}>
         <Popup ok='Load' isOk={ok} style={{ left: 430, top: 135, width: 310, height, padding: '10px' }}
             onExit={handleExit}>
             <div style={{ display: 'grid' }}>

@@ -78,9 +78,13 @@ export const lastDayOfPrevMonth = (formatted = false) => {
 export const formatLongDate = (year, month, day) =>
     dayjs(`${year}-${month}-${day ? day : 1}`, 'YYYY-MM-DD').format(`MMMM${day ? ' D,' : ''} YYYY`);
 
-export const handleModalClick = (e, callback) => {
+export const handleModalClick = (e, callback, propagate = true) => {
     if (typeof e.target.className === 'string' && e.target.className.includes('modal-screen')) {
         callback && callback();
+
+        if (!propagate) {
+            return;
+        }
 
         setTimeout(() => {
             const ob = document.elementFromPoint(e.clientX, e.clientY);

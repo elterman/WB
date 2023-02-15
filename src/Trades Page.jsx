@@ -89,10 +89,10 @@ const TradesPage = () => {
         }
 
         const name = meta[str(cell.key)].node.data[0];
-        let key = _.findKey(cometa, mob => mob.node.data[0] === name);
+        let key = keyByName(name, cometa);
 
         if (!key) {
-            alert(`${name} could not be found in Compare.`)
+            alert(`${name} could not be found in Compare.`);
             return;
         }
 
@@ -113,6 +113,8 @@ const TradesPage = () => {
         updateTotal(cometa, key, col + 3);
         updateTotal(cometa, key, 9);
     };
+
+    const keyByName = (name, meat) => _.findKey(meta, mob => mob.node.data[0] === name);
 
     const createNode = (name) => {
         const data = [name, ..._.fill(Array(sectionSize), ''), ..._.fill(Array(sectionSize * 2), 0)];
