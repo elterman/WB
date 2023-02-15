@@ -140,6 +140,14 @@
     background: var(--mp-hover-background);
 }
 
+.mp-button-disabled {
+    opacity: 0.5;
+}
+
+.mp-button-disabled:hover {
+    cursor: auto;
+}
+
 .mp-weekend {
     cursor: initial;
     color: #000;

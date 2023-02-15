@@ -10,6 +10,7 @@ const DOW = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
 
 const DatePicker = (props) => {
     const { year, month, day, monthly, canNoDate, noDateLabel, weekendsEnabled = false, style, onExit } = props;
+    const { canSelectFuture = false } = props;
 
     const getWeekOfMonth = (date) => {
         var firstWeekday = new Date(date.getFullYear(), date.getMonth(), 1).getDay();
@@ -30,11 +31,17 @@ const DatePicker = (props) => {
         return future;
     };
 
+    const isFutureMonth = (y, m) => {
+        const future = selectedYear > cutoffYear || (selectedYear === cutoffYear && m > cutoffMonth);
+        return future;
+    };
+
     const [selectedDay, selectDay] = useState(Number(day) || cutoffDay);
     const [selectedMonth, selectMonth] = useState(Number(month) || cutoffMonth);
     const [selectedYear, selectYear] = useState(Number(year) || cutoffYear);
     const daysInMonth = new Date(selectedYear, selectedMonth, 0).getDate();
     const futureSelected = isFutureDate(selectedYear, selectedMonth, selectedDay);
+    const canSelect = !futureSelected || canSelectFuture;
 
     useEffect(() => {
         (selectedDay > daysInMonth) && selectDay(daysInMonth);
@@ -70,19 +77,22 @@ const DatePicker = (props) => {
             <div className="mp-month-selector">
                 {_.map(MONTHS, (m, i) => {
                     const selected = i === selectedMonth - 1;
-                    const future = selectedYear > cutoffYear || (selectedYear === cutoffYear && i + 1 > cutoffMonth);
+                    const future = isFutureMonth(selectedYear, i + 1);
+                    const selectable = !future || canSelectFuture;
                     const classes = `mp-month mp-item${selected ? ' mp-item-selected' : ''}
                         ${future ? (selected ? ' mp-future' : ' mp-dark-future') : ''}`;
                     const row = Math.floor(i / 4) + 1;
                     const col = (i % 4) + 1;
                     const gridArea = `${row}/${col}`;
+                    const cursor = selectable ? 'pointer' : 'auto';
+
                     return (
-                        <div key={i} className={classes} style={{ gridArea }} onClick={() => {
+                        <div key={i} className={classes} style={{ gridArea, cursor }} onClick={() => {
                             selectMonth(i + 1);
 
                             if (monthly) {
                                 const day = dayjs(new Date(selectedYear, i, 1)).daysInMonth();
-                                i + 1 !== selectedMonth && onExit(i + 1, selectedYear, day);
+                                i + 1 !== selectedMonth && selectable && onExit(i + 1, selectedYear, day);
                             }
                         }}>
                             {m}
@@ -105,10 +115,8 @@ const DatePicker = (props) => {
                         }
 
                         const selected = i === selectedDay - 1;
-                        const future =
-                            selectedYear > cutoffYear ||
-                            (selectedYear === cutoffYear && selectedMonth > cutoffMonth) ||
-                            (selectedYear === cutoffYear && selectedMonth === cutoffMonth && i + 1 > cutoffDay);
+                        const future = isFutureDate(selectedYear, selectedMonth, i + 1);
+                        const selectable = !future || canSelectFuture;
                         const date = new Date(selectedYear, selectedMonth - 1, i + 1);
                         const day = date.getDay();
                         const weekday = day > 0 && day < 6;
@@ -120,13 +128,11 @@ const DatePicker = (props) => {
                         const col = day + 1;
                         const row = getWeekOfMonth(date) + 2;
                         const gridArea = `${row}/${col}`;
+                        const cursor = selectable ? 'pointer' : 'auto';
 
                         return (
-                            <div
-                                key={i}
-                                className={classes}
-                                style={{ gridArea }}
-                                onClick={() => i + 1 !== selectedDay && (weekday || weekendsEnabled) &&
+                            <div key={i} className={classes} style={{ gridArea, cursor }}
+                                onClick={() => i + 1 !== selectedDay && (weekday || weekendsEnabled) && selectable &&
                                     onExit(selectedMonth, selectedYear, i + 1)}>
                                 {d}
                             </div>
@@ -138,7 +144,8 @@ const DatePicker = (props) => {
                 <div className={`${canNoDate ? 'mp-button' : ''}`} onClick={() => canNoDate && onExit(null, null, null)}>
                     {canNoDate ? noDateLabel || 'No Date' : null}
                 </div>
-                <div className="mp-button" onClick={() => onExit(selectedMonth, selectedYear, selectedDay)}>
+                <div className={`mp-button ${canSelect ? '' : 'mp-button-disabled'}`}
+                    onClick={() => canSelect && onExit(selectedMonth, selectedYear, selectedDay)}>
                     OK
                 </div>
                 <div
