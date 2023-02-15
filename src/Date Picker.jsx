@@ -60,14 +60,19 @@ const DatePicker = (props) => {
                     </div>
                     {_.map([-2, -1, 0, 1, 2], (off) => {
                         const future = selectedYear + off > cutoffYear;
-                        return (
-                            <div
-                                key={off}
-                                className={`mp-year ${off ? '' : 'mp-year-selected'}${future ? ' mp-future' : ''}`}
-                                onClick={() => selectYear(selectedYear + off)}>
-                                {selectedYear + off}
-                            </div>
-                        );
+                        const disabled = future && !canSelectFuture;
+
+                        let classes = 'mp-year';
+
+                        if (disabled) {
+                            classes += ' mp-item-disabled';
+                        } else {
+                            classes += `${off ? '' : ' mp-year-selected'}${future ? ' mp-future' : ''}`;
+                        }
+
+                        return <div key={off} className={classes} onClick={() => !disabled && selectYear(selectedYear + off)}>
+                            {selectedYear + off}
+                        </div>;
                     })}
                     <div style={{ gridArea: '1/7', marginLeft: '3px' }} onClick={() => selectYear(selectedYear + 5)}>
                         <SvgAngle width={14} />
@@ -78,25 +83,32 @@ const DatePicker = (props) => {
                 {_.map(MONTHS, (m, i) => {
                     const selected = i === selectedMonth - 1;
                     const future = isFutureMonth(selectedYear, i + 1);
-                    const selectable = !future || canSelectFuture;
-                    const classes = `mp-month mp-item${selected ? ' mp-item-selected' : ''}
-                        ${future ? (selected ? ' mp-future' : ' mp-dark-future') : ''}`;
+                    const disabled = future && !canSelectFuture;
                     const row = Math.floor(i / 4) + 1;
                     const col = (i % 4) + 1;
                     const gridArea = `${row}/${col}`;
-                    const cursor = selectable ? 'pointer' : 'auto';
+
+                    let classes = 'mp-month mp-item';
+
+                    if (disabled) {
+                        classes += ' mp-item-disabled';
+                    } else {
+                        classes += `${selected ? ' mp-item-selected' : ''}${future ? ' mp-future' : ''}`;
+                    }
 
                     return (
-                        <div key={i} className={classes} style={{ gridArea, cursor }} onClick={() => {
+                        <div key={i} className={classes} style={{ gridArea }} onClick={() => {
+                            if (disabled) {
+                                return;
+                            }
+
                             selectMonth(i + 1);
 
                             if (monthly) {
                                 const day = dayjs(new Date(selectedYear, i, 1)).daysInMonth();
-                                i + 1 !== selectedMonth && selectable && onExit(i + 1, selectedYear, day);
+                                i + 1 !== selectedMonth && !disabled && onExit(i + 1, selectedYear, day);
                             }
-                        }}>
-                            {m}
-                        </div>
+                        }}>{m}</div>
                     );
                 })}
             </div>
@@ -116,26 +128,29 @@ const DatePicker = (props) => {
 
                         const selected = i === selectedDay - 1;
                         const future = isFutureDate(selectedYear, selectedMonth, i + 1);
-                        const selectable = !future || canSelectFuture;
+                        const disabled = future && !canSelectFuture;
                         const date = new Date(selectedYear, selectedMonth - 1, i + 1);
                         const day = date.getDay();
                         const weekday = day > 0 && day < 6;
 
-                        const classes = `mp-day mp-item${selected ? ' mp-item-selected' :
-                            `${future ? (selected ? ' mp-future' : ' mp-dark-future') : ''}${weekday ? '' :
-                                weekendsEnabled ? (future ? ' mp-weekend-enabled-future' : ' mp-weekend-enabled') : ' mp-weekend'}`}`;
+                        let classes = 'mp-day mp-item';
+
+                        if (disabled) {
+                            classes += ' mp-item-disabled';
+                        } else {
+                            classes += `${selected ? ' mp-item-selected' :
+                                `${future ? ' mp-future' : ''}${weekday ? '' :
+                                    weekendsEnabled ? (future ? ' mp-weekend-enabled-future' : ' mp-weekend-enabled') : ' mp-weekend'}`}`;
+                        }
 
                         const col = day + 1;
                         const row = getWeekOfMonth(date) + 2;
                         const gridArea = `${row}/${col}`;
-                        const cursor = selectable ? 'pointer' : 'auto';
 
                         return (
-                            <div key={i} className={classes} style={{ gridArea, cursor }}
-                                onClick={() => i + 1 !== selectedDay && (weekday || weekendsEnabled) && selectable &&
-                                    onExit(selectedMonth, selectedYear, i + 1)}>
-                                {d}
-                            </div>
+                            <div key={i} className={classes} style={{ gridArea }}
+                                onClick={() => i + 1 !== selectedDay && (weekday || weekendsEnabled) && !disabled &&
+                                    onExit(selectedMonth, selectedYear, i + 1)}>{d}</div>
                         );
                     })}
                 </>
