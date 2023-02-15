@@ -443,7 +443,7 @@ const HiGrid = (props) => {
         const cellid = cellId(node.key, col);
 
         const renderInput = () => {
-            const onBlur = () => editing && acceptChange();
+            const onBlur = (e) => editing && acceptChange();
 
             const background = theme.input.background;
             const color = theme.input.color;
@@ -544,7 +544,8 @@ const HiGrid = (props) => {
     const maxWidthHeaders = trw ? `${trw - 1}px` : `${tr?.clientWidth - 1}px`;
 
     return (
-        <div id={id} style={{ display: 'grid', overflow: 'hidden' }} onClick={() => l.view.focus()}>
+        <div id={id} style={{ display: 'grid', overflow: 'hidden' }}
+            onClick={(e) => !e.nativeEvent.target.tagName === 'INPUT' && l.view.focus()}>
             <div id='higrid-view' ref={e => l.view = e} className='higrid-view' style={{ gridArea: '1/1' }}
                 tabIndex={-1} onKeyDown={onKeyDown}>
                 <HiGridToolbar style={{ placeSelf: 'center start' }} onAddNode={readOnly ? null : onAddNode}
