@@ -8,39 +8,36 @@ import dayjs from 'dayjs';
 const MONTHS = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'];
 const DOW = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
 
-const getWeekOfMonth = (date) => {
-    var firstWeekday = new Date(date.getFullYear(), date.getMonth(), 1).getDay();
-    var offsetDate = date.getDate() + firstWeekday - 1;
-    return Math.floor(offsetDate / 7);
-};
-
-const isFutureDate = (y, m, d) => {
-    const today = dayjs();
-
-    const cutoffDate = today;
-    const todayYear = cutoffDate.year();
-    const todayMonth = cutoffDate.month() + 1;
-    const todayDay = cutoffDate.date();
-    const future = y > todayYear || (y === todayYear && m > todayMonth) || (y === todayYear && m === todayMonth && d > todayDay);
-    return future;
-};
-
 const DatePicker = (props) => {
     const { year, month, day, monthly, canNoDate, noDateLabel, weekendsEnabled = false, style, onExit } = props;
-    const cutoffDate = dayjs();
-    const todayYear = cutoffDate.year();
-    const todayMonth = cutoffDate.month() + 1;
-    const todayDay = cutoffDate.date();
-    const [selectedDay, selectDay] = useState(Number(day) || todayDay);
-    const [selectedMonth, selectMonth] = useState(Number(month) || todayMonth);
-    const [selectedYear, selectYear] = useState(Number(year) || todayYear);
+
+    const getWeekOfMonth = (date) => {
+        var firstWeekday = new Date(date.getFullYear(), date.getMonth(), 1).getDay();
+        var offsetDate = date.getDate() + firstWeekday - 1;
+        return Math.floor(offsetDate / 7);
+    };
+
+    const maxDate = dayjs().subtract(1, 'day');
+    const cutoffDate = maxDate;
+    const cutoffYear = cutoffDate.year();
+    const cutoffMonth = cutoffDate.month() + 1;
+    const cutoffDay = cutoffDate.date();
+
+    const isFutureDate = (y, m, d) => {
+        const future = y > cutoffYear || (y === cutoffYear && m > cutoffMonth) ||
+            (y === cutoffYear && m === cutoffMonth && d > cutoffDay);
+
+        return future;
+    };
+
+    const [selectedDay, selectDay] = useState(Number(day) || cutoffDay);
+    const [selectedMonth, selectMonth] = useState(Number(month) || cutoffMonth);
+    const [selectedYear, selectYear] = useState(Number(year) || cutoffYear);
     const daysInMonth = new Date(selectedYear, selectedMonth, 0).getDate();
     const futureSelected = isFutureDate(selectedYear, selectedMonth, selectedDay);
 
     useEffect(() => {
-        if (selectedDay > daysInMonth) {
-            selectDay(daysInMonth);
-        }
+        (selectedDay > daysInMonth) && selectDay(daysInMonth);
     }, [selectedYear, selectedMonth, selectedDay, daysInMonth]);
 
     return (
@@ -55,7 +52,7 @@ const DatePicker = (props) => {
                         <SvgAngle width={14} />
                     </div>
                     {_.map([-2, -1, 0, 1, 2], (off) => {
-                        const future = selectedYear + off > todayYear;
+                        const future = selectedYear + off > cutoffYear;
                         return (
                             <div
                                 key={off}
@@ -73,7 +70,7 @@ const DatePicker = (props) => {
             <div className="mp-month-selector">
                 {_.map(MONTHS, (m, i) => {
                     const selected = i === selectedMonth - 1;
-                    const future = selectedYear > todayYear || (selectedYear === todayYear && i + 1 > todayMonth);
+                    const future = selectedYear > cutoffYear || (selectedYear === cutoffYear && i + 1 > cutoffMonth);
                     const classes = `mp-month mp-item${selected ? ' mp-item-selected' : ''}
                         ${future ? (selected ? ' mp-future' : ' mp-dark-future') : ''}`;
                     const row = Math.floor(i / 4) + 1;
@@ -109,9 +106,9 @@ const DatePicker = (props) => {
 
                         const selected = i === selectedDay - 1;
                         const future =
-                            selectedYear > todayYear ||
-                            (selectedYear === todayYear && selectedMonth > todayMonth) ||
-                            (selectedYear === todayYear && selectedMonth === todayMonth && i + 1 > todayDay);
+                            selectedYear > cutoffYear ||
+                            (selectedYear === cutoffYear && selectedMonth > cutoffMonth) ||
+                            (selectedYear === cutoffYear && selectedMonth === cutoffMonth && i + 1 > cutoffDay);
                         const date = new Date(selectedYear, selectedMonth - 1, i + 1);
                         const day = date.getDay();
                         const weekday = day > 0 && day < 6;
