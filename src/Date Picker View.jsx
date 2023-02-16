@@ -7,6 +7,7 @@ import { handleModalClick } from './utils';
 
 const DatePickerView = (props) => {
     const { bid, monthly, date, canNoDate, noDateLabel, setDate, align = 'center' } = props;
+    const { futureEnabled = false, weekendsEnabled = true } = props;
     const [exit, setExit] = useState();
     const setVisible = useSetAtom(a_date_picker_visible);
 
@@ -62,7 +63,8 @@ const DatePickerView = (props) => {
                 monthly={monthly}
                 canNoDate={canNoDate}
                 noDateLabel={noDateLabel}
-                weekendsEnabled={true}
+                futureEnabled={futureEnabled}
+                weekendsEnabled={weekendsEnabled}
                 year={date?.slice(0, 4)}
                 month={date?.slice(5, 7)}
                 day={date?.slice(8)}

@@ -91,7 +91,7 @@ const LoaderPopup = (props) => {
                     <DropdownSelector id='input.dd2' items={items} selectedItem={fname2 || 'BFAF'} setItem={setFundName2}
                         offset='center' icon={<SvgPortfolio width={28} many={false} color={BLUE} />} style={{ background }} />
                 </div>}
-                {datePickerVisible && <DatePickerView bid={dateId} date={isDate1 ? date1 : date2} setDate={setDate} />}
+                {datePickerVisible && <DatePickerView bid={dateId} date={isDate1 ? date1 : date2} setDate={setDate}/>}
             </div>
         </Popup>
     </div>;

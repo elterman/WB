@@ -95,10 +95,6 @@
   height: 36px;
 }
 
-.mp-future {
-  color: #ffffff28;
-}
-
 .mp-day-selector {
   color: #fff9;
   display: grid;
@@ -155,19 +151,14 @@
   color: #fffa;
 }
 
+.mp-future {
+    color: #ffffff28;
+  }
+
 .mp-weekend {
-  cursor: initial;
-  color: #000;
+  color: #c6b662;
 }
 
-.mp-weekend:hover {
-  background: initial;
-}
-
-.mp-weekend-enabled {
-  color: #b8af8f;
-}
-
-.mp-weekend-enabled-future {
-  color: #ffffff28;
+.mp-future-weekend {
+  color: #c6b66260;
 }
